@@ -5,21 +5,26 @@ This is the back-end of Archivepelago, a project on the transmission and transla
 
 ## Server Requirements
 
-Although not required, the server runs on Ubuntu 22.04 through [Digital Ocean](https://www.digitalocean.com/ "Digital Ocean"). The following code is targeted to Ubuntu 22.04 within a Digital Ocean droplet; if using a different operating system or service provider, please adjust accordingly.
+Although not required, the server runs on Ubuntu 24.04 through [Digital Ocean](https://www.digitalocean.com/ "Digital Ocean"). The following code is targeted to Ubuntu 24.04 within a Digital Ocean droplet; if using a different operating system or service provider, please adjust accordingly.
 
 ### Basic Server setup
 
 #### Node.js
 
-The server requires Node.js v20. Follow the instructions below to set up the node environment, being sure to install the correct version of Node.js (20.x):
+The server requires Node.js v22. Follow the instructions below to set up the node environment, being sure to install the correct version of Node.js (22.x):
 
-* [Install Node.js on Ubuntu 22.04:](https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-22-04#option-2-installing-node-js-with-apt-using-a-nodesource-ppa "Node.js on Ubuntu 22.04")
+* [Install Node.js on Ubuntu:](https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions "Node.js on Ubuntu")
   ```bash
   cd ~
-  curl -sL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh
-  sudo bash nodesource_setup.sh
-  sudo apt install nodejs
-  ``` 
+  curl -fsSL https://deb.nodesource.com/setup_23.x -o nodesource_setup.sh
+  sudo -E bash nodesource_setup.sh
+  sudo apt install -y nodejs
+  ```
+* Verify the installation: 
+  ```bash
+  node -v
+  ```
+  
 * `cd` into archivepelago-server's main directory and run `npm install`
 * Rename `.env-keys` to `.env`
 * In your `.env` file, update `TOKEN_SECRET=CHANGE_ME` with a long series of random characters.
