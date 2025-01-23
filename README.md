@@ -32,7 +32,7 @@ The server requires Node.js v22. Follow the instructions below to set up the nod
 
 #### Neo4j
 
-The server requires Neo4j v5.7.0 Enterprise. You can get a Neo4j enterprise license through their [startup program](https://neo4j.com/startup-program/ "Neo4j Startup Program").
+The server requires Neo4j v5.26.1 Enterprise. You can get a Neo4j enterprise license through their [startup program](https://neo4j.com/startup-program/ "Neo4j Startup Program").
 
 Follow the instructions below to install Neo4j, being sure to install the correct version (5.7):
 * [Install Neo4j:](https://neo4j.com/docs/operations-manual/current/installation/linux/debian/ "Neo4j")
@@ -43,8 +43,8 @@ Follow the instructions below to install Neo4j, being sure to install the correc
     ```
   * Add Neo4j's repository:
     ```bash
-    wget -O - https://debian.neo4j.com/neotechnology.gpg.key | sudo apt-key add -
-    echo 'deb https://debian.neo4j.com stable 5' | sudo tee -a /etc/apt/sources.list.d/neo4j.list
+    wget -O - https://debian.neo4j.com/neotechnology.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/neotechnology.gpg
+    echo 'deb [signed-by=/etc/apt/keyrings/neotechnology.gpg] https://debian.neo4j.com stable 5' | sudo tee -a /etc/apt/sources.list.d/neo4j.list
     sudo apt update
     ```
   * Enable `universe` repository
@@ -53,10 +53,13 @@ Follow the instructions below to install Neo4j, being sure to install the correc
     ```
   * Install Neo4j Enterprise Edition:
      ```bash
-     sudo apt install neo4j-enterprise=1:5.7.0
+     sudo apt install neo4j-enterprise=1:5.26.1
      ```
-* Set Neo4j Password:
+     You will be prompted to accept the license agreement. If you obtained a license through the Neo4j Startup Program, select option '3'; otherwise, select '2'.
+     
+* Start Neo4j and Set Password:
   ```bash
+  sudo neo4j start
   cd /bin
   cypher-shell -d system
   ```
@@ -68,11 +71,11 @@ Follow the instructions below to install Neo4j, being sure to install the correc
 * [Install the APOC Plugin:](https://neo4j.com/docs/apoc/current/installation/ "Install the APOC plugin")
   * Move or copy the APOC jar file from the `$NEO4J_HOME/labs` directory to the `$NEO4J_HOME/plugins` directory:
     ```bash
-    sudo cp /var/lib/neo4j/labs/apoc-5.7.0-core.jar /var/lib/neo4j/plugins
+    sudo cp /var/lib/neo4j/labs/apoc-5.26.1-core.jar /var/lib/neo4j/plugins
      ```
   * Restart Neo4j:
     ```bash
-    sudo service neo4j restart
+    sudo neo4j restart
     ```
 * Enable Neo4j on startup:
   ```bash
