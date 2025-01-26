@@ -34,7 +34,7 @@ The server requires Node.js v22. Follow the instructions below to set up the nod
 
 The server requires Neo4j v5.26.1 Enterprise. You can get a Neo4j enterprise license through their [startup program](https://neo4j.com/startup-program/ "Neo4j Startup Program").
 
-Follow the instructions below to install Neo4j, being sure to install the correct version (5.7):
+Follow the instructions below to install Neo4j, being sure to install the correct version (5.26.1):
 * [Install Neo4j:](https://neo4j.com/docs/operations-manual/current/installation/linux/debian/ "Neo4j")
   * Add OpenJDK's repository:
     ```bash
