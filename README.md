@@ -16,7 +16,7 @@ The server requires Node.js v22. Follow the instructions below to set up the nod
 * [Install Node.js on Ubuntu:](https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions "Node.js on Ubuntu")
   ```bash
   cd ~
-  curl -fsSL https://deb.nodesource.com/setup_23.x -o nodesource_setup.sh
+  curl -fsSL https://deb.nodesource.com/setup_22.x -o nodesource_setup.sh
   sudo -E bash nodesource_setup.sh
   sudo apt install -y nodejs
   ```
