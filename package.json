@@ -8,7 +8,7 @@
     "url": "git@github.com:ampkz/archivepelago-server-new.git"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && copyfiles -u 1 './src/schema/schema.graphql' build",
     "init": "tsc && node ./build/server/utils/init-server.js",
     "start": "node ./build",
     "test": "jest --runInBand"
