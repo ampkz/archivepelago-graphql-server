@@ -29,7 +29,7 @@ async function startServer() {
     const server = new ApolloServer<MyContext>({
         typeDefs,
         resolvers,
-        includeStacktraceInErrorResponses: (process.env.NODE_ENV === 'test' ? true : false),
+        includeStacktraceInErrorResponses: false,
         plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
     });
 
