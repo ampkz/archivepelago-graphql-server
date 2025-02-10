@@ -1,3 +1,5 @@
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware as apolloMiddleware } from '@apollo/server/express4';
 import express, { Express } from 'express';
 import { error404, errorHandler } from '../middleware/errors';
 import authenticateRouter from '../routing/auth/authenticate';
