@@ -11,11 +11,11 @@ describe(`Users Tests`, () => {
             secondName = faker.person.middleName();
 
         const user:User = new User(email, auth, firstName, lastName, secondName);
-        expect(user.getEmail()).toEqual(email);
-        expect(user.getFirstName()).toEqual(firstName);
-        expect(user.getLastName()).toEqual(lastName);
-        expect(user.getSecondName()).toEqual(secondName);
-        expect(user.getAuth()).toEqual(auth);
+        expect(user.email).toEqual(email);
+        expect(user.firstName).toEqual(firstName);
+        expect(user.lastName).toEqual(lastName);
+        expect(user.secondName).toEqual(secondName);
+        expect(user.auth).toEqual(auth);
     });
 
     it(`should initialize an empty string if no secondName is given`, () => {
@@ -25,10 +25,10 @@ describe(`Users Tests`, () => {
             lastName = faker.person.lastName();
         
         const user:User = new User(email, auth, firstName, lastName);
-        expect(user.getEmail()).toEqual(email);
-        expect(user.getFirstName()).toEqual(firstName);
-        expect(user.getLastName()).toEqual(lastName);
-        expect(user.getSecondName()).toEqual('');
-        expect(user.getAuth()).toEqual(auth);
+        expect(user.email).toEqual(email);
+        expect(user.firstName).toEqual(firstName);
+        expect(user.lastName).toEqual(lastName);
+        expect(user.secondName).toEqual('');
+        expect(user.auth).toEqual(auth);
     });
 })

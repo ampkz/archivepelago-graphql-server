@@ -86,7 +86,6 @@ describe(`Graphql Routes Tests`, () => {
         .set('Cookie', [`jwt=${jwtToken}`])
         
         const returnedUser = body.data.user;
-        console.log(returnedUser);
         expect(returnedUser.email).toEqual(user.email);
         expect(returnedUser.firstName).toEqual(user.firstName);
         expect(returnedUser.lastName).toEqual(user.lastName);
@@ -122,7 +121,6 @@ describe(`Graphql Routes Tests`, () => {
         .set('Cookie', [`jwt=${jwtToken}`])
         
         const returnedUser = body.data.user;
-        console.log(returnedUser);
         expect(returnedUser.email).toEqual(user.email);
         expect(returnedUser.firstName).toEqual(user.firstName);
         expect(returnedUser.lastName).toEqual(user.lastName);
