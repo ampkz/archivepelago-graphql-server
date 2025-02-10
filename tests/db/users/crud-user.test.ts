@@ -1,4 +1,4 @@
-import { createUser, Errors as UserErrors } from '../../../src/db/users/crud-user';
+import { createUser, getUserByEmail, Errors as UserErrors } from '../../../src/db/users/crud-user';
 import { User } from '../../../src/users/users';
 import { InternalError, ResourceExistsError } from '../../../src/_helpers/errors-helper';
 import { destroyTestingDBs, initializeDBs } from "../../../src/db/utils/init-dbs";
@@ -83,5 +83,17 @@ describe(`User DB Tests`, ()=> {
         }
 
         expect(true).toBeTruthy();
+    });
+
+    it('should get a created user by email', async () => {
+        const email = faker.internet.email(),
+            firstName = faker.person.firstName(),
+            lastName = faker.person.lastName(),
+            secondName = faker.person.middleName();
+
+        const user:User = new User(email, Auth.ADMIN, firstName, lastName, secondName);
+        await createUser(user, faker.internet.password());
+        const matchedUser:User | undefined = await getUserByEmail(user.email);
+        expect(matchedUser).toBeDefined();
     });
 });
