@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app from '../../../src/server/server';
+import startServer from '../../../src/server/server';
 import { authenticateUri } from '../../../src/routing/uriConfig';
 import { FieldError, RoutingErrors } from '../../../src/_helpers/errors-helper';
 import { faker } from '@faker-js/faker';
@@ -11,6 +11,13 @@ import { Auth } from '../../../src/auth/authorization';
 dotenv.config();
 
 describe(`Authenticate Route Tests`, () => {
+
+    let app: any;
+
+    beforeAll(async() => {
+        app = await startServer();
+    })
+
     it(`should send 405 status on PUT with Allow header 'POST'`, async () => {
         await request(app)
             .put(authenticateUri)

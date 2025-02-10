@@ -2,7 +2,7 @@ import * as readline from 'node:readline';
 import { stdin as input, stdout as output } from 'node:process';
 import { initializeDBs } from '../../db/utils/init-dbs';
 import dotenv from 'dotenv';
-import { createUser, Errors as UserErrors } from '../../db/users/create-user';
+import { createUser, Errors as UserErrors } from '../../db/users/crud-user';
 import { ResourceExistsError } from '../../_helpers/errors-helper';
 import { User } from '../../users/users';
 import { Auth } from '../../auth/authorization';

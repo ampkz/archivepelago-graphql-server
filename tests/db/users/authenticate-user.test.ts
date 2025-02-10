@@ -4,7 +4,7 @@ import { checkPassword } from '../../../src/db/users/authenticate-user';
 import { faker } from '@faker-js/faker';
 import { User } from '../../../src/users/users';
 import { Auth } from '../../../src/auth/authorization';
-import { createUser } from '../../../src/db/users/create-user';
+import { createUser } from '../../../src/db/users/crud-user';
 
 dotenv.config();
 
@@ -28,7 +28,7 @@ describe(`Authenticate User Tests`, () => {
         const password: string = faker.internet.password();
         await createUser(newUser, password);
 
-        const user = await checkPassword(newUser.getEmail(), faker.internet.password());
+        const user = await checkPassword(newUser.email, faker.internet.password());
 
         expect(user).toBeUndefined();
     });
@@ -38,7 +38,7 @@ describe(`Authenticate User Tests`, () => {
         const password: string = faker.internet.password();
         await createUser(newUser, password);
 
-        const user = await checkPassword(newUser.getEmail(), password);
+        const user = await checkPassword(newUser.email, password);
 
         expect(user).toBeDefined();
         expect(user).toEqual(newUser);

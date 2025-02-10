@@ -13,11 +13,9 @@ export enum Errors {
 export async function createUser(user: User, pwd: string, saltRounds: number = 10): Promise<User> {
     const driver: Driver = await connect();
     const session: Session = driver.session(getSessionOptions(process.env.USERS_DB as string));
-    let match: RecordShape;
+    let matchedUser: User | undefined = await getUserByEmail(user.email, session);
 
-    match = await session.run(`MATCH(u:User { email: $email }) RETURN u`, { email: user.getEmail() });
-
-    if(match.records.length >= 1){
+    if(matchedUser){
         await session.close();
         await driver.close();
         throw new ResourceExistsError(Errors.CANNOT_CREATE_USER, { info: Errors.USER_ALREADY_EXISTS })
@@ -25,7 +23,7 @@ export async function createUser(user: User, pwd: string, saltRounds: number = 1
 
     const pwdHash: string = await bcrypt.hash(pwd, saltRounds);
     const txc: Transaction = await session.beginTransaction();
-    match = await txc.run(`CREATE(u:User { id:apoc.create.uuid(), email: $email, firstName: $firstName, lastName: $lastName, secondName: $secondName, auth: $auth, pwd: $pwdHash }) RETURN u`, { email: user.getEmail(), firstName: user.getFirstName(), lastName: user.getLastName(), secondName: user.getSecondName(), auth: user.getAuth(), pwdHash });
+    const match = await txc.run(`CREATE(u:User { id:apoc.create.uuid(), email: $email, firstName: $firstName, lastName: $lastName, secondName: $secondName, auth: $auth, pwd: $pwdHash }) RETURN u`, { email: user.email, firstName: user.firstName, lastName: user.lastName, secondName: user.secondName, auth: user.auth, pwdHash });
 
     if(match.records.length !== 1){
         await txc.rollback();
@@ -39,6 +37,35 @@ export async function createUser(user: User, pwd: string, saltRounds: number = 1
     await txc.close();
     await session.close();
     await driver.close();
+
+    return user;
+}
+
+export async function getUserByEmail(email: string, session?: Session): Promise<User | undefined> {
+    let user: User | undefined = undefined;
+    let driver: Driver | undefined = undefined,
+        newSession: Session;
+
+    if(!session){
+        driver = await connect();
+        newSession = driver.session(getSessionOptions(process.env.USERS_DB as string));
+    }else{
+        newSession = session;
+    }
+
+    let match: RecordShape;
+
+    match = await newSession.run(`MATCH(u:User { email: $email }) RETURN u`, { email });
+
+    if(match.records.length === 1){
+        const matchedUser = match.records[0].get(0).properties;
+        user = new User(matchedUser.email, matchedUser.auth, matchedUser.firstName, matchedUser.lastName, matchedUser.secondName);
+    }
+
+    if(driver){
+        await driver.close();
+        await newSession.close();
+    }
 
     return user;
 }

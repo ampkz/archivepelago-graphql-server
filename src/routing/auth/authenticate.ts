@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { authenticateUri } from "../uriConfig";
 import { sendStatus405 } from "../../middleware/statusCodes";
-import { authenticate } from "../routes/authenticate";
+import { authenticate } from "../routes/auth/authenticate";
 
 const router: Router = Router();
 

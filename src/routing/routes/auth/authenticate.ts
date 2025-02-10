@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import { FieldError, FieldErrors, RoutingErrors } from "../../_helpers/errors-helper";
-import { User } from "../../users/users";
-import { checkPassword } from "../../db/users/authenticate-user";
-import { sendStatus401 } from "../../middleware/statusCodes";
-import { signToken } from "../../_helpers/auth";
+import { FieldError, FieldErrors, RoutingErrors } from "../../../_helpers/errors-helper";
+import { User } from "../../../users/users";
+import { checkPassword } from "../../../db/users/authenticate-user";
+import { sendStatus401 } from "../../../middleware/statusCodes";
+import { signToken } from "../../../_helpers/auth-helpers";
 
 export async function authenticate(req: Request, res: Response, next: NextFunction): Promise<any> {
     const { email, password } = req.body;
@@ -23,5 +23,5 @@ export async function authenticate(req: Request, res: Response, next: NextFuncti
         return sendStatus401(res);
     }
 
-    return res.status(204).cookie('jwt', signToken(user.getEmail(), user.getAuth(), process.env.TOKEN_EXPIRATION), {httpOnly: true, maxAge: Number(process.env.COOKIE_EXPIRATION), sameSite: true}).end();
+    return res.status(204).cookie('jwt', signToken(user.email, user.auth, process.env.TOKEN_EXPIRATION), {httpOnly: true, maxAge: Number(process.env.COOKIE_EXPIRATION), sameSite: true}).end();
 }

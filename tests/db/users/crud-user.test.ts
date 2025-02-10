@@ -1,4 +1,4 @@
-import { createUser, Errors as UserErrors } from '../../../src/db/users/create-user';
+import { createUser, Errors as UserErrors } from '../../../src/db/users/crud-user';
 import { User } from '../../../src/users/users';
 import { InternalError, ResourceExistsError } from '../../../src/_helpers/errors-helper';
 import { destroyTestingDBs, initializeDBs } from "../../../src/db/utils/init-dbs";

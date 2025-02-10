@@ -1,7 +1,12 @@
 import request from 'supertest';
-import app from '../../src/server/server';
+import startServer from '../../src/server/server';
 
 describe(`Main Routes Tests`, () => {
+    let app: any;
+
+    beforeAll(async() => {
+        app = await startServer();
+    })
 
     it('should send 404 on an undefined route', async () => {
         request(app)
