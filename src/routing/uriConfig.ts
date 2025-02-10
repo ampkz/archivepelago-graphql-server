@@ -1,0 +1,1 @@
+export const authenticateUri: string = '/authenticate';

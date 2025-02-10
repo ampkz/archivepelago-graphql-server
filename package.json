@@ -1,0 +1,44 @@
+{
+  "name": "archivepelago-server",
+  "version": "0.4.0",
+  "description": "The graphql back-end for Archivepelago, a project on the transmission and translation of notions of sexuality and gender by mapping networks of queer writers and artists.",
+  "main": "./build/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ampkz/archivepelago-server-new.git"
+  },
+  "scripts": {
+    "build": "tsc",
+    "init": "tsc && node ./build/server/utils/init-server.js",
+    "start": "node ./build",
+    "test": "jest --runInBand"
+  },
+  "keywords": [],
+  "author": "Andrew M. Pankratz",
+  "license": "GPL-3.0-or-later",
+  "devDependencies": {
+    "@faker-js/faker": "^9.4.0",
+    "@types/bcrypt": "^5.0.2",
+    "@types/cookie-parser": "^1.4.8",
+    "@types/express": "^5.0.0",
+    "@types/jest": "^29.5.14",
+    "@types/jsonwebtoken": "^9.0.8",
+    "@types/node": "^22.13.1",
+    "@types/supertest": "^6.0.2",
+    "copyfiles": "^2.4.1",
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.2.5",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "@apollo/server": "^4.11.3",
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "graphql": "^16.10.0",
+    "jsonwebtoken": "^9.0.2",
+    "neo4j-driver": "^5.28.0"
+  }
+}
