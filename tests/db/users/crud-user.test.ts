@@ -1,5 +1,5 @@
-// import { createUser, getUserByEmail, updateUser, Errors as UserErrors } from '../../../src/db/users/crud-user';
-import * as crudUser from '../../../src/db/users/crud-user';
+import { createUser, getUserByEmail, updateUser, Errors as UserErrors } from '../../../src/db/users/crud-user';
+// import * as crudUser from '../../../src/db/users/crud-user';
 import { User } from '../../../src/users/users';
 import { InternalError, ResourceExistsError } from '../../../src/_helpers/errors-helper';
 import { destroyTestingDBs, initializeDBs } from "../../../src/db/utils/init-dbs";
@@ -27,7 +27,7 @@ describe(`User DB Tests`, ()=> {
             secondName = faker.person.middleName();
 
         const user:User = new User(email, Auth.ADMIN, firstName, lastName, secondName);
-        const createdUser: User = await crudUser.createUser(user, faker.internet.password());
+        const createdUser: User = await createUser(user, faker.internet.password());
         expect(user).toEqual(createdUser);
     });
 
@@ -38,14 +38,14 @@ describe(`User DB Tests`, ()=> {
             secondName = faker.person.middleName();
         
         const user:User = new User(email, Auth.CONTRIBUTOR, firstName, lastName, secondName);
-        const createdUser: User = await crudUser.createUser(user, faker.internet.password());
+        const createdUser: User = await createUser(user, faker.internet.password());
         
         try{
-            await crudUser.createUser(createdUser, faker.internet.password());
+            await createUser(createdUser, faker.internet.password());
         }catch(error){
             expect(error instanceof ResourceExistsError);
-            expect((error as ResourceExistsError).message).toEqual(crudUser.Errors.CANNOT_CREATE_USER);
-            expect((error as ResourceExistsError).getData().info).toEqual(crudUser.Errors.USER_ALREADY_EXISTS);
+            expect((error as ResourceExistsError).message).toEqual(UserErrors.CANNOT_CREATE_USER);
+            expect((error as ResourceExistsError).getData().info).toEqual(UserErrors.USER_ALREADY_EXISTS);
         }
         
         expect(true).toBeTruthy();
@@ -77,10 +77,10 @@ describe(`User DB Tests`, ()=> {
         const user:User = new User(email, Auth.ADMIN, firstName, lastName, secondName);
         
         try{
-            await crudUser.createUser(user, faker.internet.password());
+            await createUser(user, faker.internet.password());
         }catch(error){
             expect(error instanceof InternalError).toBeTruthy();
-            expect((error as InternalError).message).toEqual(crudUser.Errors.CANNOT_CREATE_USER);
+            expect((error as InternalError).message).toEqual(UserErrors.CANNOT_CREATE_USER);
         }
 
         expect(true).toBeTruthy();
@@ -93,8 +93,8 @@ describe(`User DB Tests`, ()=> {
             secondName = faker.person.middleName();
 
         const user:User = new User(email, Auth.ADMIN, firstName, lastName, secondName);
-        await crudUser.createUser(user, faker.internet.password());
-        const matchedUser:User | undefined = await crudUser.getUserByEmail(user.email);
+        await createUser(user, faker.internet.password());
+        const matchedUser:User | undefined = await getUserByEmail(user.email);
         expect(matchedUser).toBeDefined();
     });
 
@@ -105,9 +105,9 @@ describe(`User DB Tests`, ()=> {
             secondName = faker.person.middleName();
 
         const user:User = new User(email, Auth.ADMIN, firstName, lastName, secondName);
-        await crudUser.createUser(user, faker.internet.password());
+        await createUser(user, faker.internet.password());
         const updates: User = new User(email, Auth.ADMIN, faker.person.firstName(), faker.person.lastName(), faker.person.middleName());
-        const updatedUser: User | undefined = await crudUser.updateUser(email, updates);
+        const updatedUser: User | undefined = await updateUser(email, updates);
         expect(updatedUser).toBeDefined();
         expect(updatedUser).toEqual(updates);
     });
@@ -119,7 +119,7 @@ describe(`User DB Tests`, ()=> {
             secondName = faker.person.middleName();
 
         const user:User = new User(email, Auth.ADMIN, firstName, lastName, secondName);
-        const updatedUser: User | undefined = await crudUser.updateUser(email, user);
+        const updatedUser: User | undefined = await updateUser(email, user);
         expect(updatedUser).toBeUndefined();
     });
 
@@ -130,8 +130,8 @@ describe(`User DB Tests`, ()=> {
             secondName = faker.person.middleName();
 
         const user:User = new User(email, Auth.ADMIN, firstName, lastName, secondName);
-        await crudUser.createUser(user, faker.internet.password());
-        await expect(crudUser.updateUser(faker.internet.email(), user)).rejects.toThrow(crudUser.Errors.CANNOT_UPDATE_USER);
+        await createUser(user, faker.internet.password());
+        await expect(updateUser(faker.internet.email(), user)).rejects.toThrow(UserErrors.CANNOT_UPDATE_USER);
     });
 
     it(`should return an undefined user if the password couldn't be updated`, async () => {
@@ -178,7 +178,7 @@ describe(`User DB Tests`, ()=> {
 
         const user:User = new User(email, Auth.ADMIN, firstName, lastName, secondName);
         const updates: User = new User(email, Auth.ADMIN, faker.person.firstName(), faker.person.lastName(), faker.person.middleName());
-        const updatedUser: User | undefined = await crudUser.updateUser(email, updates, faker.internet.password());
+        const updatedUser: User | undefined = await updateUser(email, updates, faker.internet.password());
         
         expect(updatedUser).toBeUndefined();
     
