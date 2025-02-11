@@ -20,4 +20,12 @@ export default {
             return user;
         }
     },
+
+    Mutation: {
+        createUser: (_root: any, { input: email, auth, firstName, lastName, secondName }: any, { authorizedUser }: any) => {
+            if(!isPermitted(authorizedUser, Auth.ADMIN)){
+                throw unauthorizedError(`You are not authorized to make this mutation.`);
+            }
+        }
+    }
 };
