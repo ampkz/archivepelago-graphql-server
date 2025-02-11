@@ -47,12 +47,16 @@ export default {
             if(!isPermitted(authorizedUser, Auth.ADMIN) && !permitSelf(authorizedUser, existingEmail)) {
                 throw unauthorizedError(`You are not authorized to make this query.`);
             }
-
+            
+            let updatedUser: User | undefined;
+            
             try{
-                const updatedUser: User | undefined = await updateUser(existingEmail, { email: updatedEmail, firstName, lastName, secondName, password });
+                updatedUser = await updateUser(existingEmail, { email: updatedEmail, auth, firstName, lastName, secondName, password });
             }catch(error){
-                
+                throw mutationFailed(`Could not update user`);
             }
+
+            return updatedUser;
         }
     }
 };
