@@ -1,6 +1,6 @@
 import { ResourceExistsError } from "../../_helpers/errors-helper";
 import { Auth, isPermitted, permitSelf } from "../../auth/authorization";
-import { createUser, getUserByEmail, updateUser, Errors as UserErrors } from "../../db/users/crud-user";
+import { createUser, deleteUser, getUserByEmail, updateUser, Errors as UserErrors } from "../../db/users/crud-user";
 import { User } from "../../users/users";
 import { mutationFailed, notFoundError, unauthorizedError } from "../errors/errors";
 
@@ -57,6 +57,22 @@ export default {
             }
 
             return updatedUser;
-        }
+        },
+
+        deleteUser: async (_root: any, { email }: any, { authorizedUser }: any) => {
+            if(!isPermitted(authorizedUser, Auth.ADMIN) && !permitSelf(authorizedUser, email)){
+                throw unauthorizedError(`You are not authorized to make this mutation.`);
+            }
+
+            let deletedUser: User | undefined;
+
+            try{
+                deletedUser = await deleteUser(email);
+            }catch (error) {
+                throw mutationFailed(`There was an issue with the server.`);
+            }
+
+            return deletedUser;
+        },
     }
 };
