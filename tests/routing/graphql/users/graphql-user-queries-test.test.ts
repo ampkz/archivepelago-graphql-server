@@ -1,16 +1,16 @@
 import request from 'supertest';
-import startServer from '../../../src/server/server';
+import startServer from '../../../../src/server/server';
 import dotenv from 'dotenv';
-import { signToken } from '../../../src/_helpers/auth-helpers';
+import { signToken } from '../../../../src/_helpers/auth-helpers';
 import { faker } from '@faker-js/faker';
-import { Auth } from '../../../src/auth/authorization';
-import * as crudUser from '../../../src/db/users/crud-user';
-import { Errors as GraphQLErrors } from '../../../src/graphql/errors/errors';
-import { User } from '../../../src/users/users';
+import { Auth } from '../../../../src/auth/authorization';
+import * as crudUser from '../../../../src/db/users/crud-user';
+import { Errors as GraphQLErrors } from '../../../../src/graphql/errors/errors';
+import { User } from '../../../../src/users/users';
 
 dotenv.config();
 
-describe(`Graphql Routes Tests`, () => {
+describe(`User Query Tests`, () => {
     let app: any;
 
     beforeAll(async() => {

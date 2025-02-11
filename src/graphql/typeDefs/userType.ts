@@ -12,14 +12,15 @@ type Query {
 }
 
 type Mutation {
-    createUser(input: CreateUserInput): User
+    createUser(input: CreateUserInput!): User
 }
 
 input CreateUserInput {
     email: String!
+    auth: String!
     firstName: String!
     lastName: String!
+    password: String!
     secondName: String
-    auth: String!
 }
 `
