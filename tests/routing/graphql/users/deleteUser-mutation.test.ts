@@ -7,7 +7,7 @@ import dotenv from 'dotenv';
 import { signToken } from "../../../../src/_helpers/auth-helpers";
 import * as crudUser from '../../../../src/db/users/crud-user';
 import { User } from "../../../../src/users/users";
-import { InternalError, ResourceExistsError } from "../../../../src/_helpers/errors-helper";
+import { InternalError } from "../../../../src/_helpers/errors-helper";
 
 dotenv.config();
 
@@ -106,6 +106,44 @@ describe(`deleteUser Mutation Tests`, () => {
           .set('Cookie', [`jwt=${jwtToken}`])
           expect(body.data.deleteUser).toEqual(user);
         });
+
+        it(`should delete a user as contributor and self`, async() => {
+          const email = faker.internet.email(),
+              auth = Auth.CONTRIBUTOR,
+              firstName = faker.person.firstName(),
+              lastName = faker.person.lastName(),
+              secondName = faker.person.middleName();
+          
+          const user: User = new User(email, auth, firstName, lastName, secondName);
+  
+          const deleteUserSpy = jest.spyOn(crudUser, "deleteUser");
+          deleteUserSpy.mockResolvedValueOnce(user);
+  
+          const query = `
+            mutation DeleteUser($email: String!){
+              deleteUser(email: $email) {
+                firstName
+                lastName
+                email
+                auth
+                secondName
+              }
+            }
+          `;
+    
+          const variables = {
+            email
+          }
+  
+          const jwtToken = signToken(email, Auth.CONTRIBUTOR, '1d');
+    
+          const { body } = await request(app)
+            .post('/graphql')
+            .send({ query, variables })
+            .set('Accept', 'application/json')
+            .set('Cookie', [`jwt=${jwtToken}`])
+            expect(body.data.deleteUser).toEqual(user);
+          });
       
       it(`should throw an error if there was an issue with the server`, async() => {
         const deleteUserSpy = jest.spyOn(crudUser, "deleteUser");
