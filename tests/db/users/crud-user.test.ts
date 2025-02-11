@@ -1,4 +1,4 @@
-import { createUser, getUserByEmail, updateUser, Errors as UserErrors } from '../../../src/db/users/crud-user';
+import { createUser, deleteUser, getUserByEmail, updateUser, Errors as UserErrors } from '../../../src/db/users/crud-user';
 // import * as crudUser from '../../../src/db/users/crud-user';
 import { User } from '../../../src/users/users';
 import { InternalError, ResourceExistsError } from '../../../src/_helpers/errors-helper';
@@ -235,4 +235,65 @@ describe(`User DB Tests`, ()=> {
         expect(updatedUser).toBeDefined();
         expect(updatedUser).toEqual(updates);
     });
+
+    it('should delete a user', async () => {
+        const email = faker.internet.email(),
+            firstName = faker.person.firstName(),
+            lastName = faker.person.lastName(),
+            secondName = faker.person.middleName();
+
+        const user:User = new User(email, Auth.ADMIN, firstName, lastName, secondName);
+        await createUser(user, faker.internet.password());
+        const deletedUser: User | undefined = await deleteUser(email);
+        expect(deletedUser).toBeDefined();
+        expect(deletedUser).toEqual(user);
+    });
+
+    it('should return undefined if user to be deleted does not exist', async () => {
+        const email = faker.internet.email();
+        const deletedUser: User | undefined = await deleteUser(email);
+        expect(deletedUser).toBeUndefined();
+    });
+
+    it(`should throw an error if an existing user isn't deleted`, async () => {
+        const mockRecord = {
+            get: (key: any) => {
+              if (key === 'id') {
+                return { low: 1, high: 0 }; // Neo4j integer
+              }
+              if (key === 'name') {
+                return 'Test Node';
+              }
+              if (key === 'properties') {
+                return { name: 'Test Node' };
+              }
+              return {properties: {}};
+            },
+            toObject: () => ({
+              id: { low: 1, high: 0 },
+              name: 'Test Node',
+            }),
+          } as unknown as Record;
+
+          const mockResult = {
+            records: [mockRecord]
+          }
+        
+        
+        const driverMock = {
+            session: jest.fn().mockReturnValue({
+                run: jest.fn().mockResolvedValueOnce(mockResult)
+                    .mockResolvedValueOnce({summary: {counters: { _stats: { nodesDeleted: 0 }}}}),
+                close: jest.fn(),
+            } as unknown as Session),
+            close: jest.fn(),
+            getServerInfo: jest.fn()
+        } as unknown as Driver;
+        
+        const driverSpy = jest.spyOn(neo4j, "driver");
+        driverSpy.mockReturnValueOnce(driverMock);
+
+        const email = faker.internet.email();
+        await expect(deleteUser(email)).rejects.toThrow(UserErrors.CANNOT_DELETE_USER);
+    })
 });

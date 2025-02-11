@@ -8,7 +8,8 @@ import { User, UpdatedUser } from "../../users/users";
 export enum Errors {
     CANNOT_CREATE_USER = 'Cannot Create User',
     USER_ALREADY_EXISTS = 'User Already Exists',
-    CANNOT_UPDATE_USER = 'Cannot Update User'
+    CANNOT_UPDATE_USER = 'Cannot Update User',
+    CANNOT_DELETE_USER = 'Cannot Delete User',
 }
 
 export async function createUser(user: User, pwd: string): Promise<User> {
@@ -122,4 +123,26 @@ export async function updateUser(emailToUpdate: string, updatedUser: UpdatedUser
     const { email, firstName, secondName, lastName, auth } = match.records[0].get(0).properties;
 
     return new User(email, auth, firstName, lastName, secondName);
+}
+
+export async function deleteUser(email: string): Promise<User | undefined> {
+    const driver: Driver = await connect();
+    const session: Session = driver.session(getSessionOptions(process.env.USERS_DB as string));
+
+    const user: User | undefined = await getUserByEmail(email, session);
+
+    if(user){
+        const match: RecordShape = await session.run('MATCH (u:User {email: $email}) DELETE u', { email });
+        
+        if(match.summary.counters._stats.nodesDeleted !== 1){
+            await session.close();
+            await driver.close();
+            throw new InternalError(Errors.CANNOT_DELETE_USER);
+        }
+    }
+
+    await session.close();
+    await driver.close();
+
+    return user;
 }
