@@ -8,9 +8,10 @@ import { User } from "../../users/users";
 export enum Errors {
     CANNOT_CREATE_USER = 'Cannot Create User',
     USER_ALREADY_EXISTS = 'User Already Exists',
+    CANNOT_UPDATE_USER = 'Cannot Update User'
 }
 
-export async function createUser(user: User, pwd: string, saltRounds: number = 10): Promise<User> {
+export async function createUser(user: User, pwd: string): Promise<User> {
     const driver: Driver = await connect();
     const session: Session = driver.session(getSessionOptions(process.env.USERS_DB as string));
     let matchedUser: User | undefined = await getUserByEmail(user.email, session);
@@ -21,7 +22,7 @@ export async function createUser(user: User, pwd: string, saltRounds: number = 1
         throw new ResourceExistsError(Errors.CANNOT_CREATE_USER, { info: Errors.USER_ALREADY_EXISTS })
     }
 
-    const pwdHash: string = await bcrypt.hash(pwd, saltRounds);
+    const pwdHash: string = await bcrypt.hash(pwd, parseInt(process.env.SALT_ROUNDS as string));
     const txc: Transaction = await session.beginTransaction();
     const match = await txc.run(`CREATE(u:User { id:apoc.create.uuid(), email: $email, firstName: $firstName, lastName: $lastName, secondName: $secondName, auth: $auth, pwd: $pwdHash }) RETURN u`, { email: user.email, firstName: user.firstName, lastName: user.lastName, secondName: user.secondName, auth: user.auth, pwdHash });
 
@@ -68,4 +69,44 @@ export async function getUserByEmail(email: string, session?: Session): Promise<
     }
 
     return user;
+}
+
+export async function updateUser(email: string, updatedUser: User, newPassword?: string ): Promise<User | undefined> {
+    const driver: Driver = await connect();
+    const session: Session = driver.session(getSessionOptions(process.env.USERS_DB as string));
+
+    if(email !== updatedUser.email){
+        const matchedUser: User | undefined = await getUserByEmail(updatedUser.email);
+        if(matchedUser){
+            await driver.close();
+            await session.close();
+            throw new ResourceExistsError(Errors.CANNOT_UPDATE_USER, { info: Errors.USER_ALREADY_EXISTS });
+        }
+    }
+
+    let match = await session.run(`MATCH (u:User { email: $email }) SET u.firstName = $firstName, u.lastName = $lastName, u.auth = $auth, u.email = $updatedEmail, u.secondName = $secondName RETURN u`, { email, firstName: updatedUser.firstName, lastName: updatedUser.lastName, auth: updatedUser.auth, updatedEmail: updatedUser.email, secondName: updatedUser.secondName });
+
+    if(match.records.length === 0) {
+        await driver.close();
+        await session.close();
+
+        return undefined;
+    }
+
+    if(newPassword){
+        const pwdHash: string = await bcrypt.hash(newPassword, parseInt(process.env.SALT_ROUNDS as string));
+        match = await session.run(`MATCH (u:User { email: $email }) SET u.password = $pwdHash RETURN u`, { email: updatedUser.email, pwdHash  });
+
+        if(match.records.length !== 1){
+            await driver.close();
+            await session.close();
+
+            return undefined;
+        }
+    }
+
+    await driver.close();
+    await session.close();
+
+    return updatedUser;
 }
