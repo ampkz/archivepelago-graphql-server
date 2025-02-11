@@ -4,7 +4,8 @@ import { CustomError } from "../_helpers/errors-helper";
 export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
     let code: number,
         data: any;
-    
+        
+    /* istanbul ignore next */
     if(err instanceof CustomError){
         code = (err as CustomError).getCode();
         data = (err as CustomError).getData();

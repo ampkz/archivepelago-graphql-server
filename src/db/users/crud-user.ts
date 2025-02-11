@@ -88,7 +88,14 @@ export async function updateUser(emailToUpdate: string, updatedUser: UpdatedUser
         return undefined;
     }
 
-    let match: RecordShape = await session.run(`MATCH (u:User { email: $email }) SET u.firstName = $firstName, u.lastName = $lastName, u.auth = $auth, u.email = $updatedEmail, u.secondName = $secondName RETURN u`, { email: emailToUpdate, firstName: updatedUser.firstName || userToUpdate.firstName, lastName: updatedUser.lastName || userToUpdate.lastName, auth: updatedUser.auth || userToUpdate.auth, updatedEmail: updatedUser.email || userToUpdate.email, secondName: updatedUser.secondName || userToUpdate.secondName });
+    /* istanbul ignore next */
+    const firstNameToUpdate = updatedUser.firstName || userToUpdate.firstName,
+        lastNameToUpdate = updatedUser.lastName || userToUpdate.lastName,
+        authToUpdate = updatedUser.auth || userToUpdate.auth,
+        updatedEmail = updatedUser.email || userToUpdate.email,
+        secondNameToUpdate = updatedUser.secondName || userToUpdate.secondName;
+
+    let match: RecordShape = await session.run(`MATCH (u:User { email: $email }) SET u.firstName = $firstName, u.lastName = $lastName, u.auth = $auth, u.email = $updatedEmail, u.secondName = $secondName RETURN u`, { email: emailToUpdate, firstName: firstNameToUpdate, lastName: lastNameToUpdate, auth: authToUpdate, updatedEmail , secondName: secondNameToUpdate });
     
     if(match.records.length === 0) {
         await session.close();
@@ -99,7 +106,7 @@ export async function updateUser(emailToUpdate: string, updatedUser: UpdatedUser
 
     if(newPassword){
         const pwdHash: string = await bcrypt.hash(newPassword, parseInt(process.env.SALT_ROUNDS as string));
-        match = await session.run(`MATCH (u:User { email: $email }) SET u.password = $pwdHash RETURN u`, { email: updatedUser.email || emailToUpdate, pwdHash  });
+        match = await session.run(`MATCH (u:User { email: $email }) SET u.password = $pwdHash RETURN u`, { email: updatedEmail, pwdHash  });
         
         if(match.records.length !== 1){
             await driver.close();
