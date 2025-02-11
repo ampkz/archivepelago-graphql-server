@@ -1,9 +1,9 @@
-import { Driver, RecordShape, Session, Transaction } from "neo4j-driver";
+import { Driver, RecordShape, Session } from "neo4j-driver";
 import { connect } from "../utils/connection";
 import { getSessionOptions } from "../../_helpers/db-helper";
 import * as bcrypt from 'bcrypt';
 import { InternalError, ResourceExistsError } from "../../_helpers/errors-helper";
-import { User } from "../../users/users";
+import { User, UpdatedUser } from "../../users/users";
 
 export enum Errors {
     CANNOT_CREATE_USER = 'Cannot Create User',
@@ -23,19 +23,14 @@ export async function createUser(user: User, pwd: string): Promise<User> {
     }
 
     const pwdHash: string = await bcrypt.hash(pwd, parseInt(process.env.SALT_ROUNDS as string));
-    const txc: Transaction = await session.beginTransaction();
-    const match = await txc.run(`CREATE(u:User { id:apoc.create.uuid(), email: $email, firstName: $firstName, lastName: $lastName, secondName: $secondName, auth: $auth, pwd: $pwdHash }) RETURN u`, { email: user.email, firstName: user.firstName, lastName: user.lastName, secondName: user.secondName, auth: user.auth, pwdHash });
+    const match = await session.run(`CREATE(u:User { id:apoc.create.uuid(), email: $email, firstName: $firstName, lastName: $lastName, secondName: $secondName, auth: $auth, pwd: $pwdHash }) RETURN u`, { email: user.email, firstName: user.firstName, lastName: user.lastName, secondName: user.secondName, auth: user.auth, pwdHash });
 
     if(match.records.length !== 1){
-        await txc.rollback();
-        await txc.close();
         await session.close();
         await driver.close();
         throw new InternalError(Errors.CANNOT_CREATE_USER);
     }
 
-    await txc.commit();
-    await txc.close();
     await session.close();
     await driver.close();
 
@@ -71,12 +66,12 @@ export async function getUserByEmail(email: string, session?: Session): Promise<
     return user;
 }
 
-export async function updateUser(email: string, updatedUser: User, newPassword?: string ): Promise<User | undefined> {
+export async function updateUser(emailToUpdate: string, updatedUser: UpdatedUser, newPassword?: string | null ): Promise<User | undefined> {
     const driver: Driver = await connect();
     const session: Session = driver.session(getSessionOptions(process.env.USERS_DB as string));
 
-    if(email !== updatedUser.email){
-        const matchedUser: User | undefined = await getUserByEmail(updatedUser.email);
+    if(updatedUser.email && emailToUpdate !== updatedUser.email){
+        const matchedUser: User | undefined = await getUserByEmail(updatedUser.email, session);
         if(matchedUser){
             await driver.close();
             await session.close();
@@ -84,19 +79,28 @@ export async function updateUser(email: string, updatedUser: User, newPassword?:
         }
     }
 
-    let match = await session.run(`MATCH (u:User { email: $email }) SET u.firstName = $firstName, u.lastName = $lastName, u.auth = $auth, u.email = $updatedEmail, u.secondName = $secondName RETURN u`, { email, firstName: updatedUser.firstName, lastName: updatedUser.lastName, auth: updatedUser.auth, updatedEmail: updatedUser.email, secondName: updatedUser.secondName });
+    const userToUpdate:User | undefined = await getUserByEmail(emailToUpdate, session);
 
-    if(match.records.length === 0) {
-        await driver.close();
+    if(!userToUpdate){
         await session.close();
+        await driver.close();
+
+        return undefined;
+    }
+
+    let match: RecordShape = await session.run(`MATCH (u:User { email: $email }) SET u.firstName = $firstName, u.lastName = $lastName, u.auth = $auth, u.email = $updatedEmail, u.secondName = $secondName RETURN u`, { email: emailToUpdate, firstName: updatedUser.firstName || userToUpdate.firstName, lastName: updatedUser.lastName || userToUpdate.lastName, auth: updatedUser.auth || userToUpdate.auth, updatedEmail: updatedUser.email || userToUpdate.email, secondName: updatedUser.secondName || userToUpdate.secondName });
+    
+    if(match.records.length === 0) {
+        await session.close();
+        await driver.close();
 
         return undefined;
     }
 
     if(newPassword){
         const pwdHash: string = await bcrypt.hash(newPassword, parseInt(process.env.SALT_ROUNDS as string));
-        match = await session.run(`MATCH (u:User { email: $email }) SET u.password = $pwdHash RETURN u`, { email: updatedUser.email, pwdHash  });
-
+        match = await session.run(`MATCH (u:User { email: $email }) SET u.password = $pwdHash RETURN u`, { email: updatedUser.email || emailToUpdate, pwdHash  });
+        
         if(match.records.length !== 1){
             await driver.close();
             await session.close();
@@ -108,5 +112,7 @@ export async function updateUser(email: string, updatedUser: User, newPassword?:
     await driver.close();
     await session.close();
 
-    return updatedUser;
+    const { email, firstName, secondName, lastName, auth } = match.records[0].get(0).properties;
+
+    return new User(email, auth, firstName, lastName, secondName);
 }

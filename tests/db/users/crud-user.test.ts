@@ -98,20 +98,6 @@ describe(`User DB Tests`, ()=> {
         expect(matchedUser).toBeDefined();
     });
 
-    it('should update a user', async () => {
-        const email = faker.internet.email(),
-            firstName = faker.person.firstName(),
-            lastName = faker.person.lastName(),
-            secondName = faker.person.middleName();
-
-        const user:User = new User(email, Auth.ADMIN, firstName, lastName, secondName);
-        await createUser(user, faker.internet.password());
-        const updates: User = new User(email, Auth.ADMIN, faker.person.firstName(), faker.person.lastName(), faker.person.middleName());
-        const updatedUser: User | undefined = await updateUser(email, updates);
-        expect(updatedUser).toBeDefined();
-        expect(updatedUser).toEqual(updates);
-    });
-
     it('should return an undefined user if no user exists', async () => {
         const email = faker.internet.email(),
             firstName = faker.person.firstName(),
@@ -134,33 +120,85 @@ describe(`User DB Tests`, ()=> {
         await expect(updateUser(faker.internet.email(), user)).rejects.toThrow(UserErrors.CANNOT_UPDATE_USER);
     });
 
-    it(`should return an undefined user if the password couldn't be updated`, async () => {
-        // const mockRecord = {
-        //     get: (key: any) => {
-        //       if (key === 'id') {
-        //         return { low: 1, high: 0 }; // Neo4j integer
-        //       }
-        //       if (key === 'name') {
-        //         return 'Test Node';
-        //       }
-        //       if (key === 'properties') {
-        //         return { name: 'Test Node' };
-        //       }
-        //       return {properties: {}};
-        //     },
-        //     toObject: () => ({
-        //       id: { low: 1, high: 0 },
-        //       name: 'Test Node',
-        //     }),
-        //   } as unknown as Record;
+    it(`should return an undefined user if the update didn't return a user`, async () => {
+        const mockRecord = {
+            get: (key: any) => {
+              if (key === 'id') {
+                return { low: 1, high: 0 }; // Neo4j integer
+              }
+              if (key === 'name') {
+                return 'Test Node';
+              }
+              if (key === 'properties') {
+                return { name: 'Test Node' };
+              }
+              return {properties: {}};
+            },
+            toObject: () => ({
+              id: { low: 1, high: 0 },
+              name: 'Test Node',
+            }),
+          } as unknown as Record;
 
-        //   const mockResult = {
-        //     records: [mockRecord]
-        //   }
-
+          const mockResult = {
+            records: [mockRecord]
+          }
+        
+        
         const driverMock = {
             session: jest.fn().mockReturnValue({
-                run: jest.fn().mockResolvedValueOnce({records: [{}]})
+                run: jest.fn().mockResolvedValueOnce(mockResult)
+                    .mockResolvedValueOnce({records: []}),
+                close: jest.fn(),
+            } as unknown as Session),
+            close: jest.fn(),
+            getServerInfo: jest.fn()
+        } as unknown as Driver;
+        
+        const driverSpy = jest.spyOn(neo4j, "driver");
+        driverSpy.mockReturnValueOnce(driverMock);
+
+        const email = faker.internet.email(),
+            firstName = faker.person.firstName(),
+            lastName = faker.person.lastName(),
+            secondName = faker.person.middleName();
+
+        const user:User = new User(email, Auth.ADMIN, firstName, lastName, secondName);
+        
+        const updates: User = new User(email, Auth.ADMIN, faker.person.firstName(), faker.person.lastName(), faker.person.middleName());
+        const updatedUser: User | undefined = await updateUser(email, updates, faker.internet.password());
+        expect(updatedUser).toBeUndefined();
+    });
+
+    it(`should return an undefined user if the password couldn't be updated`, async () => {
+        const mockRecord = {
+            get: (key: any) => {
+              if (key === 'id') {
+                return { low: 1, high: 0 }; // Neo4j integer
+              }
+              if (key === 'name') {
+                return 'Test Node';
+              }
+              if (key === 'properties') {
+                return { name: 'Test Node' };
+              }
+              return {properties: {}};
+            },
+            toObject: () => ({
+              id: { low: 1, high: 0 },
+              name: 'Test Node',
+            }),
+          } as unknown as Record;
+
+          const mockResult = {
+            records: [mockRecord]
+          }
+        
+        
+        const driverMock = {
+            session: jest.fn().mockReturnValue({
+                run: jest.fn().mockResolvedValueOnce(mockResult)
+                    .mockResolvedValueOnce(mockResult)
                     .mockResolvedValueOnce({records: []}),
                 close: jest.fn(),
             } as unknown as Session),
@@ -182,5 +220,19 @@ describe(`User DB Tests`, ()=> {
         
         expect(updatedUser).toBeUndefined();
     
+    });
+
+    it('should update a user', async () => {
+        const email = faker.internet.email(),
+            firstName = faker.person.firstName(),
+            lastName = faker.person.lastName(),
+            secondName = faker.person.middleName();
+
+        const user:User = new User(email, Auth.ADMIN, firstName, lastName, secondName);
+        await createUser(user, faker.internet.password());
+        const updates: User = new User(email, Auth.ADMIN, faker.person.firstName(), faker.person.lastName(), faker.person.middleName());
+        const updatedUser: User | undefined = await updateUser(email, updates, faker.internet.password());
+        expect(updatedUser).toBeDefined();
+        expect(updatedUser).toEqual(updates);
     });
 });

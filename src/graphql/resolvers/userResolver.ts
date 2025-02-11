@@ -1,6 +1,6 @@
 import { ResourceExistsError } from "../../_helpers/errors-helper";
 import { Auth, isPermitted, permitSelf } from "../../auth/authorization";
-import { createUser, getUserByEmail, Errors as UserErrors } from "../../db/users/crud-user";
+import { createUser, getUserByEmail, updateUser, Errors as UserErrors } from "../../db/users/crud-user";
 import { User } from "../../users/users";
 import { mutationFailed, notFoundError, unauthorizedError } from "../errors/errors";
 
@@ -41,6 +41,18 @@ export default {
             }
 
             return newUser;
+        },
+
+        updateUser: async (_root: any, { existingEmail, auth, updatedEmail, firstName, lastName, password, secondName }: any, { authorizedUser }: any) => {
+            if(!isPermitted(authorizedUser, Auth.ADMIN) && !permitSelf(authorizedUser, existingEmail)) {
+                throw unauthorizedError(`You are not authorized to make this query.`);
+            }
+
+            try{
+                const updatedUser: User | undefined = await updateUser(existingEmail, { email: updatedEmail, firstName, lastName, secondName, password });
+            }catch(error){
+                
+            }
         }
     }
 };

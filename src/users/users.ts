@@ -15,3 +15,12 @@ export class User {
         this.auth = auth;
     }
 }
+
+export interface UpdatedUser {
+    email?: string;
+    firstName?: string;
+    secondName?: string;
+    lastName?: string;
+    auth?: string;
+    password?: string;
+}
