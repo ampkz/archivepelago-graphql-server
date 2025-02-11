@@ -74,7 +74,6 @@ describe(`deleteUser Mutation Tests`, () => {
             auth = Auth.CONTRIBUTOR,
             firstName = faker.person.firstName(),
             lastName = faker.person.lastName(),
-            password = faker.internet.password(),
             secondName = faker.person.middleName();
         
         const user: User = new User(email, auth, firstName, lastName, secondName);
