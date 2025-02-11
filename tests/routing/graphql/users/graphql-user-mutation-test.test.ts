@@ -172,7 +172,7 @@ describe(`createUser Mutation Tests`, () => {
           .send({ query, variables })
           .set('Accept', 'application/json')
           .set('Cookie', [`jwt=${jwtToken}`])
-        console.log();
+          
           expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
       });
       
@@ -219,7 +219,7 @@ describe(`createUser Mutation Tests`, () => {
           .send({ query, variables })
           .set('Accept', 'application/json')
           .set('Cookie', [`jwt=${jwtToken}`])
-        console.log();
+
           expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
       });
   });
