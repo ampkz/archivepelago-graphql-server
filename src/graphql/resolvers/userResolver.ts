@@ -43,7 +43,7 @@ export default {
             return newUser;
         },
 
-        updateUser: async (_root: any, { existingEmail, auth, updatedEmail, firstName, lastName, password, secondName }: any, { authorizedUser }: any) => {
+        updateUser: async (_root: any, { existingEmail, updatedEmail, updatedAuth, updatedFirstName, updatedLastName, updatedPassword, updatedSecondName }: any, { authorizedUser }: any) => {
             if(!isPermitted(authorizedUser, Auth.ADMIN) && !permitSelf(authorizedUser, existingEmail)) {
                 throw unauthorizedError(`You are not authorized to make this query.`);
             }
@@ -51,9 +51,9 @@ export default {
             let updatedUser: User | undefined;
             
             try{
-                updatedUser = await updateUser(existingEmail, { email: updatedEmail, auth, firstName, lastName, secondName, password });
+                updatedUser = await updateUser(existingEmail, { updatedEmail, updatedAuth, updatedFirstName, updatedLastName, updatedSecondName, updatedPassword });
             }catch(error){
-                throw mutationFailed(`Could not update user`);
+                throw mutationFailed(UserErrors.CANNOT_UPDATE_USER);
             }
 
             return updatedUser;

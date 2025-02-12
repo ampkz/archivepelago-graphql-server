@@ -16,11 +16,11 @@ export class User {
     }
 }
 
-export interface UpdatedUser {
-    email?: string;
-    firstName?: string;
-    secondName?: string;
-    lastName?: string;
-    auth?: string;
-    password?: string;
+export interface UpdatedUserI {
+    updatedEmail?: string;
+    updatedFirstName?: string;
+    updatedSecondName?: string;
+    updatedLastName?: string;
+    updatedAuth?: string;
+    updatedPassword?: string;
 }

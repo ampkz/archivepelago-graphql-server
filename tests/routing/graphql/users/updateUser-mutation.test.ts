@@ -33,11 +33,11 @@ describe(`updateUser Mutation Tests`, () => {
         const variables = {
           input: {
             existingEmail: faker.internet.email(),
-            auth: Auth.CONTRIBUTOR,
-            firstName: faker.person.firstName(),
-            lastName: faker.person.lastName(),
-            password: faker.internet.password(),
-            secondName: faker.person.middleName()
+            updatedAuth: Auth.CONTRIBUTOR,
+            updatedFirstName: faker.person.firstName(),
+            updatedLastName: faker.person.lastName(),
+            updatedPassword: faker.internet.password(),
+            updatedSecondName: faker.person.middleName()
           }
         }
   
@@ -64,11 +64,11 @@ describe(`updateUser Mutation Tests`, () => {
         const variables = {
           input: {
             existingEmail: faker.internet.email(),
-            auth: Auth.CONTRIBUTOR,
-            firstName: faker.person.firstName(),
-            lastName: faker.person.lastName(),
-            password: faker.internet.password(),
-            secondName: faker.person.middleName()
+            updatedAuth: Auth.CONTRIBUTOR,
+            updatedFirstName: faker.person.firstName(),
+            updatedLastName: faker.person.lastName(),
+            updatedPassword: faker.internet.password(),
+            updatedSecondName: faker.person.middleName()
           }
         }
 
@@ -94,7 +94,7 @@ describe(`updateUser Mutation Tests`, () => {
         const user: User = new User(email, auth, firstName, lastName, secondName);
 
         const updateUserSpy = jest.spyOn(crudUser, "updateUser");
-        updateUserSpy.mockResolvedValueOnce(user);
+        updateUserSpy.mockRejectedValue(new InternalError(crudUser.Errors.CANNOT_UPDATE_USER));
 
         const query = `
           mutation UpdateUser($input: UpdateUserInput!){
@@ -110,12 +110,12 @@ describe(`updateUser Mutation Tests`, () => {
   
         const variables = {
           input: {
-            existingEmail: email,
-            auth,
-            firstName,
-            lastName,
-            password,
-            secondName
+            existingEmail: faker.internet.email(),
+            updatedAuth: Auth.CONTRIBUTOR,
+            updatedFirstName: faker.person.firstName(),
+            updatedLastName: faker.person.lastName(),
+            updatedPassword: faker.internet.password(),
+            updatedSecondName: faker.person.middleName()
           }
         }
 
@@ -126,21 +126,18 @@ describe(`updateUser Mutation Tests`, () => {
           .send({ query, variables })
           .set('Accept', 'application/json')
           .set('Cookie', [`jwt=${jwtToken}`])
-          expect(body.data.updateUser).toEqual(user);
+
+          expect(body.errors[0].message).toEqual(crudUser.Errors.CANNOT_UPDATE_USER);
         });
 
         it(`should update a user as admin`, async() => {
-          const email = faker.internet.email(),
-              auth = Auth.CONTRIBUTOR,
-              firstName = faker.person.firstName(),
-              lastName = faker.person.lastName(),
-              password = faker.internet.password(),
-              secondName = faker.person.middleName();
-          
-          const user: User = new User(email, auth, firstName, lastName, secondName);
-  
-          const updateUserSpy = jest.spyOn(crudUser, "updateUser");
-          updateUserSpy.mockRejectedValue(new InternalError(crudUser.Errors.CANNOT_UPDATE_USER));
+          const email = faker.internet.email();
+
+          const updatedAuth = Auth.CONTRIBUTOR,
+            updatedFirstName = faker.person.firstName(),
+            updatedLastName = faker.person.lastName(),
+            updatedPassword = faker.internet.password(),
+            updatedSecondName =faker.person.middleName()
   
           const query = `
             mutation UpdateUser($input: UpdateUserInput!){
@@ -157,13 +154,18 @@ describe(`updateUser Mutation Tests`, () => {
           const variables = {
             input: {
               existingEmail: email,
-              auth,
-              firstName,
-              lastName,
-              password,
-              secondName
+              updatedAuth,
+              updatedFirstName,
+              updatedLastName,
+              updatedPassword,
+              updatedSecondName
             }
           }
+
+          const user: User = new User(email, updatedAuth, updatedFirstName, updatedLastName, updatedSecondName);
+
+          const updateUserSpy = jest.spyOn(crudUser, "updateUser");
+          updateUserSpy.mockResolvedValue(user);
   
           const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
     
@@ -172,6 +174,7 @@ describe(`updateUser Mutation Tests`, () => {
             .send({ query, variables })
             .set('Accept', 'application/json')
             .set('Cookie', [`jwt=${jwtToken}`])
-            expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
+            
+            expect(body.data.updateUser).toEqual(user);
           });
   });

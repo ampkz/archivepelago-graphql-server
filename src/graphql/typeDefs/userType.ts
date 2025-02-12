@@ -29,10 +29,10 @@ input CreateUserInput {
 input UpdateUserInput {
     existingEmail: String
     updatedEmail: String
-    auth: String
-    firstName: String
-    lastName: String
-    password: String
-    secondName: String
+    updatedAuth: String
+    updatedFirstName: String
+    updatedLastName: String
+    updatedPassword: String
+    updatedSecondName: String
 }
 `

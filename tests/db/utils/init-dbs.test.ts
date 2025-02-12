@@ -24,6 +24,10 @@ describe(`DB initializing tests`, () => {
         await expect(verifyDB(getSessionOptions(process.env.USERS_DB as string).database)).resolves.toBeTruthy();
     });
 
+    it(`should have created an Archive DB`, async () => {
+        await expect(verifyDB(getSessionOptions(process.env.ARCHIVE_DB as string).database)).resolves.toBeTruthy();
+    });
+
     it(`should throw an InternalError if user email constraint is already created`, async () =>{
         try{
             await initializeConstraint((process.env.USERS_DB as string), 'User', 'email');

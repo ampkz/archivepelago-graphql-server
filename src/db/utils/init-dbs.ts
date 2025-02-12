@@ -17,13 +17,22 @@ export async function initializeDBs() : Promise<boolean> {
     session = driver.session();
     
     match = await session.run(`CREATE DATABASE ${getSessionOptions(process.env.USERS_DB as string).database} IF NOT EXISTS WAIT`);
-    await session.close();
 
     if((match.records[0] as Record).get(`address`) != `${process.env.NEO4J_HOST}:${process.env.NEO4J_PORT}`) {
+        await session.close();
         await driver.close();
         throw new InternalError(ErrorMsgs.COULD_NOT_CREATE_DB);
     };
 
+    match = await session.run(`CREATE DATABASE ${getSessionOptions(process.env.ARCHIVE_DB as string).database} IF NOT EXISTS WAIT`);
+
+    if((match.records[0] as Record).get(`address`) != `${process.env.NEO4J_HOST}:${process.env.NEO4J_PORT}`) {
+        await session.close();
+        await driver.close();
+        throw new InternalError(ErrorMsgs.COULD_NOT_CREATE_DB);
+    };
+
+    await session.close();
     await driver.close();
 
     await initializeConstraint(process.env.USERS_DB as string, 'User', 'email');
@@ -64,6 +73,7 @@ export async function destroyTestingDBs(): Promise<void> {
     const driver: Driver = await connect();
     const session: Session = driver.session();
     await session.run(`DROP DATABASE ${getSessionOptions(process.env.USERS_DB as string).database} IF EXISTS DESTROY DATA WAIT`);
+    await session.run(`DROP DATABASE ${getSessionOptions(process.env.ARCHIVE_DB as string).database} IF EXISTS DESTROY DATA WAIT`);
     await session.close();
     await driver.close();
 }
