@@ -57,15 +57,12 @@ Follow the instructions below to install Neo4j, being sure to install the correc
      ```
      You will be prompted to accept the license agreement. If you obtained a license through the Neo4j Startup Program, select option '3'; otherwise, select '2'.
      
-* Start Neo4j and Set Password:
+* [Set Initial Password:](https://neo4j.com/docs/operations-manual/2025.01/configuration/set-initial-password/ "Neo4j Set Initial Password")
+  Before starting neo4j, you need to set an initial password (replacing newPassword with your password):
   ```bash
-  sudo neo4j start
   cd /bin
-  cypher-shell -d system
+  neo4j-admin dbms set-initial-password newPassword
   ```
-  * Enter `neo4j` as both the username and password; it should ask to update your password. Enter a new, secure password.
-    * If it does not ask for a new password, you can set one by running the cypher query: `ALTER CURRENT USER SET PASSWORD FROM 'neo4j' TO 'new password';` (replacing 'new password' with a new, secure password).
-  * `:exit` out of the cypher shell.
   * In your `.env` file, update the key `NEO4J_PWD=CHANGE_ME` to your new password.
 
 * [Install the APOC Plugin:](https://neo4j.com/docs/apoc/current/installation/ "Install the APOC plugin")
@@ -73,9 +70,9 @@ Follow the instructions below to install Neo4j, being sure to install the correc
     ```bash
     sudo cp /var/lib/neo4j/labs/apoc-5.26.1-core.jar /var/lib/neo4j/plugins
      ```
-  * Restart Neo4j:
+  * Start Neo4j:
     ```bash
-    sudo neo4j restart
+    sudo neo4j start
     ```
 * Enable Neo4j on startup:
   ```bash
@@ -83,6 +80,7 @@ Follow the instructions below to install Neo4j, being sure to install the correc
   ```
 
 #### Initialize Server
+Run `npm install` to install the dependencies required for the server. 
 
 To initialize the server, `cd` into archivepelago-server's main directory and run `node server-init.js`.
 
