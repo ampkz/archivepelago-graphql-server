@@ -159,6 +159,5 @@ export async function updateNode(nodeName: string, nodePrefix: string, idProp: s
     await session.close();
     await driver.close();
 
-    /* istanbul ignore next */
-    return match ? match.records[0].get(0).properties : undefined;
+    return match.records[0].get(0).properties;
 }
