@@ -98,7 +98,7 @@ export async function deleteNode(nodeName: string, idProp: string, params: objec
         let match: RecordShape
         
         try{
-            match = await session.run(`MATCH(n:${nodeName} { ${idProp }}) DELETE n`, params);
+            match = await session.run(`MATCH(n:${nodeName} { ${idProp }}) DETACH DELETE n`, params);
 
             if(match.summary.counters._stats.nodesDeleted !== 1){
                 await session.close();
