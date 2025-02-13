@@ -34,4 +34,4 @@ input UpdatePersonInput {
     updatedBirthDate: String
     updatedDeathDate: String
 }
-`;
+`

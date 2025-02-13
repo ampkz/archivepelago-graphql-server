@@ -1,6 +1,6 @@
 import { Person, PersonI } from "../../archive/person";
 import { Auth, isPermitted } from "../../auth/authorization";
-import { createPerson, deletePerson, getPerson } from "../../db/archive/crud-person"
+import { createPerson, deletePerson, getPerson, updatePerson } from "../../db/archive/crud-person"
 import { mutationFailed, serverFailed, unauthorizedError } from "../errors/errors";
 
 export default {
@@ -49,6 +49,22 @@ export default {
             }
 
             return person;
-        }
+        },
+
+        updatePerson: async (_root: any, { id, updatedFirstName, updatedLastName, updatedSecondName, updatedBirthDate, updatedDeathDate }: any, { authorizedUser }: any) => {
+            if(!isPermitted(authorizedUser, Auth.ADMIN, Auth.CONTRIBUTOR)){
+                throw unauthorizedError(`You are not authorized to make this mutation`);
+            }
+
+            let person: Person | undefined = undefined;
+
+            try {
+                person = await updatePerson({id, updatedFirstName, updatedLastName, updatedSecondName, updatedBirthDate, updatedDeathDate });
+            }catch ( error: any ) {
+                throw mutationFailed(error.message);
+            }
+
+            return person;
+        },
     }
 }

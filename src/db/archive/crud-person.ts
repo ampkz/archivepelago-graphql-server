@@ -1,8 +1,8 @@
-import { Person, PersonI } from "../../archive/person";
-import { createNode, deleteNode, getNode } from "../utils/crud";
+import { Person, PersonI, UpdatedPersonI } from "../../archive/person";
+import { createNode, deleteNode, getNode, updateNode } from "../utils/crud";
 
 export async function getPerson(id: string): Promise<Person | undefined> {
-    const matchedNode: object | undefined = getNode('Person', 'id: $id', { id });
+    const matchedNode: object | undefined = await getNode('Person', 'id: $id', { id });
     
     if(matchedNode){
         return matchedNode as Person;
@@ -24,6 +24,12 @@ export async function deletePerson(id: string): Promise<Person | undefined> {
     return deletedPerson as Person;
 }
 
+export async function updatePerson(updatedPerson: UpdatedPersonI): Promise<Person | undefined> {
+    const matchedPerson = await updateNode('Person', 'p', 'id', updatedPersonToProps(updatedPerson), updatedPerson);
+
+    return matchedPerson as Person;
+}
+
 function prepPersonProps(person: Person): string[] {
     const props: string[] = [`id:apoc.create.uuid()`];
 
@@ -33,5 +39,17 @@ function prepPersonProps(person: Person): string[] {
     if(person.birthDate) props.push('birthDate: $birthDate');
     if(person.deathDate) props.push('deathDate: $deathDate');
 
+    return props;
+}
+
+function updatedPersonToProps(updatedPerson: UpdatedPersonI): string[] {
+    const props: string[] = [];
+
+    if(updatedPerson.updatedFirstName) props.push(`p.firstName = $updatedFirstName`);
+    if(updatedPerson.updatedSecondName) props.push(`p.secondName = $updatedSecondName`);
+    if(updatedPerson.updatedLastName) props.push(`p.lastName = $updatedLastName`);
+    if(updatedPerson.updatedBirthDate) props.push(`p.birthDate = $updatedBirthDate`);
+    if(updatedPerson.updatedDeathDate) props.push(`p.deathDate = $updatedDeathDate`);
+ 
     return props;
 }

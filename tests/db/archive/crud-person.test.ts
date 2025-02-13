@@ -1,8 +1,8 @@
 import dotenv from 'dotenv';
 import { destroyTestingDBs, initializeDBs } from '../../../src/db/utils/init-dbs';
 import { faker } from '@faker-js/faker';
-import { createPerson, deletePerson, getPerson } from '../../../src/db/archive/crud-person';
-import { Person } from '../../../src/archive/person';
+import { createPerson, deletePerson, getPerson, updatePerson } from '../../../src/db/archive/crud-person';
+import { Person, UpdatedPersonI } from '../../../src/archive/person';
 
 dotenv.config();
 
@@ -83,4 +83,39 @@ describe(`CRUD Person Tests`, () => {
 
         expect(deletedPerson).toBeUndefined();
     });
-})
+
+    it(`should update a created person`, async () => {
+        const firstName: string = faker.person.firstName(),
+            lastName: string = faker.person.lastName(),
+            secondName: string = faker.person.middleName(),
+            birthDate: string = faker.date.birthdate().toDateString(),
+            deathDate: string = faker.date.birthdate().toDateString();
+
+        const updatedFirstName: string = faker.person.firstName(),
+            updatedLastName: string = faker.person.lastName(),
+            updatedSecondName: string = faker.person.middleName(),
+            updatedBirthDate: string = faker.date.birthdate().toDateString(),
+            updatedDeathDate: string = faker.date.birthdate().toDateString();
+
+        const person: Person = new Person({id: '', firstName, lastName, secondName, birthDate, deathDate});
+
+        const createdPerson: Person = await createPerson(person);
+        const updatedPerson: UpdatedPersonI = {id: createdPerson.id, updatedFirstName, updatedBirthDate, updatedDeathDate, updatedLastName, updatedSecondName };
+
+        const matchedPerson: Person | undefined = await updatePerson(updatedPerson);
+
+        expect(matchedPerson).toEqual(new Person({id: createdPerson.id, firstName: updatedFirstName, lastName: updatedLastName, secondName: updatedSecondName, birthDate: updatedBirthDate, deathDate: updatedDeathDate }));
+    });
+
+    test(`updatePerson should return undefined if no person exists`, async () => {
+        const updatedPerson: Person | undefined = await updatePerson({ id: faker.database.mongodbObjectId(), updatedFirstName: faker.person.firstName() });
+
+        expect(updatedPerson).toBeUndefined();
+    });
+
+    test(`getPerson should return undefined if no person exists`, async () => {
+        const person: Person | undefined = await getPerson(faker.database.mongodbObjectId());
+
+        expect(person).toBeUndefined();
+    });
+});

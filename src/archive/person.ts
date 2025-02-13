@@ -24,3 +24,12 @@ export interface PersonI {
     birthDate?: string;
     deathDate?: string;
 }
+
+export interface UpdatedPersonI {
+    id: string;
+    updatedFirstName?: string;
+    updatedLastName?: string;
+    updatedSecondName?: string;
+    updatedBirthDate?: string;
+    updatedDeathDate?: string;
+}
