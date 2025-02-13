@@ -1,6 +1,6 @@
 import { ResourceExistsError } from "../../_helpers/errors-helper";
 import { Auth, isPermitted, permitSelf } from "../../auth/authorization";
-import { createUser, deleteUser, getUserByEmail, updateUser, Errors as UserErrors } from "../../db/users/crud-user";
+import { createUser, deleteUser, getUserByEmail, updateUser } from "../../db/users/crud-user";
 import { User } from "../../users/users";
 import { mutationFailed, notFoundError, unauthorizedError } from "../errors/errors";
 
