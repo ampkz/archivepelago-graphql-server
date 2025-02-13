@@ -17,7 +17,7 @@ export async function createNode(nodeName: string, props: string[], params: obje
     let createdNode: object | undefined = undefined;
 
     try{
-        const match: RecordShape = await session.run(`CREATE(n:${ nodeName } { ${ props.join() } }) RETURN n`, params);
+        const match: RecordShape = await session.run(`CREATE(n:${ nodeName } { ${ props.join(', ') } }) RETURN n`, params);
 
         if(match.summary.counters._stats.nodesCreated !== 1){
             await session.close();
@@ -60,7 +60,7 @@ export async function getNode(nodeName: string, idProp: string, params: object, 
     let matchedNode: any | undefined = undefined;
 
     try{
-        const match: RecordShape = await session.run(`MATCH(n:${nodeName} { ${idProp }}) RETURN n`, params);
+        const match: RecordShape = await session.run(`MATCH(n:${nodeName} { ${ idProp }}) RETURN n`, params);
         
         if(match.records.length === 1){
             matchedNode = match.records[0].get(0).properties;
@@ -134,7 +134,7 @@ export async function updateNode(nodeName: string, nodePrefix: string, idProp: s
     let match: RecordShape | undefined = undefined;
 
     try{
-        match = await session.run(`MATCH(${nodePrefix}:${nodeName} { ${idProp}: $${idProp} }) SET ${ updatedProps.join() } RETURN ${nodePrefix}`, params);
+        match = await session.run(`MATCH(${nodePrefix}:${nodeName} { ${idProp}: $${idProp} }) SET ${ updatedProps.join(', ') } RETURN ${nodePrefix}`, params);
     }catch ( error: unknown ) {
         let data = {};
 

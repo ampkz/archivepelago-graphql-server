@@ -12,6 +12,8 @@ import { AuthorizedUser } from '../auth/authorization';
 import { verifyToken } from '../_helpers/auth-helpers';
 import userType from '../graphql/typeDefs/userType';
 import userResolver from '../graphql/resolvers/userResolver';
+import personType from '../graphql/typeDefs/personType';
+import personResolver from '../graphql/resolvers/personResolver';
 
 
 interface MyContext {
@@ -23,8 +25,8 @@ async function startServer() {
     
     const httpServer = http.createServer(app);
     
-    const typeDefs = mergeTypeDefs([userType]);
-    const resolvers = mergeResolvers([userResolver]);
+    const typeDefs = mergeTypeDefs([userType, personType]);
+    const resolvers = mergeResolvers([userResolver, personResolver]);
 
     const server = new ApolloServer<MyContext>({
         typeDefs,

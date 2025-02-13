@@ -1,8 +1,4 @@
-import { Driver, RecordShape, Session } from "neo4j-driver";
-import { connect } from "../utils/connection";
-import { getSessionOptions } from "../../_helpers/db-helper";
 import * as bcrypt from 'bcrypt';
-import { InternalError, ResourceExistsError } from "../../_helpers/errors-helper";
 import { User, UpdatedUserI } from "../../users/users";
 import { createNode, deleteNode, getNode, updateNode } from "../utils/crud";
 
@@ -14,11 +10,9 @@ export enum Errors {
 }
 
 export async function createUser(user: User, pwd: string): Promise<User> {
-    let createdUser: object | undefined = undefined;
-
     const pwdHash: string = await bcrypt.hash(pwd, parseInt(process.env.SALT_ROUNDS as string));
 
-    createdUser = await createNode(`User`, [`id:apoc.create.uuid(), email: $email, firstName: $firstName, lastName: $lastName, secondName: $secondName, auth: $auth, pwd: $pwdHash`], { email: user.email, firstName: user.firstName, lastName: user.lastName, secondName: user.secondName, auth: user.auth, pwdHash }, (process.env.USERS_DB as string));
+    await createNode(`User`, [`id:apoc.create.uuid(), email: $email, firstName: $firstName, lastName: $lastName, secondName: $secondName, auth: $auth, pwd: $pwdHash`], { email: user.email, firstName: user.firstName, lastName: user.lastName, secondName: user.secondName, auth: user.auth, pwdHash }, (process.env.USERS_DB as string));
 
     return user;
 }
