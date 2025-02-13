@@ -25,6 +25,7 @@ export async function deletePerson(id: string): Promise<Person | undefined> {
 }
 
 export async function updatePerson(updatedPerson: UpdatedPersonI): Promise<Person | undefined> {
+
     const matchedPerson = await updateNode('Person', 'p', 'id', updatedPersonToProps(updatedPerson), updatedPerson);
 
     return matchedPerson as Person;

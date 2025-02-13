@@ -51,15 +51,15 @@ export default {
             return person;
         },
 
-        updatePerson: async (_root: any, { id, updatedFirstName, updatedLastName, updatedSecondName, updatedBirthDate, updatedDeathDate }: any, { authorizedUser }: any) => {
+        updatePerson: async (_root: any, { input: { id, updatedFirstName, updatedLastName, updatedSecondName, updatedBirthDate, updatedDeathDate}}: any, { authorizedUser }: any) => {
             if(!isPermitted(authorizedUser, Auth.ADMIN, Auth.CONTRIBUTOR)){
                 throw unauthorizedError(`You are not authorized to make this mutation`);
             }
 
             let person: Person | undefined = undefined;
-
+            
             try {
-                person = await updatePerson({id, updatedFirstName, updatedLastName, updatedSecondName, updatedBirthDate, updatedDeathDate });
+                person = await updatePerson({ id, updatedFirstName, updatedLastName, updatedSecondName, updatedBirthDate, updatedDeathDate });
             }catch ( error: any ) {
                 throw mutationFailed(error.message);
             }
