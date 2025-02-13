@@ -32,11 +32,11 @@ export default {
 
             try{
                 newUser = await createUser(new User(email, auth, firstName, lastName, secondName), password);
-            }catch (error) {
+            }catch (error: any) {
                 if(error instanceof ResourceExistsError) {
                     throw mutationFailed(`Cannot create user ${email}`);
                 }else{
-                    throw mutationFailed(`There was an issue with the server.`);
+                    throw mutationFailed(error.message);
                 }
             }
 
@@ -52,8 +52,8 @@ export default {
             
             try{
                 updatedUser = await updateUser(existingEmail, { updatedEmail, updatedAuth, updatedFirstName, updatedLastName, updatedSecondName, updatedPassword });
-            }catch(error){
-                throw mutationFailed(UserErrors.CANNOT_UPDATE_USER);
+            }catch(error: any){
+                throw mutationFailed(error.message);
             }
 
             return updatedUser;
@@ -68,8 +68,8 @@ export default {
 
             try{
                 deletedUser = await deleteUser(email);
-            }catch (error) {
-                throw mutationFailed(`There was an issue with the server.`);
+            }catch (error: any) {
+                throw mutationFailed(error.message);
             }
 
             return deletedUser;
