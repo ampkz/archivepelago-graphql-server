@@ -11,7 +11,7 @@ import { InternalError } from '../../../../../src/_helpers/errors-helper';
 
 dotenv.config();
 
-describe(`Person Query Tests`, () => {
+describe(`createPerson Mutation Tests`, () => {
     let app: any;
 
     beforeAll(async() => {

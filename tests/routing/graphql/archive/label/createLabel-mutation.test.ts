@@ -3,34 +3,34 @@ import startServer from '../../../../../src/server/server';
 import dotenv from 'dotenv';
 import { faker } from '@faker-js/faker';
 import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/errors';
-import * as crudPerson from '../../../../../src/db/archive/crud-person';
-import { Person } from '../../../../../src/archive/person';
+import * as crudLabel from '../../../../../src/db/archive/crud-label';
 import { signToken } from '../../../../../src/_helpers/auth-helpers';
 import { Auth } from '../../../../../src/auth/authorization';
 import { InternalError } from '../../../../../src/_helpers/errors-helper';
+import { Label } from '../../../../../src/archive/label';
 
 dotenv.config();
 
-describe(`deletePerson Mutation Tests`, () => {
+describe(`createLabel Mutation Tests`, () => {
     let app: any;
 
     beforeAll(async() => {
         app = await startServer();
     })
 
-    it(`should throw unauthorized error if trying to delete person without authorized user`, async () => {
-        const id: string = faker.database.mongodbObjectId();
-
+    it(`should throw unauthorized error if trying to create label without authorized user`, async () => {
         const query = `
-            mutation DeletePerson($id: ID!) {
-                deletePerson(id: $id) {
-                    id
+            mutation CreateLabel($input: CreateLabelInput!) {
+                createLabel(input: $input) {
+                    name
                 }
             }
         `
 
         const variables = {
-            id
+            input: {
+                name: faker.word.adjective()
+            }
         }
 
         const { body } = await request(app)
@@ -41,24 +41,25 @@ describe(`deletePerson Mutation Tests`, () => {
         expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.UNAUTHORIZED);
     });
 
-    it(`should delete a person as an admin`, async () => {
-        const id: string = faker.database.mongodbObjectId();
+    it(`should create a label as an admin`, async () => {
+        const name: string = faker.word.adjective();
         
-        const deletePersonSpy = jest.spyOn(crudPerson, "deletePerson");
-        deletePersonSpy.mockResolvedValue(new Person({ id }));
+        const createLabelSpy = jest.spyOn(crudLabel, "createLabel");
+        createLabelSpy.mockResolvedValue(new Label(name));
 
         const query = `
-            mutation DeletePerson($id: ID!) {
-                deletePerson(id: $id) {
-                    id
+            mutation CreateLabel($input: CreateLabelInput!) {
+                createLabel(input: $input) {
+                    name
                 }
             }
         `
 
         const variables = {
-            id
+            input: {
+                name
+            }
         }
-
         const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
 
         const { body } = await request(app)
@@ -67,27 +68,28 @@ describe(`deletePerson Mutation Tests`, () => {
             .set('Accept', 'application/json')
             .set('Cookie', [`jwt=${jwtToken}`]);
 
-        expect(body.data.deletePerson.id).toEqual(id);
+        expect(body.data.createLabel.name).toEqual(name);
     });
 
-    it(`should delete a person as a contributor`, async () => {
-        const id: string = faker.database.mongodbObjectId();
+    it(`should create a label as a contributor`, async () => {
+        const name: string = faker.word.adjective();
         
-        const deletePersonSpy = jest.spyOn(crudPerson, "deletePerson");
-        deletePersonSpy.mockResolvedValue(new Person({ id }));
+        const createLabelSpy = jest.spyOn(crudLabel, "createLabel");
+        createLabelSpy.mockResolvedValue(new Label(name));
 
         const query = `
-            mutation DeletePerson($id: ID!) {
-                deletePerson(id: $id) {
-                    id
+            mutation CreateLabel($input: CreateLabelInput!) {
+                createLabel(input: $input) {
+                    name
                 }
             }
         `
 
         const variables = {
-            id
+            input: {
+                name
+            }
         }
-
         const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
 
         const { body } = await request(app)
@@ -96,28 +98,29 @@ describe(`deletePerson Mutation Tests`, () => {
             .set('Accept', 'application/json')
             .set('Cookie', [`jwt=${jwtToken}`]);
 
-        expect(body.data.deletePerson.id).toEqual(id);
+        expect(body.data.createLabel.name).toEqual(name);
     });
 
     it(`should throw an error if there was an issue with the server`, async () => {
-        const id: string = faker.database.mongodbObjectId();
+        const name: string = faker.word.adjective();
         
-        const deletePersonSpy = jest.spyOn(crudPerson, "deletePerson");
-        deletePersonSpy.mockRejectedValue(new InternalError(''));
+        const createLabelSpy = jest.spyOn(crudLabel, "createLabel");
+        createLabelSpy.mockRejectedValue(new InternalError(''));
 
         const query = `
-            mutation DeletePerson($id: ID!) {
-                deletePerson(id: $id) {
-                    id
+            mutation CreateLabel($input: CreateLabelInput!) {
+                createLabel(input: $input) {
+                    name
                 }
             }
         `
 
         const variables = {
-            id
+            input: {
+                name
+            }
         }
-
-        const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
+        const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
 
         const { body } = await request(app)
             .post('/graphql')

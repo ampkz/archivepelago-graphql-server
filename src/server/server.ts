@@ -14,6 +14,8 @@ import userType from '../graphql/typeDefs/userType';
 import userResolver from '../graphql/resolvers/userResolver';
 import personType from '../graphql/typeDefs/personType';
 import personResolver from '../graphql/resolvers/personResolver';
+import labelType from '../graphql/typeDefs/labelType';
+import labelResolver from '../graphql/resolvers/labelResolver';
 
 
 interface MyContext {
@@ -25,8 +27,8 @@ async function startServer() {
     
     const httpServer = http.createServer(app);
     
-    const typeDefs = mergeTypeDefs([userType, personType]);
-    const resolvers = mergeResolvers([userResolver, personResolver]);
+    const typeDefs = mergeTypeDefs([userType, personType, labelType]);
+    const resolvers = mergeResolvers([userResolver, personResolver, labelResolver]);
 
     const server = new ApolloServer<MyContext>({
         typeDefs,
