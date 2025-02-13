@@ -43,7 +43,7 @@ export default {
             return newUser;
         },
 
-        updateUser: async (_root: any, { input: {existingEmail, updatedEmail, updatedAuth, updatedFirstName, updatedLastName, updatedPassword, updatedSecondName }}: any, { authorizedUser }: any) => {
+        updateUser: async (_root: any, { input: { existingEmail, updatedEmail, updatedAuth, updatedFirstName, updatedLastName, updatedPassword, updatedSecondName }}: any, { authorizedUser }: any) => {
             if(!isPermitted(authorizedUser, Auth.ADMIN) && !permitSelf(authorizedUser, existingEmail)) {
                 throw unauthorizedError(`You are not authorized to make this query.`);
             }
