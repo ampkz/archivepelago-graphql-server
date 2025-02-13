@@ -1,4 +1,4 @@
-import { Person, PersonI } from "../../archive/person";
+import { Person } from "../../archive/person";
 import { Auth, isPermitted } from "../../auth/authorization";
 import { createPerson, deletePerson, getPerson, updatePerson } from "../../db/archive/crud-person"
 import { mutationFailed, serverFailed, unauthorizedError } from "../errors/errors";
