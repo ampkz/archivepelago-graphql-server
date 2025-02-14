@@ -26,8 +26,8 @@ describe(`Person Labels Query Tests`, () => {
         const label2:Label = new Label(faker.word.adjective());
 
 
-        const getPersonLabelsSpy = jest.spyOn(personLabelRelationship, "getPersonLabels");
-        getPersonLabelsSpy.mockResolvedValue([label, label2]);
+        const getLabelsByPersonSpy = jest.spyOn(personLabelRelationship, "getLabelsByPerson");
+        getLabelsByPersonSpy.mockResolvedValue([label, label2]);
         
         const query = `
             query {

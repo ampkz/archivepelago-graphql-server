@@ -2,7 +2,7 @@ import { Person } from "../../archive/person";
 import { PersonLabel } from "../../archive/relationship/relationship";
 import { Auth, isPermitted } from "../../auth/authorization";
 import { createPerson, deletePerson, getPerson, updatePerson } from "../../db/archive/crud-person"
-import { createPersonLabel, deletePersonLabel, getPersonLabels } from "../../db/archive/relationship/person-label-relationship";
+import { createPersonLabel, deletePersonLabel, getLabelsByPerson } from "../../db/archive/relationship/person-label-relationship";
 import { mutationFailed, serverFailed, unauthorizedError } from "../errors/errors";
 
 export default {
@@ -103,6 +103,6 @@ export default {
     },
 
     Person: {
-        labels: (person: Person) => getPersonLabels(person),
+        labels: (person: Person) => getLabelsByPerson(person),
     },
 };

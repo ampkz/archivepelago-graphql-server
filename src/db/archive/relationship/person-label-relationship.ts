@@ -15,7 +15,7 @@ export async function deletePersonLabel(personLabel: PersonLabel): Promise<Perso
     return f as Person;
 }
 
-export async function getPersonLabels(person: Person): Promise<Label[]> {
+export async function getLabelsByPerson(person: Person): Promise<Label[]> {
     const labels: Label[] = [];
     
     const match = await getRelationshipsToNode(new Node(NodeType.PERSON, 'id', person.id), RelationshipType.IS);

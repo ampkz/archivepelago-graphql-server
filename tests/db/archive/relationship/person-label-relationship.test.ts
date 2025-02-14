@@ -7,7 +7,7 @@ import { createLabel } from '../../../../src/db/archive/crud-label';
 import { destroyTestingDBs, initializeDBs } from '../../../../src/db/utils/init-dbs';
 import dotenv from 'dotenv';
 
-import { createPersonLabel, deletePersonLabel, getPersonLabels } from '../../../../src/db/archive/relationship/person-label-relationship';
+import { createPersonLabel, deletePersonLabel, getLabelsByPerson } from '../../../../src/db/archive/relationship/person-label-relationship';
 
 
 dotenv.config();
@@ -53,7 +53,7 @@ describe(`Person-[:IS]->Label Tests`, () => {
 
         await createPersonLabel(personLabel);
 
-        const matchedRelationship: Label[] = await getPersonLabels(createdPerson);
+        const matchedRelationship: Label[] = await getLabelsByPerson(createdPerson);
 
         expect(matchedRelationship).toEqual([createdLabel]);
     });
@@ -73,7 +73,7 @@ describe(`Person-[:IS]->Label Tests`, () => {
         await createPersonLabel(personLabel2);
         await createPersonLabel(personLabel3);
 
-        const matchedRelationships: Label[] = await getPersonLabels(createdPerson);
+        const matchedRelationships: Label[] = await getLabelsByPerson(createdPerson);
 
         expect(matchedRelationships).toContainEqual(createdLabel);
         expect(matchedRelationships).toContainEqual(createdLabel2);
