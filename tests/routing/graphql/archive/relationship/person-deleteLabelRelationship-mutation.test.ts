@@ -11,7 +11,7 @@ import { Auth } from "../../../../../src/auth/authorization";
 
 dotenv.config();
 
-describe(`createLabelRelationship Mutation Tests`, () => {
+describe(`deleteLabelRelationship Mutation Tests`, () => {
     let app: any;
   
       beforeAll(async() => {
@@ -20,8 +20,8 @@ describe(`createLabelRelationship Mutation Tests`, () => {
   
       it(`should throw an unauthorized error with no authorized user`, async() => {
         const query = `
-          mutation CreateLabelRelationship($personID: ID!, $labelName: ID!){
-            createLabelRelationship(personID: $personID, labelName: $labelName) {
+          mutation DeleteLabelRelationship($personID: ID!, $labelName: ID!){
+            deleteLabelRelationship(personID: $personID, labelName: $labelName) {
               firstName
             }
           }
@@ -40,20 +40,20 @@ describe(`createLabelRelationship Mutation Tests`, () => {
         expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.UNAUTHORIZED);
       });
 
-      it(`should create a label relationship with admin`, async() => {
+      it(`should delete a label relationship with admin`, async() => {
         const personID = faker.database.mongodbObjectId(),
             labelName = faker.word.adjective();
         
         const person: Person = new Person({ id: personID, firstName: faker.person.firstName() });
 
-        const createPersonRelationshipSpy = jest.spyOn(personLabelRelationship, "createPersonLabel");
-        createPersonRelationshipSpy.mockResolvedValueOnce(person);
+        const deletePersonRelationshipSpy = jest.spyOn(personLabelRelationship, "deletePersonLabel");
+        deletePersonRelationshipSpy.mockResolvedValueOnce(person);
 
         const query = `
-          mutation CreateLabelRelationship($personID: ID!, $labelName: ID!){
-            createLabelRelationship(personID: $personID, labelName: $labelName) {
-                id
-                firstName
+          mutation DeleteLabelRelationship($personID: ID!, $labelName: ID!){
+            deleteLabelRelationship(personID: $personID, labelName: $labelName) {
+              id
+              firstName
             }
           }
         `;
@@ -71,24 +71,24 @@ describe(`createLabelRelationship Mutation Tests`, () => {
           .set('Accept', 'application/json')
           .set('Cookie', [`jwt=${jwtToken}`])
 
-          expect(body.data.createLabelRelationship).toEqual(person);
+          expect(body.data.deleteLabelRelationship).toEqual(person);
         });
 
 
-    it(`should create a label relationship with contributor`, async() => {
+    it(`should delete a label relationship with contributor`, async() => {
         const personID = faker.database.mongodbObjectId(),
             labelName = faker.word.adjective();
         
         const person: Person = new Person({ id: personID, firstName: faker.person.firstName() });
 
-        const createPersonRelationshipSpy = jest.spyOn(personLabelRelationship, "createPersonLabel");
-        createPersonRelationshipSpy.mockResolvedValueOnce(person);
+        const deletePersonRelationshipSpy = jest.spyOn(personLabelRelationship, "deletePersonLabel");
+        deletePersonRelationshipSpy.mockResolvedValueOnce(person);
 
         const query = `
-          mutation CreateLabelRelationship($personID: ID!, $labelName: ID!){
-            createLabelRelationship(personID: $personID, labelName: $labelName) {
-                id
-                firstName
+          mutation DeleteLabelRelationship($personID: ID!, $labelName: ID!){
+            deleteLabelRelationship(personID: $personID, labelName: $labelName) {
+              id
+              firstName
             }
           }
         `;
@@ -106,21 +106,19 @@ describe(`createLabelRelationship Mutation Tests`, () => {
           .set('Accept', 'application/json')
           .set('Cookie', [`jwt=${jwtToken}`])
 
-          expect(body.data.createLabelRelationship).toEqual(person);
+          expect(body.data.deleteLabelRelationship).toEqual(person);
         });
       
       it(`should throw an error if there was an issue with the server`, async() => {
         const personID = faker.database.mongodbObjectId(),
             labelName = faker.word.adjective();
         
-        const person: Person = new Person({ id: personID });
-
-        const createPersonRelationshipSpy = jest.spyOn(personLabelRelationship, "createPersonLabel");
-        createPersonRelationshipSpy.mockRejectedValue(new InternalError(''));
+        const deletePersonRelationshipSpy = jest.spyOn(personLabelRelationship, "deletePersonLabel");
+        deletePersonRelationshipSpy.mockRejectedValue(new InternalError(''));
 
         const query = `
-          mutation CreateLabelRelationship($personID: ID!, $labelName: ID!){
-            createLabelRelationship(personID: $personID, labelName: $labelName) {
+          mutation DeleteLabelRelationship($personID: ID!, $labelName: ID!){
+            deleteLabelRelationship(personID: $personID, labelName: $labelName) {
               firstName
             }
           }

@@ -2,7 +2,7 @@ import { Person } from "../../archive/person";
 import { PersonLabel } from "../../archive/relationship/relationship";
 import { Auth, isPermitted } from "../../auth/authorization";
 import { createPerson, deletePerson, getPerson, updatePerson } from "../../db/archive/crud-person"
-import { createPersonLabel, getPersonLabels } from "../../db/archive/relationship/person-label-relationship";
+import { createPersonLabel, deletePersonLabel, getPersonLabels } from "../../db/archive/relationship/person-label-relationship";
 import { mutationFailed, serverFailed, unauthorizedError } from "../errors/errors";
 
 export default {
@@ -78,6 +78,22 @@ export default {
 
             try {
                 person = await createPersonLabel(new PersonLabel(personID, labelName));
+            }catch ( error: any ){
+                throw mutationFailed(error.message);
+            }
+            
+            return person;
+        },
+
+        deleteLabelRelationship: async (_root: any, { personID, labelName }: any, { authorizedUser }: any) => {
+            if(!isPermitted(authorizedUser, Auth.ADMIN, Auth.CONTRIBUTOR)){
+                throw unauthorizedError(`You are not authorized to make this mutation`);
+            }
+
+            let person: Person | undefined = undefined;
+
+            try {
+                person = await deletePersonLabel(new PersonLabel(personID, labelName));
             }catch ( error: any ){
                 throw mutationFailed(error.message);
             }
