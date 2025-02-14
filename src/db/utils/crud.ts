@@ -46,7 +46,7 @@ export async function createNode(nodeName: string, props: string[], params: obje
     return createdNode;
 }
 
-export async function getNode(nodeName: string, idProp: string, params: object, dbName: string = (process.env.ARCHIVE_DB as string), existingSession?: Session): Promise<any | undefined> {
+export async function getNode(nodeType: string, idProp: string, params: object, dbName: string = (process.env.ARCHIVE_DB as string), existingSession?: Session): Promise<any | undefined> {
     let driver: Driver | undefined = undefined;
     let session: Session;
     
@@ -60,7 +60,7 @@ export async function getNode(nodeName: string, idProp: string, params: object, 
     let matchedNode: any | undefined = undefined;
 
     try{
-        const match: RecordShape = await session.run(`MATCH(n:${nodeName} { ${ idProp }}) RETURN n`, params);
+        const match: RecordShape = await session.run(`MATCH(n:${nodeType} { ${ idProp }}) RETURN n`, params);
         
         if(match.records.length === 1){
             matchedNode = match.records[0].get(0).properties;
@@ -86,6 +86,22 @@ export async function getNode(nodeName: string, idProp: string, params: object, 
     }
 
     return matchedNode;
+}
+
+export async function getNodes(nodeType: string, dbName: string = (process.env.ARCHIVE_DB as string)): Promise<any[]>{
+    const nodes: any[] = [];
+    const driver: Driver = await connect();
+    const session: Session = driver.session(getSessionOptions(dbName));
+
+    const match = await session.run(`MATCH (n:${nodeType}) RETURN n`);
+
+    match.records.map((record) => {
+        nodes.push(record.get(0).properties);
+    });
+
+    await session.close();
+    await driver.close();
+    return nodes;
 }
 
 export async function deleteNode(nodeName: string, idProp: string, params: object, dbName: string = (process.env.ARCHIVE_DB as string)): Promise<any | undefined> {

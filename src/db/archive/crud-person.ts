@@ -1,5 +1,5 @@
 import { Person, PersonI, UpdatedPersonI } from "../../archive/person";
-import { createNode, deleteNode, getNode, updateNode } from "../utils/crud";
+import { createNode, deleteNode, getNode, getNodes, updateNode } from "../utils/crud";
 
 export async function getPerson(id: string): Promise<Person | undefined> {
     const matchedNode: object | undefined = await getNode('Person', 'id: $id', { id });
@@ -29,6 +29,18 @@ export async function updatePerson(updatedPerson: UpdatedPersonI): Promise<Perso
     const matchedPerson = await updateNode('Person', 'p', 'id', updatedPersonToProps(updatedPerson), updatedPerson);
 
     return matchedPerson as Person;
+}
+
+export async function getPersons(): Promise<Person[]>{
+    const persons: Person[] = [];
+
+    const matchedPersons = await getNodes('Person');
+
+    matchedPersons.map((person) => {
+        persons.push(new Person(person));
+    })
+
+    return persons;
 }
 
 function prepPersonProps(person: Person): string[] {

@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import { destroyTestingDBs, initializeDBs } from '../../../src/db/utils/init-dbs';
 import { faker } from '@faker-js/faker';
-import { createPerson, deletePerson, getPerson, updatePerson } from '../../../src/db/archive/crud-person';
+import { createPerson, deletePerson, getPerson, getPersons, updatePerson } from '../../../src/db/archive/crud-person';
 import { Person, UpdatedPersonI } from '../../../src/archive/person';
 
 dotenv.config();
@@ -117,5 +117,21 @@ describe(`CRUD Person Tests`, () => {
         const person: Person | undefined = await getPerson(faker.database.mongodbObjectId());
 
         expect(person).toBeUndefined();
+    });
+
+    test(`getPersons should return a list of persons`, async () => {
+        const person: Person = new Person({id: faker.database.mongodbObjectId(), firstName: faker.person.firstName()});
+        const person2: Person = new Person({id: faker.database.mongodbObjectId(), firstName: faker.person.firstName()});
+        const person3: Person = new Person({id: faker.database.mongodbObjectId(), firstName: faker.person.firstName()});
+
+        const createdPerson: Person = await createPerson(person);
+        const createdPerson2: Person = await createPerson(person2);
+        const createdPerson3: Person = await createPerson(person3);
+
+        const matchedPersons: Person[] = await getPersons();
+
+        expect(matchedPersons).toContainEqual(createdPerson);
+        expect(matchedPersons).toContainEqual(createdPerson2);
+        expect(matchedPersons).toContainEqual(createdPerson3);
     });
 });

@@ -1,10 +1,11 @@
 import dotenv from 'dotenv';
-import { createNode, Errors as CRUDErrors, deleteNode, getNode, updateNode } from '../../../src/db/utils/crud';
+import { createNode, Errors as CRUDErrors, deleteNode, getNode, getNodes, updateNode } from '../../../src/db/utils/crud';
 import { faker } from '@faker-js/faker';
 import { destroyTestingDBs, initializeDBs } from '../../../src/db/utils/init-dbs';
 import { Neo4jError, Record, Session } from 'neo4j-driver';
 import neo4j, { Driver } from 'neo4j-driver';
 import { InternalError } from '../../../src/_helpers/errors-helper';
+import { Label } from '../../../src/archive/label';
 
 dotenv.config();
 
@@ -231,6 +232,22 @@ describe(`CRUD Tests`, () => {
         updatedFirstName: string = faker.person.firstName();
 
         await expect(updateNode('User', 'u', 'email', ['u.firstName = $firstName'], { email, firstName: updatedFirstName})).rejects.toThrow(CRUDErrors.CANNOT_UPDATE_NODE);
+    });
+
+    it(`should get a list of created nodes`, async () => {
+        const label:Label = new Label(faker.word.adjective());
+        const label2:Label = new Label(faker.word.adjective());
+        const label3:Label = new Label(faker.word.adjective());
+
+        await createNode('Label', ['name: $name'], {name: label.name});
+        await createNode('Label', ['name: $name'], {name: label2.name});
+        await createNode('Label', ['name: $name'], {name: label3.name});
+
+        const labels: any[] = await getNodes('Label');
+
+        expect(labels).toContainEqual(label);
+        expect(labels).toContainEqual(label2);
+        expect(labels).toContainEqual(label3);
     });
     
 });
