@@ -1,6 +1,7 @@
 export default /* GraphQL */`
 type Label {
     name: ID!
+    persons: [Person]
 }
 
 type Query {

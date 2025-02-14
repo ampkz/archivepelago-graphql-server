@@ -6,6 +6,8 @@ import * as crudPerson from '../../../../../src/db/archive/crud-person';
 import { Person } from '../../../../../src/archive/person';
 import { InternalError } from '../../../../../src/_helpers/errors-helper';
 import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/errors';
+import * as personLabelRelationship from '../../../../../src/db/archive/relationship/person-label-relationship';
+import { Label } from '../../../../../src/archive/label';
 
 dotenv.config();
 
@@ -80,5 +82,37 @@ describe(`Person Query Tests`, () => {
             .set('Accept', 'application/json');
 
         expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.SERVER_ERROR);
+    });
+
+    it(`should return a list of associated labels of a person`, async () => {
+        const id: string = faker.database.mongodbObjectId();
+
+        const label: Label = new Label(faker.word.adjective());
+        const label2: Label = new Label(faker.word.adjective());
+
+        const getPersonSpy = jest.spyOn(crudPerson, "getPerson");
+        getPersonSpy.mockResolvedValue(new Person({ id }));
+
+        const getLabelsByPersonSpy = jest.spyOn(personLabelRelationship, "getLabelsByPerson");
+        getLabelsByPersonSpy.mockResolvedValue([label, label2]);
+        
+        const query = `
+            query {
+                person(id: "${ id }") {
+                    id
+                    labels{
+                        name
+                    }
+                }
+            }
+        `
+
+        const { body } = await request(app)
+            .post('/graphql')
+            .send({ query })
+            .set('Accept', 'application/json');
+
+        expect(body.data.person.labels).toContainEqual(label);
+        expect(body.data.person.labels).toContainEqual(label2);
     });
 });
