@@ -15,7 +15,7 @@ export async function createRelationship(relationship: Relationship, dbName: str
 
     const preppedReturn: string = prepShouldReturnFromQuery(relationship);
 
-    const match: RecordShape = await session.run(`MATCH (f:${relationship.node1.nodeType} {${relationship.node1.getIdString()}}), (s:${relationship.node2.nodeType} {${relationship.node2.getIdString()}}) CREATE (f)${relationship.direction === RelationshipDirection.COMING || relationship.direction === RelationshipDirection.BOTH ? `<` : ``}-[:${relationship.name}]-${relationship.direction === RelationshipDirection.GOING || relationship.direction === RelationshipDirection.BOTH ? `>` : ``}(s) ${ preppedReturn.length > 0 ? `RETURN ${preppedReturn}` : `` }`, relationship.getRelationshipParams());
+    const match: RecordShape = await session.run(`MATCH (f:${relationship.node1.nodeType} {${relationship.node1.getIdString()}}), (s:${relationship.node2.nodeType} {${relationship.node2.getIdString()}}) CREATE (f)${relationship.direction === RelationshipDirection.COMING ? `<` : ``}-[:${relationship.name}]-${relationship.direction === RelationshipDirection.GOING ? `>` : ``}(s) ${ preppedReturn.length > 0 ? `RETURN ${preppedReturn}` : `` }`, relationship.getRelationshipParams());
 
     if(match.summary.counters._stats.relationshipsCreated !== 1){
         
@@ -37,7 +37,7 @@ export async function deleteRelationship(relationship: Relationship, dbName: str
 
     const preppedReturn: string = prepShouldReturnFromQuery(relationship);
 
-    const match: RecordShape = await session.run(`MATCH (f:${relationship.node1.nodeType} {${relationship.node1.getIdString()}})${relationship.direction === RelationshipDirection.COMING || relationship.direction === RelationshipDirection.BOTH ? `<` : ``}-[r:${relationship.name}]-${relationship.direction === RelationshipDirection.GOING || relationship.direction === RelationshipDirection.BOTH ? `>` : ``}(s:${relationship.node2.nodeType} {${relationship.node2.getIdString()}}) DELETE r ${ preppedReturn.length > 0 ? `RETURN ${preppedReturn}` : `` }`, relationship.getRelationshipParams());
+    const match: RecordShape = await session.run(`MATCH (f:${relationship.node1.nodeType} {${relationship.node1.getIdString()}})${relationship.direction === RelationshipDirection.COMING ? `<` : ``}-[r:${relationship.name}]-${relationship.direction === RelationshipDirection.GOING ? `>` : ``}(s:${relationship.node2.nodeType} {${relationship.node2.getIdString()}}) DELETE r ${ preppedReturn.length > 0 ? `RETURN ${preppedReturn}` : `` }`, relationship.getRelationshipParams());
 
     if(match.summary.counters._stats.relationshipsDeleted !== 1){
         await session.close();
@@ -58,7 +58,7 @@ export async function getRelationshipsToNode(node: Node, secondNodeType: NodeTyp
     const driver: Driver = await connect();
     const session: Session = driver.session(getSessionOptions(dbName));
 
-    const match: RecordShape = await session.run(`MATCH (n:${node.nodeType} {${node.getIdString()}})${relationshipDirection === RelationshipDirection.COMING || relationshipDirection === RelationshipDirection.BOTH ? `<` : ``}-[:${relationshipType}]-${relationshipDirection === RelationshipDirection.GOING || relationshipDirection === RelationshipDirection.BOTH ? `>` : ``}(m:${secondNodeType}) RETURN m`, node.getIdParams());
+    const match: RecordShape = await session.run(`MATCH (n:${node.nodeType} {${node.getIdString()}})${relationshipDirection === RelationshipDirection.COMING ? `<` : ``}-[:${relationshipType}]-${relationshipDirection === RelationshipDirection.GOING ? `>` : ``}(m:${secondNodeType}) RETURN m`, node.getIdParams());
 
     await session.close();
     await driver.close();

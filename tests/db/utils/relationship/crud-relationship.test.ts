@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { Person } from '../../../../src/archive/person';
-import { Node, NodeType, Relationship, RelationshipType } from '../../../../src/archive/relationship/relationship';
+import { Node, NodeType, Relationship, RelationshipDirection, RelationshipType } from '../../../../src/archive/relationship/relationship';
 import { createPerson, deletePerson } from '../../../../src/db/archive/crud-person';
 import { Label, LabelType } from '../../../../src/archive/label';
 import { createLabel } from '../../../../src/db/archive/crud-label';
@@ -27,6 +27,19 @@ describe(`Relationship CRUD Tests`, () => {
         const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id, true);
         const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name, true);
         const relationship: Relationship = new Relationship(person, label, RelationshipType.IS);
+
+        const createdRelationship = await createRelationship(relationship);
+
+        expect(createdRelationship).toEqual([createdPerson, createdLabel]);
+    });
+
+    it(`should create a COMING relationship`, async () => {
+        const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
+        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.CAREER}) as Label;
+
+        const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id, true);
+        const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name, true);
+        const relationship: Relationship = new Relationship(person, label, RelationshipType.IS, RelationshipDirection.COMING);
 
         const createdRelationship = await createRelationship(relationship);
 
@@ -65,6 +78,21 @@ describe(`Relationship CRUD Tests`, () => {
         const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id, true);
         const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name, true);
         const relationship: Relationship = new Relationship(person, label, RelationshipType.IS);
+
+        await createRelationship(relationship);
+
+        const deletedRelationship = await deleteRelationship(relationship);
+
+        expect(deletedRelationship).toEqual([createdPerson, createdLabel]);
+    });
+
+    it(`should delete a COMING relationship`, async () => {
+        const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
+        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.CAREER}) as Label;
+
+        const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id, true);
+        const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name, true);
+        const relationship: Relationship = new Relationship(person, label, RelationshipType.IS, RelationshipDirection.COMING);
 
         await createRelationship(relationship);
 
@@ -124,6 +152,21 @@ describe(`Relationship CRUD Tests`, () => {
         await createRelationship(relationship);
 
         const matchedRelationships = await getRelationshipsToNode(new Node(NodeType.PERSON, 'id', createdPerson.id), NodeType.LABEL, RelationshipType.IS);
+
+        expect(matchedRelationships).toEqual([createdLabel]);
+    });
+
+    it(`should retrieve a COMING relationship`, async () => {
+        const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
+        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.CAREER}) as Label;
+
+        const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id);
+        const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name);
+        const relationship: Relationship = new Relationship(person, label, RelationshipType.IS, RelationshipDirection.COMING);
+
+        await createRelationship(relationship);
+
+        const matchedRelationships = await getRelationshipsToNode(new Node(NodeType.PERSON, 'id', createdPerson.id), NodeType.LABEL, RelationshipType.IS, RelationshipDirection.COMING);
 
         expect(matchedRelationships).toEqual([createdLabel]);
     });

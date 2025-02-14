@@ -9,8 +9,7 @@ export enum RelationshipType {
 
 export enum RelationshipDirection {
     COMING,
-    GOING,
-    BOTH
+    GOING
 }
 
 export class Relationship {
