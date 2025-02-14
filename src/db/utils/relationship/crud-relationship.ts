@@ -1,5 +1,5 @@
 import { Driver, Record, RecordShape, Session } from "neo4j-driver";
-import { Node, Relationship, RelationshipDirection, RelationshipType } from "../../../archive/relationship/relationship";
+import { Node, NodeType, Relationship, RelationshipDirection, RelationshipType } from "../../../archive/relationship/relationship";
 import { connect } from "../connection";
 import { getSessionOptions } from "../../../_helpers/db-helper";
 import { InternalError } from "../../../_helpers/errors-helper";
@@ -52,13 +52,13 @@ export async function deleteRelationship(relationship: Relationship, dbName: str
     return prepReturnTuple(match.records);
 };
 
-export async function getRelationshipsToNode(node: Node, relationshipType: RelationshipType, relationshipDirection: RelationshipDirection = RelationshipDirection.GOING, dbName: string = process.env.ARCHIVE_DB as string): Promise<any[]> {
+export async function getRelationshipsToNode(node: Node, secondNodeType: NodeType, relationshipType: RelationshipType, relationshipDirection: RelationshipDirection = RelationshipDirection.GOING, dbName: string = process.env.ARCHIVE_DB as string): Promise<any[]> {
     const relationships: any[] = [];
 
     const driver: Driver = await connect();
     const session: Session = driver.session(getSessionOptions(dbName));
 
-    const match: RecordShape = await session.run(`MATCH (n:${node.nodeType} {${node.getIdString()}})${relationshipDirection === RelationshipDirection.COMING || relationshipDirection === RelationshipDirection.BOTH ? `<` : ``}-[:${relationshipType}]-${relationshipDirection === RelationshipDirection.GOING || relationshipDirection === RelationshipDirection.BOTH ? `>` : ``}(m) RETURN m`, node.getIdParams());
+    const match: RecordShape = await session.run(`MATCH (n:${node.nodeType} {${node.getIdString()}})${relationshipDirection === RelationshipDirection.COMING || relationshipDirection === RelationshipDirection.BOTH ? `<` : ``}-[:${relationshipType}]-${relationshipDirection === RelationshipDirection.GOING || relationshipDirection === RelationshipDirection.BOTH ? `>` : ``}(m:${secondNodeType}) RETURN m`, node.getIdParams());
 
     await session.close();
     await driver.close();

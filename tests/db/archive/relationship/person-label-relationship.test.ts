@@ -7,7 +7,7 @@ import { createLabel } from '../../../../src/db/archive/crud-label';
 import { destroyTestingDBs, initializeDBs } from '../../../../src/db/utils/init-dbs';
 import dotenv from 'dotenv';
 
-import { createPersonLabel, deletePersonLabel, getLabelsByPerson } from '../../../../src/db/archive/relationship/person-label-relationship';
+import { createPersonLabel, deletePersonLabel, getLabelsByPerson, getPersonsByLabel } from '../../../../src/db/archive/relationship/person-label-relationship';
 
 
 dotenv.config();
@@ -45,7 +45,7 @@ describe(`Person-[:IS]->Label Tests`, () => {
         expect(matchedPerson).toEqual(createdPerson);
     });
 
-    it(`should get a relationship between a person and label`, async () => {
+    test(`getLabelsByPerson should get a label`, async () => {
         const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
         const createdLabel: Label = await createLabel(faker.word.adjective()) as Label;
 
@@ -53,12 +53,12 @@ describe(`Person-[:IS]->Label Tests`, () => {
 
         await createPersonLabel(personLabel);
 
-        const matchedRelationship: Label[] = await getLabelsByPerson(createdPerson);
+        const matchedLabels: Label[] = await getLabelsByPerson(createdPerson);
 
-        expect(matchedRelationship).toEqual([createdLabel]);
+        expect(matchedLabels).toEqual([createdLabel]);
     });
 
-    it(`should get a list of relationships between a person and label`, async () => {
+    test(`getLabelsByPerson should get a list of labels`, async () => {
         const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
         const createdLabel: Label = await createLabel(faker.word.adjective()) as Label;
         const createdLabel2: Label = await createLabel(faker.word.adjective()) as Label;
@@ -73,10 +73,31 @@ describe(`Person-[:IS]->Label Tests`, () => {
         await createPersonLabel(personLabel2);
         await createPersonLabel(personLabel3);
 
-        const matchedRelationships: Label[] = await getLabelsByPerson(createdPerson);
+        const matchedLabels: Label[] = await getLabelsByPerson(createdPerson);
 
-        expect(matchedRelationships).toContainEqual(createdLabel);
-        expect(matchedRelationships).toContainEqual(createdLabel2);
-        expect(matchedRelationships).toContainEqual(createdLabel3);
+        expect(matchedLabels).toContainEqual(createdLabel);
+        expect(matchedLabels).toContainEqual(createdLabel2);
+        expect(matchedLabels).toContainEqual(createdLabel3);
     });
+
+    test(`getPersonsByLabel should get a list of persons`, async () => {
+        const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
+        const createdPerson2: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
+        const createdPerson3: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
+        const createdLabel: Label = await createLabel(faker.word.adjective()) as Label;
+
+        const personLabel: PersonLabel = new PersonLabel(createdPerson.id, createdLabel.name);
+        const personLabel2: PersonLabel = new PersonLabel(createdPerson2.id, createdLabel.name);
+        const personLabel3: PersonLabel = new PersonLabel(createdPerson3.id, createdLabel.name);
+
+        await createPersonLabel(personLabel);
+        await createPersonLabel(personLabel2);
+        await createPersonLabel(personLabel3);
+
+        const matchedPersons: Person[] = await getPersonsByLabel(createdLabel);
+
+        expect(matchedPersons).toContainEqual(createdPerson);
+        expect(matchedPersons).toContainEqual(createdPerson2);
+        expect(matchedPersons).toContainEqual(createdPerson3);
+    })
 })

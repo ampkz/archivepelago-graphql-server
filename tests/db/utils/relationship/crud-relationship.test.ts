@@ -123,7 +123,7 @@ describe(`Relationship CRUD Tests`, () => {
 
         await createRelationship(relationship);
 
-        const matchedRelationships = await getRelationshipsToNode(new Node(NodeType.PERSON, 'id', createdPerson.id), RelationshipType.IS);
+        const matchedRelationships = await getRelationshipsToNode(new Node(NodeType.PERSON, 'id', createdPerson.id), NodeType.LABEL, RelationshipType.IS);
 
         expect(matchedRelationships).toEqual([createdLabel]);
     });
@@ -147,7 +147,7 @@ describe(`Relationship CRUD Tests`, () => {
         await createRelationship(relationship2);
         await createRelationship(relationship3);
 
-        const matchedRelationships = await getRelationshipsToNode(new Node(NodeType.PERSON, 'id', createdPerson.id), RelationshipType.IS);
+        const matchedRelationships = await getRelationshipsToNode(new Node(NodeType.PERSON, 'id', createdPerson.id), NodeType.LABEL, RelationshipType.IS);
 
         expect(matchedRelationships).toContainEqual(createdLabel);
         expect(matchedRelationships).toContainEqual(createdLabel2);
