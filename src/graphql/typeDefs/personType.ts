@@ -6,6 +6,7 @@ type Person {
     secondName: String
     birthDate: String
     deathDate: String
+    labels: [Label]
 }
 
 type Query {

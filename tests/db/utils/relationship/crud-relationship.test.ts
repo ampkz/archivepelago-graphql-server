@@ -4,7 +4,7 @@ import { Node, NodeType, Relationship, RelationshipType } from '../../../../src/
 import { createPerson, deletePerson } from '../../../../src/db/archive/crud-person';
 import { Label } from '../../../../src/archive/label';
 import { createLabel } from '../../../../src/db/archive/crud-label';
-import { createRelationship, deleteRelationship, Errors } from '../../../../src/db/utils/relationship/crud-relationship';
+import { createRelationship, deleteRelationship, Errors, getRelationships } from '../../../../src/db/utils/relationship/crud-relationship';
 import { destroyTestingDBs, initializeDBs } from '../../../../src/db/utils/init-dbs';
 import dotenv from 'dotenv';
 import neo4j, { Driver, Session } from 'neo4j-driver';
@@ -112,5 +112,46 @@ describe(`Relationship CRUD Tests`, () => {
 
         expect(createdRelationship).toEqual(relationship);
         expect(deletedPerson).toEqual(createdPerson);
+    });
+
+    it(`should retrieve a relationship`, async () => {
+        const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
+        const createdLabel: Label = await createLabel(faker.word.adjective()) as Label;
+
+        const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id);
+        const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name);
+        const relationship: Relationship = new Relationship(person, label, RelationshipType.IS);
+
+        await createRelationship(relationship);
+
+        const matchedRelationships = await getRelationships(new Node(NodeType.PERSON, 'id', createdPerson.id), RelationshipType.IS);
+
+        expect(matchedRelationships).toEqual([createdLabel]);
+    });
+
+    it(`should retrieve a list of relationships`, async () => {
+        const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
+        const createdLabel: Label = await createLabel(faker.word.adjective()) as Label;
+        const createdLabel2: Label = await createLabel(faker.word.adjective()) as Label;
+        const createdLabel3: Label = await createLabel(faker.word.adjective()) as Label;
+
+        const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id);
+        const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name);
+        const label2: Node = new Node(NodeType.LABEL, "name", createdLabel2.name);
+        const label3: Node = new Node(NodeType.LABEL, "name", createdLabel3.name);
+
+        const relationship: Relationship = new Relationship(person, label, RelationshipType.IS);
+        const relationship2: Relationship = new Relationship(person, label2, RelationshipType.IS);
+        const relationship3: Relationship = new Relationship(person, label3, RelationshipType.IS);
+
+        await createRelationship(relationship);
+        await createRelationship(relationship2);
+        await createRelationship(relationship3);
+
+        const matchedRelationships = await getRelationships(new Node(NodeType.PERSON, 'id', createdPerson.id), RelationshipType.IS);
+
+        expect(matchedRelationships).toContainEqual(createdLabel);
+        expect(matchedRelationships).toContainEqual(createdLabel2);
+        expect(matchedRelationships).toContainEqual(createdLabel3);
     });
 })

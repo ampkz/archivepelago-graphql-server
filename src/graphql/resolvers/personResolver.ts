@@ -1,6 +1,7 @@
 import { Person } from "../../archive/person";
 import { Auth, isPermitted } from "../../auth/authorization";
 import { createPerson, deletePerson, getPerson, updatePerson } from "../../db/archive/crud-person"
+import { getPersonLabels } from "../../db/archive/relationship/person-label-relationship";
 import { mutationFailed, serverFailed, unauthorizedError } from "../errors/errors";
 
 export default {
@@ -66,5 +67,9 @@ export default {
 
             return person;
         },
-    }
-}
+    },
+
+    Person: {
+        labels: (person: Person) => getPersonLabels(person),
+    },
+};

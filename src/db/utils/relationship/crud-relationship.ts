@@ -1,5 +1,5 @@
-import { Driver, RecordShape, Session } from "neo4j-driver";
-import { Relationship } from "../../../archive/relationship/relationship";
+import { Driver, Record, RecordShape, Session } from "neo4j-driver";
+import { Node, NodeType, Relationship, RelationshipType } from "../../../archive/relationship/relationship";
 import { connect } from "../connection";
 import { getSessionOptions } from "../../../_helpers/db-helper";
 import { InternalError } from "../../../_helpers/errors-helper";
@@ -44,4 +44,22 @@ export async function deleteRelationship(relationship: Relationship, dbName: str
     await session.close();
     await driver.close();
     return relationship;
+}
+
+export async function getRelationships(node: Node, relationshipType: RelationshipType, dbName: string = process.env.ARCHIVE_DB as string): Promise<any[]> {
+    const relationships: any[] = [];
+
+    const driver: Driver = await connect();
+    const session: Session = driver.session(getSessionOptions(dbName));
+
+    const match: RecordShape = await session.run(`MATCH (n:${node.nodeType} {${node.getIdString()}})-[:${relationshipType}]->(m) RETURN m`, node.getIdParams());
+
+    await session.close();
+    await driver.close();
+
+    match.records.map((record: Record) => {
+        relationships.push(record.get(0).properties);
+    });
+
+    return relationships;
 }
