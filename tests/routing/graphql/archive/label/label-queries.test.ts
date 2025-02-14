@@ -114,4 +114,49 @@ describe(`Label Query Tests`, () => {
         expect(body.data.label.persons).toContainEqual(person);
         expect(body.data.label.persons).toContainEqual(person2);
     });
+
+    it(`should return a list of created labels`, async () => {
+        const label:Label = new Label(faker.word.adjective());
+        const label2:Label = new Label(faker.word.adjective());
+        const label3:Label = new Label(faker.word.adjective());
+
+        const getLabelsSpy = jest.spyOn(crudLabel, "getLabels");
+        getLabelsSpy.mockResolvedValue([label, label2, label3]);
+        
+        const query = `
+            query {
+                labels {
+                    name
+                }
+            }
+        `
+        const { body } = await request(app)
+            .post('/graphql')
+            .send({ query })
+            .set('Accept', 'application/json');
+
+        expect(body.data.labels).toContainEqual(label);
+        expect(body.data.labels).toContainEqual(label2);
+        expect(body.data.labels).toContainEqual(label3);
+    });
+
+    test(`getLabels should throw an error if there was an issue with the server`, async () => {
+        const getLabelSpy = jest.spyOn(crudLabel, "getLabels");
+        getLabelSpy.mockRejectedValue(new InternalError(GraphQLErrors.SERVER_ERROR));
+        
+        const query = `
+            query {
+                labels {
+                    name
+                }
+            }
+        `
+
+        const { body } = await request(app)
+            .post('/graphql')
+            .send({ query })
+            .set('Accept', 'application/json');
+
+        expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.SERVER_ERROR);
+    });
 });

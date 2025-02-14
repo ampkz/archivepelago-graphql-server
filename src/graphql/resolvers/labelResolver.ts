@@ -1,6 +1,6 @@
 import { Label } from "../../archive/label"
 import { Auth, isPermitted } from "../../auth/authorization";
-import { createLabel, deleteLabel, getLabel, updateLabel } from "../../db/archive/crud-label";
+import { createLabel, deleteLabel, getLabel, getLabels, updateLabel } from "../../db/archive/crud-label";
 import { getPersonsByLabel } from "../../db/archive/relationship/person-label-relationship";
 import { mutationFailed, serverFailed, unauthorizedError } from "../errors/errors";
 
@@ -16,6 +16,18 @@ export default {
             }
 
             return label;
+        },
+
+        labels: async(_root: any, {}: any, { authorizedUser }: any) => {
+            let labels: Label[] = [];
+
+            try{
+                labels = await getLabels();
+            }catch ( error: any ){
+                throw serverFailed(error.message);
+            }
+
+            return labels;
         }
     },
 

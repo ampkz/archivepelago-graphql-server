@@ -6,6 +6,7 @@ type Label {
 
 type Query {
     label(name: ID!): Label
+    labels: [Label]
 }
 
 type Mutation {

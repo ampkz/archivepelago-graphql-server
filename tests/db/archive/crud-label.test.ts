@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import { destroyTestingDBs, initializeDBs } from '../../../src/db/utils/init-dbs';
 import { faker } from '@faker-js/faker';
-import { createLabel, deleteLabel, getLabel, updateLabel } from '../../../src/db/archive/crud-label';
+import { createLabel, deleteLabel, getLabel, getLabels, updateLabel } from '../../../src/db/archive/crud-label';
 import { Label } from '../../../src/archive/label';
 import { Errors } from '../../../src/db/utils/crud';
 
@@ -84,4 +84,20 @@ describe(`CRUD Label Tests`, () => {
 
         expect(updatedLabel).toBeUndefined();
     });
+
+    test(`getLabels should return a list of created labels`, async () => {
+        const label: Label = new Label(faker.word.adjective());
+        const label2: Label = new Label(faker.word.adjective());
+        const label3: Label = new Label(faker.word.adjective());
+
+        const createdLabel: Label | undefined = await createLabel(label.name);
+        const createdLabel2: Label | undefined = await createLabel(label2.name);
+        const createdLabel3: Label | undefined = await createLabel(label3.name);
+
+        const labels = await getLabels();
+        
+        expect(labels).toContainEqual(createdLabel);
+        expect(labels).toContainEqual(createdLabel2);
+        expect(labels).toContainEqual(createdLabel3);
+    })
 });

@@ -1,7 +1,7 @@
 import { Person } from "../../archive/person";
 import { PersonLabel } from "../../archive/relationship/relationship";
 import { Auth, isPermitted } from "../../auth/authorization";
-import { createPerson, deletePerson, getPerson, updatePerson } from "../../db/archive/crud-person"
+import { createPerson, deletePerson, getPerson, getPersons, updatePerson } from "../../db/archive/crud-person"
 import { createPersonLabel, deletePersonLabel, getLabelsByPerson } from "../../db/archive/relationship/person-label-relationship";
 import { mutationFailed, serverFailed, unauthorizedError } from "../errors/errors";
 
@@ -17,6 +17,18 @@ export default {
            }
             
             return person;
+        },
+        
+        persons: async(_root: any, {}: any, { authorizedUser }: any) => {
+            let persons: Person[] = [];
+
+            try {
+                persons = await getPersons();
+            }catch ( error: any ){
+                throw serverFailed(error.message);
+           }
+            
+            return persons;
         }
     },
 

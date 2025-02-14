@@ -1,5 +1,5 @@
 import { Label, UpdatedLabelI } from "../../archive/label";
-import { createNode, deleteNode, getNode, updateNode } from "../utils/crud";
+import { createNode, deleteNode, getNode, getNodes, updateNode } from "../utils/crud";
 
 export async function getLabel(name: string): Promise<Label | undefined> {
     const matchedNode: object | undefined = await getNode('Label', 'name: $name', { name });
@@ -23,6 +23,18 @@ export async function updateLabel(name: string, updatedLabel: UpdatedLabelI): Pr
     const matchedLabel: object | undefined = await updateNode('Label', 'l', 'name', updatedLabelToProps(), {name, ...updatedLabel});
 
     return matchedLabel as Label;
+}
+
+export async function getLabels(): Promise<Label[]>{
+    const labels: Label[] = [];
+
+    const matchedLabels = await getNodes('Label');
+
+    matchedLabels.map((label) => {
+        labels.push(new Label(label.name));
+    })
+
+    return labels;
 }
 
 function updatedLabelToProps(): string[] {

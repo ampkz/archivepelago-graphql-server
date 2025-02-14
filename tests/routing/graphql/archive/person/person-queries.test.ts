@@ -115,4 +115,50 @@ describe(`Person Query Tests`, () => {
         expect(body.data.person.labels).toContainEqual(label);
         expect(body.data.person.labels).toContainEqual(label2);
     });
+
+    it(`should return a list of created persons`, async () => {
+        const person: Person = new Person({ id: faker.database.mongodbObjectId() });
+        const person2: Person = new Person({ id: faker.database.mongodbObjectId() });
+        const person3: Person = new Person({ id: faker.database.mongodbObjectId() });        
+
+        const getPersonSpy = jest.spyOn(crudPerson, "getPersons");
+        getPersonSpy.mockResolvedValue([person, person2, person3]);
+        
+        const query = `
+            query {
+                persons {
+                    id
+                }
+            }
+        `
+
+        const { body } = await request(app)
+            .post('/graphql')
+            .send({ query })
+            .set('Accept', 'application/json');
+
+        expect(body.data.persons).toContainEqual(person);
+        expect(body.data.persons).toContainEqual(person2);
+        expect(body.data.persons).toContainEqual(person3);
+    });
+
+    test(`getPersons should throw an error if there was an issue with the server`, async () => {
+        const createUserSpy = jest.spyOn(crudPerson, "getPersons");
+        createUserSpy.mockRejectedValue(new InternalError(GraphQLErrors.SERVER_ERROR));
+        
+        const query = `
+            query {
+                persons {
+                    id
+                }
+            }
+        `
+
+        const { body } = await request(app)
+            .post('/graphql')
+            .send({ query })
+            .set('Accept', 'application/json');
+
+        expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.SERVER_ERROR);
+    });
 });
