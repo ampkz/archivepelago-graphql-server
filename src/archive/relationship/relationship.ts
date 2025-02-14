@@ -30,11 +30,13 @@ export class Node {
     public idProp: string;
     public idValue: string;
     public nodeType: NodeType;
+    public shouldReturnFromQuery: boolean;
 
-    constructor(nodeType: NodeType, idProp: string, idValue: string){
+    constructor(nodeType: NodeType, idProp: string, idValue: string, shouldReturnFromQuery: boolean = false){
         this.idProp = idProp;
         this.idValue = idValue;
         this.nodeType = nodeType;
+        this.shouldReturnFromQuery = shouldReturnFromQuery;
     }
 
     getIdString(): string {
@@ -51,24 +53,15 @@ export class Node {
 }
 
 export class PersonLabel {
-    public person: Person;
-    public label: Label;
+    public personID: string;
+    public labelName: string;
 
-    constructor(person: Person, label: Label){
-        this.person = person;
-        this.label = label;
-    }
-}
-
-export class PersonLabelRelationship extends PersonLabel {
-    private _relationship: Relationship;
-
-    constructor(personLabel: PersonLabel){
-        super(personLabel.person, personLabel.label);
-        this._relationship = new Relationship(new Node(NodeType.PERSON, "id", personLabel.person.id), new Node(NodeType.LABEL, "name", personLabel.label.name), RelationshipType.IS)
+    constructor(personID: string, labelName: string){
+        this.personID = personID;
+        this.labelName = labelName;
     }
 
-    getRelationship(): Relationship{
-        return this._relationship;
+    getRelationship(): Relationship {
+        return new Relationship(new Node(NodeType.PERSON, "id", this.personID, true), new Node(NodeType.LABEL, "name", this.labelName), RelationshipType.IS)
     }
 }

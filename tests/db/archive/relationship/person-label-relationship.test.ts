@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { Person } from '../../../../src/archive/person';
-import { Node, NodeType, PersonLabel, PersonLabelRelationship, Relationship, RelationshipType } from '../../../../src/archive/relationship/relationship';
+import { Node, NodeType, PersonLabel, Relationship, RelationshipType } from '../../../../src/archive/relationship/relationship';
 import { createPerson } from '../../../../src/db/archive/crud-person';
 import { Label } from '../../../../src/archive/label';
 import { createLabel } from '../../../../src/db/archive/crud-label';
@@ -25,31 +25,31 @@ describe(`Person-[:IS]->Label Tests`, () => {
         const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
         const createdLabel: Label = await createLabel(faker.word.adjective()) as Label;
 
-        const personLabel: PersonLabel = new PersonLabel(createdPerson, createdLabel);
+        const personLabel: PersonLabel = new PersonLabel(createdPerson.id, createdLabel.name);
 
-        const createdRelationship = await createPersonLabel(personLabel);
-
-        expect(createdRelationship).toEqual(new PersonLabelRelationship(personLabel));
+        const matchedPerson = await createPersonLabel(personLabel);
+        
+        expect(matchedPerson).toEqual(createdPerson);
     });
 
     it(`should delete a relationship between a person and label`, async () => {
         const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
         const createdLabel: Label = await createLabel(faker.word.adjective()) as Label;
 
-        const personLabel: PersonLabel = new PersonLabel(createdPerson, createdLabel);
+        const personLabel: PersonLabel = new PersonLabel(createdPerson.id, createdLabel.name);
 
         await createPersonLabel(personLabel);
 
-        const deletedRelationship = await deletePersonLabel(personLabel);
+        const matchedPerson = await deletePersonLabel(personLabel);
 
-        expect(deletedRelationship).toEqual(new PersonLabelRelationship(personLabel));
+        expect(matchedPerson).toEqual(createdPerson);
     });
 
     it(`should get a relationship between a person and label`, async () => {
         const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
         const createdLabel: Label = await createLabel(faker.word.adjective()) as Label;
 
-        const personLabel: PersonLabel = new PersonLabel(createdPerson, createdLabel);
+        const personLabel: PersonLabel = new PersonLabel(createdPerson.id, createdLabel.name);
 
         await createPersonLabel(personLabel);
 
@@ -64,9 +64,9 @@ describe(`Person-[:IS]->Label Tests`, () => {
         const createdLabel2: Label = await createLabel(faker.word.adjective()) as Label;
         const createdLabel3: Label = await createLabel(faker.word.adjective()) as Label;
 
-        const personLabel: PersonLabel = new PersonLabel(createdPerson, createdLabel);
-        const personLabel2: PersonLabel = new PersonLabel(createdPerson, createdLabel2);
-        const personLabel3: PersonLabel = new PersonLabel(createdPerson, createdLabel3);
+        const personLabel: PersonLabel = new PersonLabel(createdPerson.id, createdLabel.name);
+        const personLabel2: PersonLabel = new PersonLabel(createdPerson.id, createdLabel2.name);
+        const personLabel3: PersonLabel = new PersonLabel(createdPerson.id, createdLabel3.name);
 
 
         await createPersonLabel(personLabel);

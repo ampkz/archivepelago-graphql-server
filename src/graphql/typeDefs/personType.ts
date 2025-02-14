@@ -17,6 +17,7 @@ type Mutation {
     createPerson(input: CreatePersonInput!): Person
     updatePerson(input: UpdatePersonInput!): Person
     deletePerson(id: ID!): Person
+    createLabelRelationship(personID: ID!, labelName: ID!): Person
 }
 
 input CreatePersonInput {

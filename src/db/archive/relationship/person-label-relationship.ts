@@ -1,28 +1,24 @@
 import { Label } from "../../../archive/label";
 import { Person } from "../../../archive/person";
-import { Node, NodeType, PersonLabel, PersonLabelRelationship, RelationshipType } from "../../../archive/relationship/relationship";
-import { createRelationship, deleteRelationship, getRelationships } from "../../utils/relationship/crud-relationship";
+import { Node, NodeType, PersonLabel, Relationship, RelationshipType } from "../../../archive/relationship/relationship";
+import { createRelationship, deleteRelationship, getRelationshipsToNode } from "../../utils/relationship/crud-relationship";
 
-export async function createPersonLabel(personLabel: PersonLabel): Promise<PersonLabelRelationship | undefined>{
-    const personLabelRelationship: PersonLabelRelationship = new PersonLabelRelationship(personLabel);
+export async function createPersonLabel(personLabel: PersonLabel): Promise<Person | undefined>{
+    const [f] = await createRelationship(personLabel.getRelationship());
 
-    await createRelationship(personLabelRelationship.getRelationship());
-
-    return personLabelRelationship;
+    return f as Person;
 }
 
-export async function deletePersonLabel(personLabel: PersonLabel): Promise<PersonLabelRelationship | undefined>{
-    const personLabelRelationship: PersonLabelRelationship = new PersonLabelRelationship(personLabel);
+export async function deletePersonLabel(personLabel: PersonLabel): Promise<Person | undefined>{
+    const [f] = await deleteRelationship(personLabel.getRelationship());
 
-    await deleteRelationship(personLabelRelationship.getRelationship());
-
-    return personLabelRelationship;
+    return f as Person;
 }
 
 export async function getPersonLabels(person: Person): Promise<Label[]> {
     const labels: Label[] = [];
     
-    const match = await getRelationships(new Node(NodeType.PERSON, 'id', person.id), RelationshipType.IS);
+    const match = await getRelationshipsToNode(new Node(NodeType.PERSON, 'id', person.id), RelationshipType.IS);
 
     match.map((rawLabel: any) => {
         labels.push(new Label(rawLabel.name));

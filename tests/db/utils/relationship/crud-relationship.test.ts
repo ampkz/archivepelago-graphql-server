@@ -4,7 +4,7 @@ import { Node, NodeType, Relationship, RelationshipType } from '../../../../src/
 import { createPerson, deletePerson } from '../../../../src/db/archive/crud-person';
 import { Label } from '../../../../src/archive/label';
 import { createLabel } from '../../../../src/db/archive/crud-label';
-import { createRelationship, deleteRelationship, Errors, getRelationships } from '../../../../src/db/utils/relationship/crud-relationship';
+import { createRelationship, deleteRelationship, Errors, getRelationshipsToNode } from '../../../../src/db/utils/relationship/crud-relationship';
 import { destroyTestingDBs, initializeDBs } from '../../../../src/db/utils/init-dbs';
 import dotenv from 'dotenv';
 import neo4j, { Driver, Session } from 'neo4j-driver';
@@ -24,13 +24,13 @@ describe(`Relationship CRUD Tests`, () => {
         const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
         const createdLabel: Label = await createLabel(faker.word.adjective()) as Label;
 
-        const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id);
-        const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name);
+        const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id, true);
+        const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name, true);
         const relationship: Relationship = new Relationship(person, label, RelationshipType.IS);
 
         const createdRelationship = await createRelationship(relationship);
 
-        expect(createdRelationship).toEqual(relationship);
+        expect(createdRelationship).toEqual([createdPerson, createdLabel]);
     });
 
     it(`should throw an error if a relationship was not created`, async () => {
@@ -62,15 +62,15 @@ describe(`Relationship CRUD Tests`, () => {
         const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
         const createdLabel: Label = await createLabel(faker.word.adjective()) as Label;
 
-        const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id);
-        const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name);
+        const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id, true);
+        const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name, true);
         const relationship: Relationship = new Relationship(person, label, RelationshipType.IS);
 
         await createRelationship(relationship);
 
         const deletedRelationship = await deleteRelationship(relationship);
 
-        expect(deletedRelationship).toEqual(relationship);
+        expect(deletedRelationship).toEqual([createdPerson, createdLabel]);
     });
 
     it(`should throw an error if a relationship was not deleted`, async () => {
@@ -106,11 +106,10 @@ describe(`Relationship CRUD Tests`, () => {
         const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name);
         const relationship: Relationship = new Relationship(person, label, RelationshipType.IS);
 
-        const createdRelationship = await createRelationship(relationship);
+        await createRelationship(relationship);
 
         const deletedPerson = await deletePerson(createdPerson.id);
 
-        expect(createdRelationship).toEqual(relationship);
         expect(deletedPerson).toEqual(createdPerson);
     });
 
@@ -124,7 +123,7 @@ describe(`Relationship CRUD Tests`, () => {
 
         await createRelationship(relationship);
 
-        const matchedRelationships = await getRelationships(new Node(NodeType.PERSON, 'id', createdPerson.id), RelationshipType.IS);
+        const matchedRelationships = await getRelationshipsToNode(new Node(NodeType.PERSON, 'id', createdPerson.id), RelationshipType.IS);
 
         expect(matchedRelationships).toEqual([createdLabel]);
     });
@@ -148,7 +147,7 @@ describe(`Relationship CRUD Tests`, () => {
         await createRelationship(relationship2);
         await createRelationship(relationship3);
 
-        const matchedRelationships = await getRelationships(new Node(NodeType.PERSON, 'id', createdPerson.id), RelationshipType.IS);
+        const matchedRelationships = await getRelationshipsToNode(new Node(NodeType.PERSON, 'id', createdPerson.id), RelationshipType.IS);
 
         expect(matchedRelationships).toContainEqual(createdLabel);
         expect(matchedRelationships).toContainEqual(createdLabel2);

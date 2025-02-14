@@ -1,5 +1,5 @@
 import { Driver, Record, RecordShape, Session } from "neo4j-driver";
-import { Node, NodeType, Relationship, RelationshipType } from "../../../archive/relationship/relationship";
+import { Node, Relationship, RelationshipType } from "../../../archive/relationship/relationship";
 import { connect } from "../connection";
 import { getSessionOptions } from "../../../_helpers/db-helper";
 import { InternalError } from "../../../_helpers/errors-helper";
@@ -9,11 +9,13 @@ export enum Errors {
     COULD_NOT_DELETE_RELATIONSHIP = "Could not delete relationship."
 }
 
-export async function createRelationship(relationship: Relationship, dbName: string = process.env.ARCHIVE_DB as string): Promise<Relationship | undefined>{
+export async function createRelationship(relationship: Relationship, dbName: string = process.env.ARCHIVE_DB as string): Promise<[any | undefined, any | undefined]>{
     const driver: Driver = await connect();
     const session: Session = driver.session(getSessionOptions(dbName));
 
-    const match: RecordShape = await session.run(`MATCH (f:${relationship.node1.nodeType} {${relationship.node1.getIdString()}}), (s:${relationship.node2.nodeType} {${relationship.node2.getIdString()}}) CREATE (f)-[:${relationship.name}]->(s)`, relationship.getRelationshipParams());
+    const preppedReturn: string = prepShouldReturnFromQuery(relationship);
+
+    const match: RecordShape = await session.run(`MATCH (f:${relationship.node1.nodeType} {${relationship.node1.getIdString()}}), (s:${relationship.node2.nodeType} {${relationship.node2.getIdString()}}) CREATE (f)-[:${relationship.name}]->(s) ${ preppedReturn.length > 0 ? `RETURN ${preppedReturn}` : `` }`, relationship.getRelationshipParams());
 
     if(match.summary.counters._stats.relationshipsCreated !== 1){
         
@@ -25,14 +27,17 @@ export async function createRelationship(relationship: Relationship, dbName: str
 
     await session.close();
     await driver.close();
-    return relationship;
+
+    return prepReturnTuple(match.records);
 }
 
-export async function deleteRelationship(relationship: Relationship, dbName: string = process.env.ARCHIVE_DB as string): Promise<Relationship | undefined>{
+export async function deleteRelationship(relationship: Relationship, dbName: string = process.env.ARCHIVE_DB as string): Promise<[any | undefined, any | undefined]>{
     const driver: Driver = await connect();
     const session: Session = driver.session(getSessionOptions(dbName));
 
-    const match: RecordShape = await session.run(`MATCH (:${relationship.node1.nodeType} {${relationship.node1.getIdString()}})-[r:${relationship.name}]->(:${relationship.node2.nodeType} {${relationship.node2.getIdString()}}) DELETE r`, relationship.getRelationshipParams());
+    const preppedReturn: string = prepShouldReturnFromQuery(relationship);
+
+    const match: RecordShape = await session.run(`MATCH (f:${relationship.node1.nodeType} {${relationship.node1.getIdString()}})-[r:${relationship.name}]->(s:${relationship.node2.nodeType} {${relationship.node2.getIdString()}}) DELETE r ${ preppedReturn.length > 0 ? `RETURN ${preppedReturn}` : `` }`, relationship.getRelationshipParams());
 
     if(match.summary.counters._stats.relationshipsDeleted !== 1){
         await session.close();
@@ -43,10 +48,11 @@ export async function deleteRelationship(relationship: Relationship, dbName: str
 
     await session.close();
     await driver.close();
-    return relationship;
-}
 
-export async function getRelationships(node: Node, relationshipType: RelationshipType, dbName: string = process.env.ARCHIVE_DB as string): Promise<any[]> {
+    return prepReturnTuple(match.records);
+};
+
+export async function getRelationshipsToNode(node: Node, relationshipType: RelationshipType, dbName: string = process.env.ARCHIVE_DB as string): Promise<any[]> {
     const relationships: any[] = [];
 
     const driver: Driver = await connect();
@@ -62,4 +68,25 @@ export async function getRelationships(node: Node, relationshipType: Relationshi
     });
 
     return relationships;
+}
+
+function prepShouldReturnFromQuery(relationship: Relationship): string {
+    const shouldReturn: string[] = [];
+
+    if(relationship.node1.shouldReturnFromQuery) shouldReturn.push('f');
+    if(relationship.node2.shouldReturnFromQuery) shouldReturn.push('s');
+
+    return shouldReturn.join(', ');
+}
+
+function prepReturnTuple(records: any):[any | undefined, any | undefined]{
+    let f: any | undefined = undefined;
+    let s: any | undefined = undefined;
+
+    if(records.length > 0){
+        if(records[0].keys.includes('f')) f = records[0].get('f').properties;
+        if(records[0].keys.includes('s')) s = records[0].get('s').properties;
+    }
+
+    return [f, s];
 }
