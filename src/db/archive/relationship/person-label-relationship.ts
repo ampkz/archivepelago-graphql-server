@@ -21,7 +21,7 @@ export async function getLabelsByPerson(person: Person): Promise<Label[]> {
     const match = await getRelationshipsToNode(new Node(NodeType.PERSON, 'id', person.id), NodeType.LABEL, RelationshipType.IS);
 
     match.map((rawLabel: any) => {
-        labels.push(new Label(rawLabel.name));
+        labels.push(new Label(rawLabel));
     })
 
     return labels;

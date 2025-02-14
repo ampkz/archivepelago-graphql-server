@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import { destroyTestingDBs, initializeDBs } from '../../../src/db/utils/init-dbs';
 import { faker } from '@faker-js/faker';
 import { createLabel, deleteLabel, getLabel, getLabels, updateLabel } from '../../../src/db/archive/crud-label';
-import { Label } from '../../../src/archive/label';
+import { Label, LabelType } from '../../../src/archive/label';
 import { Errors } from '../../../src/db/utils/crud';
 
 dotenv.config();
@@ -19,9 +19,9 @@ describe(`CRUD Label Tests`, () => {
     it(`should create a Label`, async () => {
         const name: string = faker.word.adjective();
 
-        const label: Label = new Label(name);
+        const label: Label = new Label({name, type: LabelType.CAREER});
 
-        const createdLabel: Label | undefined = await createLabel(name);
+        const createdLabel: Label | undefined = await createLabel({name, type: LabelType.CAREER});
 
         expect(createdLabel).toEqual(label);
     });
@@ -29,9 +29,9 @@ describe(`CRUD Label Tests`, () => {
     it(`should get a created Label`, async () => {
         const name: string = faker.word.adjective();
 
-        const label: Label = new Label(name);
+        const label: Label = new Label({name, type: LabelType.CAREER});
 
-        await createLabel(name);
+        await createLabel({name, type: LabelType.CAREER});
 
         const matchedLabel: Label | undefined = await getLabel(name);
 
@@ -41,17 +41,17 @@ describe(`CRUD Label Tests`, () => {
     it(`should throw an error if trying to create an existing label`, async () => {
         const name: string = faker.word.adjective();
 
-        await createLabel(name);
+        await createLabel({name, type: LabelType.CAREER});
 
-        await expect(createLabel).rejects.toThrow(Errors.CANNOT_CREATE_NODE);
+        await expect(createLabel({name, type: LabelType.CAREER})).rejects.toThrow(Errors.CANNOT_CREATE_NODE);
     });
 
     it(`should delete a created Label`, async () => {
         const name: string = faker.word.adjective();
 
-        const label: Label = new Label(name);
+        const label: Label = new Label({name, type: LabelType.CAREER});
 
-        await createLabel(name);
+        await createLabel({name, type: LabelType.CAREER});
 
         const matchedLabel: Label | undefined = await deleteLabel(name);
 
@@ -73,10 +73,10 @@ describe(`CRUD Label Tests`, () => {
         const name: string = faker.word.adjective();
         const updatedName: string = faker.word.adjective();
 
-        await createLabel(name);
-        const updatedLabel: Label | undefined = await updateLabel(name, { updatedName });
+        await createLabel({name, type: LabelType.CAREER});
+        const updatedLabel: Label | undefined = await updateLabel(name, { updatedName, updatedType: LabelType.SEXUALITY });
 
-        expect(updatedLabel).toEqual(new Label(updatedName));
+        expect(updatedLabel).toEqual(new Label({name: updatedName, type: LabelType.SEXUALITY}));
     });
 
     test(`updateLabel should return undefined if no Label exists`, async () => {
@@ -86,13 +86,13 @@ describe(`CRUD Label Tests`, () => {
     });
 
     test(`getLabels should return a list of created labels`, async () => {
-        const label: Label = new Label(faker.word.adjective());
-        const label2: Label = new Label(faker.word.adjective());
-        const label3: Label = new Label(faker.word.adjective());
+        const label: Label = new Label({name: faker.word.adjective(), type: LabelType.CAREER});
+        const label2: Label = new Label({name: faker.word.adjective(), type: LabelType.CAREER});
+        const label3: Label = new Label({name: faker.word.adjective(), type: LabelType.CAREER});
 
-        const createdLabel: Label | undefined = await createLabel(label.name);
-        const createdLabel2: Label | undefined = await createLabel(label2.name);
-        const createdLabel3: Label | undefined = await createLabel(label3.name);
+        const createdLabel: Label | undefined = await createLabel(label);
+        const createdLabel2: Label | undefined = await createLabel(label2);
+        const createdLabel3: Label | undefined = await createLabel(label3);
 
         const labels = await getLabels();
         

@@ -7,7 +7,7 @@ import * as crudLabel from '../../../../../src/db/archive/crud-label';
 import { signToken } from '../../../../../src/_helpers/auth-helpers';
 import { Auth } from '../../../../../src/auth/authorization';
 import { InternalError } from '../../../../../src/_helpers/errors-helper';
-import { Label } from '../../../../../src/archive/label';
+import { Label, LabelType } from '../../../../../src/archive/label';
 
 dotenv.config();
 
@@ -23,6 +23,7 @@ describe(`updateLabel Mutation Tests`, () => {
             mutation UpdateLabel($input: UpdateLabelInput!) {
                 updateLabel(input: $input) {
                     name
+                    type
                 }
             }
         `
@@ -30,7 +31,8 @@ describe(`updateLabel Mutation Tests`, () => {
         const variables = {
             input: {
                 name: faker.word.adjective(),
-                updatedName: faker.word.adjective()
+                updatedName: faker.word.adjective(),
+                updatedType: LabelType.NATIONALITY
             }
         }
 
@@ -47,12 +49,13 @@ describe(`updateLabel Mutation Tests`, () => {
             updatedName: string = faker.word.adjective();
         
         const updateLabelSpy = jest.spyOn(crudLabel, "updateLabel");
-        updateLabelSpy.mockResolvedValue(new Label(updatedName));
+        updateLabelSpy.mockResolvedValue(new Label({name: updatedName, type:LabelType.NATIONALITY}));
 
         const query = `
             mutation UpdateLabel($input: UpdateLabelInput!) {
                 updateLabel(input: $input) {
                     name
+                    type
                 }
             }
         `
@@ -60,7 +63,8 @@ describe(`updateLabel Mutation Tests`, () => {
         const variables = {
             input: {
                 name,
-                updatedName
+                updatedName,
+                updatedType: LabelType.NATIONALITY
             }
         }
 
@@ -73,6 +77,7 @@ describe(`updateLabel Mutation Tests`, () => {
             .set('Cookie', [`jwt=${jwtToken}`]);
 
         expect(body.data.updateLabel.name).toEqual(updatedName);
+        expect(body.data.updateLabel.type).toEqual(LabelType.NATIONALITY);
     });
 
     it(`should update a label as a contributor`, async () => {
@@ -80,7 +85,7 @@ describe(`updateLabel Mutation Tests`, () => {
             updatedName: string = faker.word.adjective();
         
         const updateLabelSpy = jest.spyOn(crudLabel, "updateLabel");
-        updateLabelSpy.mockResolvedValue(new Label(updatedName));
+        updateLabelSpy.mockResolvedValue(new Label({name: updatedName, type:LabelType.CAREER}));
 
         const query = `
             mutation UpdateLabel($input: UpdateLabelInput!) {

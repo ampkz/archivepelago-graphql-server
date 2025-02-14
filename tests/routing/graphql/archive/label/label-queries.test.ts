@@ -5,7 +5,7 @@ import { faker } from '@faker-js/faker';
 import * as crudLabel from '../../../../../src/db/archive/crud-label';
 import { InternalError } from '../../../../../src/_helpers/errors-helper';
 import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/errors';
-import { Label } from '../../../../../src/archive/label';
+import { Label, LabelType } from '../../../../../src/archive/label';
 import { Person } from '../../../../../src/archive/person';
 import * as personLabelRelationship from '../../../../../src/db/archive/relationship/person-label-relationship';
 
@@ -22,7 +22,7 @@ describe(`Label Query Tests`, () => {
         const name: string = faker.word.adjective();
 
         const getLabelSpy = jest.spyOn(crudLabel, "getLabel");
-        getLabelSpy.mockResolvedValue(new Label(name));
+        getLabelSpy.mockResolvedValue(new Label({name, type: LabelType.CAREER}));
         
         const query = `
             query {
@@ -90,7 +90,7 @@ describe(`Label Query Tests`, () => {
         const person2: Person = new Person({ id: faker.database.mongodbObjectId(), firstName: faker.person.firstName()});
 
         const getLabelSpy = jest.spyOn(crudLabel, "getLabel");
-        getLabelSpy.mockResolvedValue(new Label(name));
+        getLabelSpy.mockResolvedValue({name, type: LabelType.CAREER});
         
         const getPersonsByLabelSpy = jest.spyOn(personLabelRelationship, "getPersonsByLabel");
         getPersonsByLabelSpy.mockResolvedValue([person, person2])
@@ -116,9 +116,9 @@ describe(`Label Query Tests`, () => {
     });
 
     it(`should return a list of created labels`, async () => {
-        const label:Label = new Label(faker.word.adjective());
-        const label2:Label = new Label(faker.word.adjective());
-        const label3:Label = new Label(faker.word.adjective());
+        const label:Label = new Label({name: faker.word.adjective(), type: LabelType.CAREER});
+        const label2:Label = new Label({name: faker.word.adjective(), type: LabelType.CAREER});
+        const label3:Label = new Label({name: faker.word.adjective(), type: LabelType.CAREER});
 
         const getLabelsSpy = jest.spyOn(crudLabel, "getLabels");
         getLabelsSpy.mockResolvedValue([label, label2, label3]);
@@ -127,6 +127,7 @@ describe(`Label Query Tests`, () => {
             query {
                 labels {
                     name
+                    type
                 }
             }
         `
@@ -148,6 +149,7 @@ describe(`Label Query Tests`, () => {
             query {
                 labels {
                     name
+                    type
                 }
             }
         `

@@ -1,6 +1,7 @@
 export default /* GraphQL */`
 type Label {
     name: ID!
+    type: String!
     persons: [Person]
 }
 
@@ -17,10 +18,12 @@ type Mutation {
 
 input CreateLabelInput {
     name: ID!
+    type: String!
 }
 
 input UpdateLabelInput {
     name: ID!
     updatedName: ID!
+    updatedType: String
 }
 `

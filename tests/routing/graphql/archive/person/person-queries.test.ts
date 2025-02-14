@@ -7,7 +7,7 @@ import { Person } from '../../../../../src/archive/person';
 import { InternalError } from '../../../../../src/_helpers/errors-helper';
 import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/errors';
 import * as personLabelRelationship from '../../../../../src/db/archive/relationship/person-label-relationship';
-import { Label } from '../../../../../src/archive/label';
+import { Label, LabelType } from '../../../../../src/archive/label';
 
 dotenv.config();
 
@@ -87,8 +87,8 @@ describe(`Person Query Tests`, () => {
     it(`should return a list of associated labels of a person`, async () => {
         const id: string = faker.database.mongodbObjectId();
 
-        const label: Label = new Label(faker.word.adjective());
-        const label2: Label = new Label(faker.word.adjective());
+        const label: Label = new Label({name: faker.word.adjective(), type: LabelType.CAREER});
+        const label2: Label = new Label({name: faker.word.adjective(), type: LabelType.CAREER});
 
         const getPersonSpy = jest.spyOn(crudPerson, "getPerson");
         getPersonSpy.mockResolvedValue(new Person({ id }));
@@ -102,6 +102,7 @@ describe(`Person Query Tests`, () => {
                     id
                     labels{
                         name
+                        type
                     }
                 }
             }

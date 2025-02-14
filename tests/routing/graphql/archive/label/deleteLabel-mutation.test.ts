@@ -7,7 +7,7 @@ import * as crudLabel from '../../../../../src/db/archive/crud-label';
 import { signToken } from '../../../../../src/_helpers/auth-helpers';
 import { Auth } from '../../../../../src/auth/authorization';
 import { InternalError } from '../../../../../src/_helpers/errors-helper';
-import { Label } from '../../../../../src/archive/label';
+import { Label, LabelType } from '../../../../../src/archive/label';
 
 dotenv.config();
 
@@ -43,7 +43,7 @@ describe(`deleteLabel Mutation Tests`, () => {
         const name: string = faker.word.adjective();
         
         const deleteLabelSpy = jest.spyOn(crudLabel, "deleteLabel");
-        deleteLabelSpy.mockResolvedValue(new Label(name));
+        deleteLabelSpy.mockResolvedValue(new Label({name, type: LabelType.CAREER}));
 
         const query = `
             mutation DeleteLabel($name: ID!) {
@@ -72,7 +72,7 @@ describe(`deleteLabel Mutation Tests`, () => {
         const name: string = faker.word.adjective();
         
         const deleteLabelSpy = jest.spyOn(crudLabel, "deleteLabel");
-        deleteLabelSpy.mockResolvedValue(new Label(name));
+        deleteLabelSpy.mockResolvedValue(new Label({name, type: LabelType.CAREER}));
 
         const query = `
             mutation DeleteLabel($name: ID!) {

@@ -160,7 +160,7 @@ export async function updateNode(nodeName: string, nodePrefix: string, idProp: s
 
         await session.close();
         await driver.close();
-        
+
         throw new InternalError(Errors.CANNOT_UPDATE_NODE, data);
     }
     

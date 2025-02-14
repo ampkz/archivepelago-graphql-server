@@ -5,7 +5,7 @@ import { faker } from '@faker-js/faker';
 import * as crudPerson from '../../../../../src/db/archive/crud-person';
 import * as personLabelRelationship from '../../../../../src/db/archive/relationship/person-label-relationship';
 import { Person } from '../../../../../src/archive/person';
-import { Label } from '../../../../../src/archive/label';
+import { Label, LabelType } from '../../../../../src/archive/label';
 
 dotenv.config();
 
@@ -22,8 +22,8 @@ describe(`Person Labels Query Tests`, () => {
         const getPersonSpy = jest.spyOn(crudPerson, "getPerson");
         getPersonSpy.mockResolvedValue(new Person({ id }));
 
-        const label:Label = new Label(faker.word.adjective());
-        const label2:Label = new Label(faker.word.adjective());
+        const label:Label = new Label({name: faker.word.adjective(), type: LabelType.CAREER});
+        const label2:Label = new Label({name: faker.word.adjective(), type: LabelType.CAREER});
 
 
         const getLabelsByPersonSpy = jest.spyOn(personLabelRelationship, "getLabelsByPerson");
@@ -35,6 +35,7 @@ describe(`Person Labels Query Tests`, () => {
                     id
                     labels{
                         name
+                        type
                     }
                 }
             }

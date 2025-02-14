@@ -5,7 +5,7 @@ import { destroyTestingDBs, initializeDBs } from '../../../src/db/utils/init-dbs
 import { Neo4jError, Record, Session } from 'neo4j-driver';
 import neo4j, { Driver } from 'neo4j-driver';
 import { InternalError } from '../../../src/_helpers/errors-helper';
-import { Label } from '../../../src/archive/label';
+import { Label, LabelType } from '../../../src/archive/label';
 
 dotenv.config();
 
@@ -235,13 +235,13 @@ describe(`CRUD Tests`, () => {
     });
 
     it(`should get a list of created nodes`, async () => {
-        const label:Label = new Label(faker.word.adjective());
-        const label2:Label = new Label(faker.word.adjective());
-        const label3:Label = new Label(faker.word.adjective());
+        const label:Label = new Label({name: faker.word.adjective(), type: LabelType.CAREER});
+        const label2:Label = new Label({name: faker.word.adjective(), type: LabelType.CAREER});
+        const label3:Label = new Label({name: faker.word.adjective(), type: LabelType.CAREER});
 
-        await createNode('Label', ['name: $name'], {name: label.name});
-        await createNode('Label', ['name: $name'], {name: label2.name});
-        await createNode('Label', ['name: $name'], {name: label3.name});
+        await createNode('Label', ['name: $name', 'type: $type'], label);
+        await createNode('Label', ['name: $name', 'type: $type'], label2);
+        await createNode('Label', ['name: $name', 'type: $type'], label3);
 
         const labels: any[] = await getNodes('Label');
 

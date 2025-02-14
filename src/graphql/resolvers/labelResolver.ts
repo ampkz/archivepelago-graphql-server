@@ -32,7 +32,7 @@ export default {
     },
 
     Mutation: {
-        createLabel: async(_root: any, { input: { name } }: any, { authorizedUser }: any) => {
+        createLabel: async(_root: any, { input: { name, type } }: any, { authorizedUser }: any) => {
             if(!isPermitted(authorizedUser, Auth.ADMIN, Auth.CONTRIBUTOR)){
                 throw unauthorizedError(`You are not authorized to make this mutation.`);
             }
@@ -40,7 +40,7 @@ export default {
             let label: Label;
 
             try {
-                label = await createLabel(name) as Label;
+                label = await createLabel({name, type}) as Label;
             }catch ( error: any ){
                 throw mutationFailed(error.message);
             }
@@ -64,7 +64,7 @@ export default {
             return label;
         },
 
-        updateLabel: async (_root: any, { input: { name, updatedName }}: any, { authorizedUser }: any) => {
+        updateLabel: async (_root: any, { input: { name, updatedName, updatedType }}: any, { authorizedUser }: any) => {
             if(!isPermitted(authorizedUser, Auth.ADMIN, Auth.CONTRIBUTOR)){
                 throw unauthorizedError(`You are not authorized to make this mutation.`);
             }
@@ -72,7 +72,7 @@ export default {
             let label: Label;
 
             try {
-                label = await updateLabel(name, { updatedName }) as Label;
+                label = await updateLabel(name, { updatedName, updatedType }) as Label;
             }catch ( error: any ){
                 throw mutationFailed(error.message);
             }

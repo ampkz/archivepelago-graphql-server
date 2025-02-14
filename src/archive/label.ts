@@ -1,11 +1,25 @@
+export enum LabelType {
+    SEXUALITY = 'Sexuality',
+    NATIONALITY = 'Nationality',
+    CAREER = 'Career'
+}
+
 export class Label {
     public name: string;
+    public type: LabelType;
 
-    constructor(name: string){
-        this.name = name;
+    constructor(label: LabelI){
+        this.name = label.name;
+        this.type = label.type;
     }
+}
+
+export interface LabelI {
+    name: string
+    type: LabelType
 }
 
 export interface UpdatedLabelI {
     updatedName: string,
+    updatedType?: LabelType
 }

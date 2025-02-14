@@ -7,7 +7,7 @@ import * as crudLabel from '../../../../../src/db/archive/crud-label';
 import { signToken } from '../../../../../src/_helpers/auth-helpers';
 import { Auth } from '../../../../../src/auth/authorization';
 import { InternalError } from '../../../../../src/_helpers/errors-helper';
-import { Label } from '../../../../../src/archive/label';
+import { Label, LabelType } from '../../../../../src/archive/label';
 
 dotenv.config();
 
@@ -29,7 +29,8 @@ describe(`createLabel Mutation Tests`, () => {
 
         const variables = {
             input: {
-                name: faker.word.adjective()
+                name: faker.word.adjective(),
+                type: LabelType.CAREER
             }
         }
 
@@ -45,7 +46,7 @@ describe(`createLabel Mutation Tests`, () => {
         const name: string = faker.word.adjective();
         
         const createLabelSpy = jest.spyOn(crudLabel, "createLabel");
-        createLabelSpy.mockResolvedValue(new Label(name));
+        createLabelSpy.mockResolvedValue(new Label({name, type: LabelType.CAREER}));
 
         const query = `
             mutation CreateLabel($input: CreateLabelInput!) {
@@ -57,7 +58,8 @@ describe(`createLabel Mutation Tests`, () => {
 
         const variables = {
             input: {
-                name
+                name,
+                type: LabelType.CAREER
             }
         }
         const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
@@ -75,7 +77,7 @@ describe(`createLabel Mutation Tests`, () => {
         const name: string = faker.word.adjective();
         
         const createLabelSpy = jest.spyOn(crudLabel, "createLabel");
-        createLabelSpy.mockResolvedValue(new Label(name));
+        createLabelSpy.mockResolvedValue(new Label({name, type: LabelType.CAREER}));
 
         const query = `
             mutation CreateLabel($input: CreateLabelInput!) {
@@ -87,7 +89,8 @@ describe(`createLabel Mutation Tests`, () => {
 
         const variables = {
             input: {
-                name
+                name,
+                type: LabelType.CAREER
             }
         }
         const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
@@ -117,7 +120,8 @@ describe(`createLabel Mutation Tests`, () => {
 
         const variables = {
             input: {
-                name
+                name,
+                type: LabelType.CAREER
             }
         }
         const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
