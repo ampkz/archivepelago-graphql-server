@@ -1,8 +1,8 @@
 export default /* GraphQL */`
 type Correspondence {
     correspondenceID: ID!
-    fromID: ID
-    toID: ID
+    fromID: [ID]
+    toID: [ID]
     correspondenceDate: String
     correspondenceType: String
 }
@@ -17,8 +17,8 @@ type Mutation {
 }
 
 input CreateCorrespondenceInput {
-    fromID: ID
-    toID: ID
+    fromID: [ID]
+    toID: [ID]
     correspondenceDate: String
     correspondenceType: String
 }

@@ -41,7 +41,7 @@ describe(`Correspondence Mutation Tests`, () => {
 
     it(`should delete a correspondence as admin`, async () => {
         const correspondenceID: string = faker.database.mongodbObjectId(),
-            toID: string = faker.database.mongodbObjectId();
+            toID: string[] = [faker.database.mongodbObjectId()];
         
         const deleteCorrespondenceSpy = jest.spyOn(crudCorrespondence, "deleteCorrespondence");
         deleteCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, toID }));
@@ -71,7 +71,7 @@ describe(`Correspondence Mutation Tests`, () => {
 
     it(`should delete a correspondence as admin`, async () => {
         const correspondenceID: string = faker.database.mongodbObjectId(),
-            toID: string = faker.database.mongodbObjectId();
+            toID: string[] = [faker.database.mongodbObjectId()];
         
         const deleteCorrespondenceSpy = jest.spyOn(crudCorrespondence, "deleteCorrespondence");
         deleteCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, toID }));
@@ -100,21 +100,21 @@ describe(`Correspondence Mutation Tests`, () => {
     });
 
     it(`should throw an error if there was an issue with the server`, async () => {
+        const correspondenceID: string = faker.database.mongodbObjectId();
+        
         const deleteCorrespondenceSpy = jest.spyOn(crudCorrespondence, "deleteCorrespondence");
         deleteCorrespondenceSpy.mockRejectedValue(new InternalError(GraphQLErrors.MUTATION_FAILED));
 
         const query = `
-            mutation CreateCorrespondence($input: CreateCorrespondenceInput!) {
-                createCorrespondence(input: $input) {
+            mutation DeleteCorrespondence($correspondenceID: ID!) {
+                deleteCorrespondence(correspondenceID: $correspondenceID) {
                     correspondenceID
                 }
             }
         `
 
         const variables = {
-            input: {
-                toID: faker.database.mongodbObjectId()
-            }
+            correspondenceID
         }
 
         const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');

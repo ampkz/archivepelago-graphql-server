@@ -41,7 +41,7 @@ export async function getLabels(): Promise<Label[]>{
 function updatedLabelToProps(updatedLabel: UpdatedLabelI): string[] {
     const props: string[] = [];
 
-    props.push('l.name = $updatedName');
+    if(updatedLabel.updatedName) props.push('l.name = $updatedName');
     if(updatedLabel.updatedType) props.push('l.type = $updatedType');
 
     return props;

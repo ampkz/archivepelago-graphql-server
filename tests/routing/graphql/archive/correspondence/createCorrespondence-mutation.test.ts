@@ -43,7 +43,7 @@ describe(`createCorrespondence Mutation Tests`, () => {
 
     it(`should create a correspondence as admin`, async () => {
         const correspondenceID: string = faker.database.mongodbObjectId(),
-            toID: string = faker.database.mongodbObjectId();
+            toID: string[] = [faker.database.mongodbObjectId()];
         
         const createCorrespondenceSpy = jest.spyOn(crudCorrespondence, "createCorrespondence");
         createCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, toID }));
@@ -58,7 +58,7 @@ describe(`createCorrespondence Mutation Tests`, () => {
 
         const variables = {
             input: {
-                toID: faker.database.mongodbObjectId()
+                toID
             }
         }
 
@@ -75,7 +75,7 @@ describe(`createCorrespondence Mutation Tests`, () => {
 
     it(`should create a correspondence as contributor`, async () => {
         const correspondenceID: string = faker.database.mongodbObjectId(),
-            toID: string = faker.database.mongodbObjectId();
+            toID: string[] = [faker.database.mongodbObjectId()];
         
         const createCorrespondenceSpy = jest.spyOn(crudCorrespondence, "createCorrespondence");
         createCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, toID }));
@@ -84,13 +84,14 @@ describe(`createCorrespondence Mutation Tests`, () => {
             mutation CreateCorrespondence($input: CreateCorrespondenceInput!) {
                 createCorrespondence(input: $input) {
                     correspondenceID
+                    toID
                 }
             }
         `
 
         const variables = {
             input: {
-                toID: faker.database.mongodbObjectId()
+                toID
             }
         }
 
@@ -101,14 +102,12 @@ describe(`createCorrespondence Mutation Tests`, () => {
                 .send({ query, variables })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`jwt=${jwtToken}`]);
-    
+            
             expect(body.data.createCorrespondence.correspondenceID).toEqual(correspondenceID);
+            expect(body.data.createCorrespondence.toID).toEqual(toID);
     });
 
     it(`should throw an error if there was an issue with the server`, async () => {
-        const correspondenceID: string = faker.database.mongodbObjectId(),
-            toID: string = faker.database.mongodbObjectId();
-        
         const createCorrespondenceSpy = jest.spyOn(crudCorrespondence, "createCorrespondence");
         createCorrespondenceSpy.mockRejectedValue(new InternalError(GraphQLErrors.MUTATION_FAILED));
 

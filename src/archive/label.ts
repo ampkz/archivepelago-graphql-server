@@ -20,6 +20,6 @@ export interface LabelI {
 }
 
 export interface UpdatedLabelI {
-    updatedName: string,
+    updatedName?: string,
     updatedType?: LabelType
 }

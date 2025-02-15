@@ -144,14 +144,14 @@ export async function deleteNode(nodeType: NodeType, idProp: string, params: obj
 
 // idProp should have a corresponding property name in the params obj
 // e.g. if idProp = "email", the params object should at least contain { email: "some@email.com" }
-export async function updateNode(nodeName: string, nodePrefix: string, idProp: string, updatedProps: string[], params: object, dbName: string = (process.env.ARCHIVE_DB as string)): Promise<any | undefined> {
+export async function updateNode(nodeType: NodeType, nodePrefix: string, idProp: string, updatedProps: string[], params: object, dbName: string = (process.env.ARCHIVE_DB as string)): Promise<any | undefined> {
     const driver: Driver = await connect();
     const session: Session = driver.session(getSessionOptions(dbName));
     
     let match: RecordShape | undefined = undefined;
 
     try{
-        match = await session.run(`MATCH(${nodePrefix}:${nodeName} { ${idProp}: $${idProp} }) SET ${ updatedProps.join(', ') } RETURN ${nodePrefix}`, params);
+        match = await session.run(`MATCH(${nodePrefix}:${nodeType} { ${idProp}: $${idProp} }) SET ${ updatedProps.join(', ') } RETURN ${nodePrefix}`, params);
     }catch ( error: unknown ) {
         let data = {};
 
@@ -161,10 +161,9 @@ export async function updateNode(nodeName: string, nodePrefix: string, idProp: s
 
         await session.close();
         await driver.close();
-
+        
         throw new InternalError(Errors.CANNOT_UPDATE_NODE, data);
     }
-    
     
     if(match && match.records.length === 0) {
         await session.close();

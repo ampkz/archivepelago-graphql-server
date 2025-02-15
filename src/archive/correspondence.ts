@@ -6,8 +6,8 @@ export enum CorrespondenceType {
 
 export class Correspondence implements CorrespondenceI{
     public correspondenceID: string;
-    public fromID: string | undefined;
-    public toID: string | undefined;
+    public fromID: string[] | undefined;
+    public toID: string[] | undefined;
     public correspondenceDate: string | undefined;
     public correspondenceType: CorrespondenceType | undefined;
 
@@ -22,8 +22,16 @@ export class Correspondence implements CorrespondenceI{
 
 export interface CorrespondenceI {
     correspondenceID: string,
-    fromID?: string,
-    toID?: string,
+    fromID?: string[],
+    toID?: string[],
     correspondenceDate?: string,
     correspondenceType?: CorrespondenceType
+}
+
+export interface updatedCorrespondenceI {
+    correspondenceID: string,
+    updatedFromID?: string[],
+    updatedToID?: string[],
+    updatedCorrespondenceDate?: string,
+    updatedCorrespondenceType?: CorrespondenceType
 }

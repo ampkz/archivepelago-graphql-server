@@ -23,7 +23,7 @@ input CreateLabelInput {
 
 input UpdateLabelInput {
     name: ID!
-    updatedName: ID!
+    updatedName: ID
     updatedType: String
 }
 `
