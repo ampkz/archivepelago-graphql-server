@@ -6,15 +6,15 @@ export enum CorrespondenceType {
 
 export class Correspondence implements CorrespondenceI{
     public correspondenceID: string;
-    public fromPerson: string | undefined;
-    public toPerson: string | undefined;
+    public fromID: string | undefined;
+    public toID: string | undefined;
     public correspondenceDate: string | undefined;
     public correspondenceType: CorrespondenceType | undefined;
 
     constructor(correspondence: CorrespondenceI) {
         this.correspondenceID = correspondence.correspondenceID;
-        this.fromPerson = correspondence.fromPerson;
-        this.toPerson = correspondence.toPerson;
+        this.fromID = correspondence.fromID;
+        this.toID = correspondence.toID;
         this.correspondenceDate = correspondence.correspondenceDate;
         this.correspondenceType = correspondence.correspondenceType;
     }
@@ -22,8 +22,8 @@ export class Correspondence implements CorrespondenceI{
 
 export interface CorrespondenceI {
     correspondenceID: string,
-    fromPerson?: string,
-    toPerson?: string,
+    fromID?: string,
+    toID?: string,
     correspondenceDate?: string,
     correspondenceType?: CorrespondenceType
 }
