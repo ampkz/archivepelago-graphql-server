@@ -13,6 +13,7 @@ type Query {
 
 type Mutation {
     createCorrespondence(input: CreateCorrespondenceInput!): Correspondence
+    deleteCorrespondence(correspondenceID: ID!): Correspondence
 }
 
 input CreateCorrespondenceInput {

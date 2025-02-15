@@ -1,7 +1,7 @@
 import { NodeType, Node } from "../../_helpers/nodes";
 import { Correspondence, CorrespondenceI } from "../../archive/correspondence";
 import { Relationship, RelationshipType } from "../../archive/relationship/relationship";
-import { createNode, getNode } from "../utils/crud";
+import { createNode, deleteNode, getNode } from "../utils/crud";
 import { createRelationship } from "../utils/relationship/crud-relationship";
 
 // correspondence id will be overwritten
@@ -31,6 +31,10 @@ export async function createCorrespondence(correspondence: CorrespondenceI): Pro
 
 export async function getCorrespondence(correspondenceID: string): Promise<Correspondence | undefined> {
     return await getNode(NodeType.CORRESPONDENCE, 'correspondenceID: $correspondenceID', {correspondenceID});
+}
+
+export async function deleteCorrespondence(correspondenceID: string): Promise<Correspondence | undefined> {
+    return await deleteNode(NodeType.CORRESPONDENCE, 'correspondenceID: $correspondenceID', { correspondenceID });
 }
 
 function prepCorrespondenceProps(correspondence: CorrespondenceI): string[] {

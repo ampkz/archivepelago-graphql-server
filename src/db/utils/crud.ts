@@ -11,14 +11,14 @@ export enum Errors {
     CANNOT_UPDATE_NODE = 'Cannot Update Node',
 }
 
-export async function createNode(nodeType: NodeType, props: string[], params: object, dbName: string = (process.env.ARCHIVE_DB as string)): Promise<any | undefined> {
+export async function createNode(nodeName: string, props: string[], params: object, dbName: string = (process.env.ARCHIVE_DB as string)): Promise<any | undefined> {
     const driver: Driver = await connect();
     const session: Session = driver.session(getSessionOptions(dbName));
 
     let createdNode: object | undefined = undefined;
 
     try{
-        const match: RecordShape = await session.run(`CREATE(n:${ nodeType } { ${ props.join(', ') } }) RETURN n`, params);
+        const match: RecordShape = await session.run(`CREATE(n:${ nodeName } { ${ props.join(', ') } }) RETURN n`, params);
 
         if(match.summary.counters._stats.nodesCreated !== 1){
             await session.close();
@@ -105,17 +105,17 @@ export async function getNodes(nodeType: string, dbName: string = (process.env.A
     return nodes;
 }
 
-export async function deleteNode(nodeName: string, idProp: string, params: object, dbName: string = (process.env.ARCHIVE_DB as string)): Promise<any | undefined> {
+export async function deleteNode(nodeType: NodeType, idProp: string, params: object, dbName: string = (process.env.ARCHIVE_DB as string)): Promise<any | undefined> {
     const driver: Driver = await connect();
     const session: Session = driver.session(getSessionOptions(dbName));
 
-    const matchedNode: any | undefined = await getNode(nodeName, idProp, params, dbName, session);
+    const matchedNode: any | undefined = await getNode(nodeType, idProp, params, dbName, session);
 
     if(matchedNode){
         let match: RecordShape
         
         try{
-            match = await session.run(`MATCH(n:${nodeName} { ${idProp }}) DETACH DELETE n`, params);
+            match = await session.run(`MATCH(n:${nodeType} { ${idProp }}) DETACH DELETE n`, params);
 
             if(match.summary.counters._stats.nodesDeleted !== 1){
                 await session.close();

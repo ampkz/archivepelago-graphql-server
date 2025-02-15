@@ -91,14 +91,14 @@ describe(`CRUD Tests`, () => {
         const driverSpy = jest.spyOn(neo4j, "driver");
         driverSpy.mockReturnValueOnce(driverMock);
 
-        await expect(getNode('User', 'email: $email', { email: faker.internet.email() }, (process.env.USERS_DB as string))).rejects.toThrow(CRUDErrors.CANNOT_MATCH_NODE);
+        await expect(getNode(NodeType.USER, 'email: $email', { email: faker.internet.email() }, (process.env.USERS_DB as string))).rejects.toThrow(CRUDErrors.CANNOT_MATCH_NODE);
     });
 
     it(`should delete an existing node`, async () => {
         const email: string = faker.internet.email();
         const node: object | undefined = await createNode(NodeType.USER, ['email: $email'], { email }, (process.env.USERS_DB as string));
         
-        const deletedNode: any | undefined = await deleteNode('User', 'email: $email', { email }, (process.env.USERS_DB as string));
+        const deletedNode: any | undefined = await deleteNode(NodeType.USER, 'email: $email', { email }, (process.env.USERS_DB as string));
 
         expect(deletedNode).toEqual(node);
     });
@@ -140,7 +140,7 @@ describe(`CRUD Tests`, () => {
         const driverSpy = jest.spyOn(neo4j, "driver");
         driverSpy.mockReturnValueOnce(driverMock);
 
-        await expect(deleteNode('User', 'email: $email', { email: faker.internet.email() }, (process.env.USERS_DB as string))).rejects.toThrow(CRUDErrors.CANNOT_DELETE_NODE);
+        await expect(deleteNode(NodeType.USER, 'email: $email', { email: faker.internet.email() }, (process.env.USERS_DB as string))).rejects.toThrow(CRUDErrors.CANNOT_DELETE_NODE);
     });
 
     it(`should throw an error if there was an issue with the database in deleting the node`, async () => {
@@ -180,7 +180,7 @@ describe(`CRUD Tests`, () => {
         const driverSpy = jest.spyOn(neo4j, "driver");
         driverSpy.mockReturnValueOnce(driverMock);
 
-        await expect(deleteNode('User', 'email: $email', { email: faker.internet.email() }, (process.env.USERS_DB as string))).rejects.toThrow(CRUDErrors.CANNOT_DELETE_NODE);
+        await expect(deleteNode(NodeType.USER, 'email: $email', { email: faker.internet.email() }, (process.env.USERS_DB as string))).rejects.toThrow(CRUDErrors.CANNOT_DELETE_NODE);
     });
 
     it(`should update a created node`, async () => {
@@ -232,7 +232,7 @@ describe(`CRUD Tests`, () => {
         const email: string = faker.internet.email(),
         updatedFirstName: string = faker.person.firstName();
 
-        await expect(updateNode('User', 'u', 'email', ['u.firstName = $firstName'], { email, firstName: updatedFirstName})).rejects.toThrow(CRUDErrors.CANNOT_UPDATE_NODE);
+        await expect(updateNode(NodeType.USER, 'u', 'email', ['u.firstName = $firstName'], { email, firstName: updatedFirstName})).rejects.toThrow(CRUDErrors.CANNOT_UPDATE_NODE);
     });
 
     it(`should get a list of created nodes`, async () => {

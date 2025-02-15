@@ -4,7 +4,7 @@ import { faker } from '@faker-js/faker';
 import { Correspondence, CorrespondenceType } from '../../../src/archive/correspondence';
 import { Person } from '../../../src/archive/person';
 import { createPerson } from '../../../src/db/archive/crud-person';
-import { createCorrespondence, getCorrespondence } from '../../../src/db/archive/crud-correspondence';
+import { createCorrespondence, deleteCorrespondence, getCorrespondence } from '../../../src/db/archive/crud-correspondence';
 
 dotenv.config();
 
@@ -45,6 +45,23 @@ describe(`CRUD Person Tests`, () => {
         correspondence.correspondenceID = createdCorrespondence?.correspondenceID as string;
 
         const matchedCorrespondence = await getCorrespondence(correspondence.correspondenceID);
+
+        expect(matchedCorrespondence).toEqual(correspondence);
+    })
+
+    it(`should delete a created correspondence`, async () => {
+        const toPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
+        const fromPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
+        const correspondenceDate = faker.date.anytime().toDateString();
+        const correspondenceType = CorrespondenceType.LETTER;
+
+        const correspondence: Correspondence = new Correspondence({ correspondenceID: faker.database.mongodbObjectId(), toID: toPerson.id, fromID: fromPerson.id, correspondenceDate, correspondenceType });
+
+        const createdCorrespondence = await createCorrespondence(correspondence);
+
+        correspondence.correspondenceID = createdCorrespondence?.correspondenceID as string;
+
+        const matchedCorrespondence = await deleteCorrespondence(correspondence.correspondenceID);
 
         expect(matchedCorrespondence).toEqual(correspondence);
     })
