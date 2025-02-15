@@ -1,6 +1,7 @@
 import * as bcrypt from 'bcrypt';
 import { User, UpdatedUserI } from "../../users/users";
 import { createNode, deleteNode, getNode, updateNode } from "../utils/crud";
+import { NodeType } from '../../_helpers/nodes';
 
 export enum Errors {
     CANNOT_CREATE_USER = 'Cannot Create User',
@@ -12,7 +13,7 @@ export enum Errors {
 export async function createUser(user: User, pwd: string): Promise<User> {
     const pwdHash: string = await bcrypt.hash(pwd, parseInt(process.env.SALT_ROUNDS as string));
 
-    await createNode(`User`, [`id:apoc.create.uuid(), email: $email, firstName: $firstName, lastName: $lastName, secondName: $secondName, auth: $auth, pwd: $pwdHash`], { email: user.email, firstName: user.firstName, lastName: user.lastName, secondName: user.secondName, auth: user.auth, pwdHash }, (process.env.USERS_DB as string));
+    await createNode(NodeType.USER, [`id:apoc.create.uuid(), email: $email, firstName: $firstName, lastName: $lastName, secondName: $secondName, auth: $auth, pwd: $pwdHash`], { email: user.email, firstName: user.firstName, lastName: user.lastName, secondName: user.secondName, auth: user.auth, pwdHash }, (process.env.USERS_DB as string));
 
     return user;
 }
@@ -20,7 +21,7 @@ export async function createUser(user: User, pwd: string): Promise<User> {
 export async function getUserByEmail(email: string): Promise<User | undefined> {
     let user: User | undefined = undefined;
 
-    const matchedUser: any | undefined = await getNode(`User`, `email: $email`, { email }, (process.env.USERS_DB as string));
+    const matchedUser: any | undefined = await getNode(NodeType.USER, `email: $email`, { email }, (process.env.USERS_DB as string));
 
     if(matchedUser){
         user = new User(matchedUser.email, matchedUser.auth, matchedUser.firstName, matchedUser.lastName, matchedUser.secondName);
@@ -32,7 +33,7 @@ export async function getUserByEmail(email: string): Promise<User | undefined> {
 export async function deleteUser(email: string): Promise<User | undefined> {
     let user: User | undefined = undefined;
 
-    const deletedUser: any | undefined = await deleteNode(`User`, `email: $email`, { email }, (process.env.USERS_DB as string));
+    const deletedUser: any | undefined = await deleteNode(NodeType.USER, `email: $email`, { email }, (process.env.USERS_DB as string));
 
     if(deletedUser){
         user = new User(deletedUser.email, deletedUser.auth, deletedUser.firstName, deletedUser.lastName, deletedUser.secondName);
@@ -48,7 +49,7 @@ export async function updateUser(emailToUpdate: string, updatedUser: UpdatedUser
         updatedUser.updatedPassword = await bcrypt.hash(updatedUser.updatedPassword, parseInt(process.env.SALT_ROUNDS as string));
     }
 
-    const matchedUser = await updateNode(`User`, `u`, `email`, updatedUserToProps(updatedUser), { email: emailToUpdate, ... updatedUser }, (process.env.USERS_DB as string));
+    const matchedUser = await updateNode(NodeType.USER, `u`, `email`, updatedUserToProps(updatedUser), { email: emailToUpdate, ... updatedUser }, (process.env.USERS_DB as string));
 
     if(matchedUser) {
         user = new User(matchedUser.email, matchedUser.auth, matchedUser.firstName, matchedUser.lastName, matchedUser.secondName);

@@ -1,6 +1,7 @@
 import { Label } from "../../../archive/label";
 import { Person } from "../../../archive/person";
-import { Node, NodeType, PersonLabel, Relationship, RelationshipDirection, RelationshipType } from "../../../archive/relationship/relationship";
+import { PersonLabel, Relationship, RelationshipDirection, RelationshipType } from "../../../archive/relationship/relationship";
+import { Node, NodeType } from "../../../_helpers/nodes";
 import { createRelationship, deleteRelationship, getRelationshipsToNode } from "../../utils/relationship/crud-relationship";
 
 export async function createPersonLabel(personLabel: PersonLabel): Promise<Person | undefined>{

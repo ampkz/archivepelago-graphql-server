@@ -4,7 +4,7 @@ export enum LabelType {
     CAREER = 'Career'
 }
 
-export class Label {
+export class Label implements LabelI {
     public name: string;
     public type: LabelType;
 

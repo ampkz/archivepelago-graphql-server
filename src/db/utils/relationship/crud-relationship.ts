@@ -1,8 +1,9 @@
 import { Driver, Record, RecordShape, Session } from "neo4j-driver";
-import { Node, NodeType, Relationship, RelationshipDirection, RelationshipType } from "../../../archive/relationship/relationship";
+import { Relationship, RelationshipDirection, RelationshipType } from "../../../archive/relationship/relationship";
 import { connect } from "../connection";
 import { getSessionOptions } from "../../../_helpers/db-helper";
 import { InternalError } from "../../../_helpers/errors-helper";
+import { Node, NodeType } from "../../../_helpers/nodes";
 
 export enum Errors {
     COULD_NOT_CREATE_RELATIONSHIP = "Could not create relationship.",
@@ -14,7 +15,7 @@ export async function createRelationship(relationship: Relationship, dbName: str
     const session: Session = driver.session(getSessionOptions(dbName));
 
     const preppedReturn: string = prepShouldReturnFromQuery(relationship);
-
+    
     const match: RecordShape = await session.run(`MATCH (f:${relationship.node1.nodeType} {${relationship.node1.getIdString()}}), (s:${relationship.node2.nodeType} {${relationship.node2.getIdString()}}) CREATE (f)${relationship.direction === RelationshipDirection.COMING ? `<` : ``}-[:${relationship.name}]-${relationship.direction === RelationshipDirection.GOING ? `>` : ``}(s) ${ preppedReturn.length > 0 ? `RETURN ${preppedReturn}` : `` }`, relationship.getRelationshipParams());
 
     if(match.summary.counters._stats.relationshipsCreated !== 1){

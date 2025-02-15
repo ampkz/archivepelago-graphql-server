@@ -6,6 +6,7 @@ import { Neo4jError, Record, Session } from 'neo4j-driver';
 import neo4j, { Driver } from 'neo4j-driver';
 import { InternalError } from '../../../src/_helpers/errors-helper';
 import { Label, LabelType } from '../../../src/archive/label';
+import { NodeType } from '../../../src/_helpers/nodes';
 
 dotenv.config();
 
@@ -20,35 +21,35 @@ describe(`CRUD Tests`, () => {
     
     it(`should create a new node`, async () => {
         const email: string = faker.internet.email();
-        const node: object | undefined = await createNode('User', ['email: $email'], { email }, (process.env.USERS_DB as string));
+        const node: object | undefined = await createNode(NodeType.USER, ['email: $email'], { email }, (process.env.USERS_DB as string));
         expect(node).toEqual({ email });
     });
 
     it(`should create a new node in the default database`, async () => {
         const email: string = faker.internet.email();
-        const node: object | undefined = await createNode('User', ['email: $email'], { email });
+        const node: object | undefined = await createNode(NodeType.USER, ['email: $email'], { email });
         expect(node).toEqual({ email });
     });
 
     it(`should get a node in the default database`, async () => {
         const email: string = faker.internet.email();
-        const node: object | undefined = await createNode('User', ['email: $email'], { email });
-        const matchedNode: any | undefined = await getNode('User', 'email: $email', { email });
+        const node: object | undefined = await createNode(NodeType.USER, ['email: $email'], { email });
+        const matchedNode: any | undefined = await getNode(NodeType.USER, 'email: $email', { email });
         expect(matchedNode).toEqual(node);
     });
 
     it(`should delete a node in the default database`, async () => {
         const email: string = faker.internet.email();
-        const node: object | undefined = await createNode('User', ['email: $email'], { email });
-        const matchedNode: any | undefined = await deleteNode('User', 'email: $email', { email });
+        const node: object | undefined = await createNode(NodeType.USER, ['email: $email'], { email });
+        const matchedNode: any | undefined = await deleteNode(NodeType.USER, 'email: $email', { email });
         expect(matchedNode).toEqual(node);
     });
 
     it(`should throw an error if trying to create a user with an existing email`, async () => {
         const email: string = faker.internet.email();
-        const node: object | undefined = await createNode('User', ['email: $email'], { email }, (process.env.USERS_DB as string));
+        const node: object | undefined = await createNode(NodeType.USER, ['email: $email'], { email }, (process.env.USERS_DB as string));
     
-        await expect(createNode('User', ['email: $email'], { email }, (process.env.USERS_DB as string))).rejects.toThrow(CRUDErrors.CANNOT_CREATE_NODE);
+        await expect(createNode(NodeType.USER, ['email: $email'], { email }, (process.env.USERS_DB as string))).rejects.toThrow(CRUDErrors.CANNOT_CREATE_NODE);
 
     });
 
@@ -65,14 +66,14 @@ describe(`CRUD Tests`, () => {
         const driverSpy = jest.spyOn(neo4j, "driver");
         driverSpy.mockReturnValueOnce(driverMock);
 
-        await expect(createNode('User', ['email: $email'], { email: faker.internet.email() }, (process.env.USERS_DB as string))).rejects.toThrow(CRUDErrors.CANNOT_CREATE_NODE);
+        await expect(createNode(NodeType.USER, ['email: $email'], { email: faker.internet.email() }, (process.env.USERS_DB as string))).rejects.toThrow(CRUDErrors.CANNOT_CREATE_NODE);
     });
 
     it(`should return a created node`, async () => {
         const email: string = faker.internet.email();
-        const node: object | undefined = await createNode('User', ['email: $email'], { email }, (process.env.USERS_DB as string));
+        const node: object | undefined = await createNode(NodeType.USER, ['email: $email'], { email }, (process.env.USERS_DB as string));
         
-        const matchedNode: any | undefined = await getNode('User', 'email: $email', { email }, (process.env.USERS_DB as string));
+        const matchedNode: any | undefined = await getNode(NodeType.USER, 'email: $email', { email }, (process.env.USERS_DB as string));
         
         expect(matchedNode).toEqual(node);
     });
@@ -95,7 +96,7 @@ describe(`CRUD Tests`, () => {
 
     it(`should delete an existing node`, async () => {
         const email: string = faker.internet.email();
-        const node: object | undefined = await createNode('User', ['email: $email'], { email }, (process.env.USERS_DB as string));
+        const node: object | undefined = await createNode(NodeType.USER, ['email: $email'], { email }, (process.env.USERS_DB as string));
         
         const deletedNode: any | undefined = await deleteNode('User', 'email: $email', { email }, (process.env.USERS_DB as string));
 
@@ -187,9 +188,9 @@ describe(`CRUD Tests`, () => {
             firstName: string = faker.person.firstName(),
             updatedFirstName: string = faker.person.firstName();
 
-        await createNode('User', ['email: $email', 'firstName: $firstName'], { email, firstName }, (process.env.USERS_DB as string));
+        await createNode(NodeType.USER, ['email: $email', 'firstName: $firstName'], { email, firstName }, (process.env.USERS_DB as string));
         
-        const updatedNode: any | undefined = await updateNode('User', 'u', 'email', ['u.firstName = $firstName'], { email, firstName: updatedFirstName}, (process.env.USERS_DB as string));
+        const updatedNode: any | undefined = await updateNode(NodeType.USER, 'u', 'email', ['u.firstName = $firstName'], { email, firstName: updatedFirstName}, (process.env.USERS_DB as string));
         
         expect(updatedNode).toEqual({ email, firstName: updatedFirstName });
     });
@@ -199,9 +200,9 @@ describe(`CRUD Tests`, () => {
             firstName: string = faker.person.firstName(),
             updatedFirstName: string = faker.person.firstName();
 
-        await createNode('User', ['email: $email', 'firstName: $firstName'], { email, firstName });
+        await createNode(NodeType.USER, ['email: $email', 'firstName: $firstName'], { email, firstName });
         
-        const updatedNode: any | undefined = await updateNode('User', 'u', 'email', ['u.firstName = $firstName'], { email, firstName: updatedFirstName});
+        const updatedNode: any | undefined = await updateNode(NodeType.USER, 'u', 'email', ['u.firstName = $firstName'], { email, firstName: updatedFirstName});
         
         expect(updatedNode).toEqual({ email, firstName: updatedFirstName });
     });
@@ -210,7 +211,7 @@ describe(`CRUD Tests`, () => {
         const email: string = faker.internet.email(),
             updatedFirstName: string = faker.person.firstName();
 
-        const updatedNode: any | undefined = await updateNode('User', 'u', 'email', ['u.firstName = $firstName'], { email, firstName: updatedFirstName});
+        const updatedNode: any | undefined = await updateNode(NodeType.USER, 'u', 'email', ['u.firstName = $firstName'], { email, firstName: updatedFirstName});
         
         expect(updatedNode).toBeUndefined();
     });
@@ -239,9 +240,9 @@ describe(`CRUD Tests`, () => {
         const label2:Label = new Label({name: faker.word.adjective(), type: LabelType.CAREER});
         const label3:Label = new Label({name: faker.word.adjective(), type: LabelType.CAREER});
 
-        await createNode('Label', ['name: $name', 'type: $type'], label);
-        await createNode('Label', ['name: $name', 'type: $type'], label2);
-        await createNode('Label', ['name: $name', 'type: $type'], label3);
+        await createNode(NodeType.LABEL, ['name: $name', 'type: $type'], label);
+        await createNode(NodeType.LABEL, ['name: $name', 'type: $type'], label2);
+        await createNode(NodeType.LABEL, ['name: $name', 'type: $type'], label3);
 
         const labels: any[] = await getNodes('Label');
 

@@ -1,26 +1,27 @@
+import { NodeType } from "../../_helpers/nodes";
 import { Label, LabelI, UpdatedLabelI } from "../../archive/label";
 import { createNode, deleteNode, getNode, getNodes, updateNode } from "../utils/crud";
 
 export async function getLabel(name: string): Promise<Label | undefined> {
-    const matchedNode: object | undefined = await getNode('Label', 'name: $name', { name });
+    const matchedNode: object | undefined = await getNode(NodeType.LABEL, 'name: $name', { name });
 
     return matchedNode as Label;
 }
 
 export async function createLabel(label: LabelI): Promise<Label | undefined> {
-    const createdLabel: object | undefined = await createNode('Label', ['name: $name', 'type: $type'], label);
+    const createdLabel: object | undefined = await createNode(NodeType.LABEL, ['name: $name', 'type: $type'], label);
 
     return createdLabel as Label;
 }
 
 export async function deleteLabel(name: string): Promise<Label | undefined> {
-    const deletedLabel: object | undefined = await deleteNode('Label', 'name: $name', { name });
+    const deletedLabel: object | undefined = await deleteNode(NodeType.LABEL, 'name: $name', { name });
 
     return deletedLabel as Label;
 }
 
 export async function updateLabel(name: string, updatedLabel: UpdatedLabelI): Promise<Label | undefined> {
-    const matchedLabel: object | undefined = await updateNode('Label', 'l', 'name', updatedLabelToProps(updatedLabel), {name, ...updatedLabel});
+    const matchedLabel: object | undefined = await updateNode(NodeType.LABEL, 'l', 'name', updatedLabelToProps(updatedLabel), {name, ...updatedLabel});
 
     return matchedLabel as Label;
 }
@@ -28,7 +29,7 @@ export async function updateLabel(name: string, updatedLabel: UpdatedLabelI): Pr
 export async function getLabels(): Promise<Label[]>{
     const labels: Label[] = [];
 
-    const matchedLabels = await getNodes('Label');
+    const matchedLabels = await getNodes(NodeType.LABEL);
 
     matchedLabels.map((label) => {
         labels.push(new Label(label));

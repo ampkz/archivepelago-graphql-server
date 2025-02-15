@@ -2,6 +2,7 @@ import { Driver, Neo4jError, RecordShape, Session } from "neo4j-driver";
 import { connect } from "./connection";
 import { getSessionOptions } from "../../_helpers/db-helper";
 import { InternalError } from "../../_helpers/errors-helper";
+import { NodeType } from "../../_helpers/nodes";
 
 export enum Errors {
     CANNOT_CREATE_NODE = 'Cannot Create Node',
@@ -10,14 +11,14 @@ export enum Errors {
     CANNOT_UPDATE_NODE = 'Cannot Update Node',
 }
 
-export async function createNode(nodeName: string, props: string[], params: object, dbName: string = (process.env.ARCHIVE_DB as string)): Promise<object | undefined> {
+export async function createNode(nodeType: NodeType, props: string[], params: object, dbName: string = (process.env.ARCHIVE_DB as string)): Promise<any | undefined> {
     const driver: Driver = await connect();
     const session: Session = driver.session(getSessionOptions(dbName));
 
     let createdNode: object | undefined = undefined;
 
     try{
-        const match: RecordShape = await session.run(`CREATE(n:${ nodeName } { ${ props.join(', ') } }) RETURN n`, params);
+        const match: RecordShape = await session.run(`CREATE(n:${ nodeType } { ${ props.join(', ') } }) RETURN n`, params);
 
         if(match.summary.counters._stats.nodesCreated !== 1){
             await session.close();

@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { Person } from '../../../../src/archive/person';
-import { Node, NodeType, Relationship, RelationshipDirection, RelationshipType } from '../../../../src/archive/relationship/relationship';
+import { Relationship, RelationshipDirection, RelationshipType } from '../../../../src/archive/relationship/relationship';
+import { Node, NodeType } from '../../../../src/_helpers/nodes';
 import { createPerson, deletePerson } from '../../../../src/db/archive/crud-person';
 import { Label, LabelType } from '../../../../src/archive/label';
 import { createLabel } from '../../../../src/db/archive/crud-label';
