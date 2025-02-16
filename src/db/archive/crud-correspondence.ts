@@ -28,37 +28,37 @@ export async function deleteCorrespondence(correspondenceID: string): Promise<Co
 }
 
 export async function updateCorrespondence(updatedCorrespondence: UpdatedCorrespondenceI): Promise<Correspondence | undefined>{
-    const preCorrespondence = await getCorrespondence(updatedCorrespondence.correspondenceID);
-    const correspondence = await updateNode(NodeType.CORRESPONDENCE, 'c', 'correspondenceID', updatedCorrespondenceToProps(updatedCorrespondence), updatedCorrespondence);
-    
-    if(correspondence && preCorrespondence){
-        let removeProps: string[] = [],
-            propRemoved: string | undefined;
-        propRemoved = await updateCorrespondenceRelationships(correspondence.correspondenceID, updatedCorrespondence.updatedFromID, preCorrespondence.fromID, 'c.fromID', RelationshipType.SENT);
-        if(propRemoved) removeProps.push(propRemoved);
-        
-        propRemoved = await updateCorrespondenceRelationships(correspondence.correspondenceID, updatedCorrespondence.updatedToID, preCorrespondence.toID, 'c.toID', RelationshipType.RECEIVED);
-        if(propRemoved) removeProps.push(propRemoved);
+    const anythingToUpdate: string[] = updatedCorrespondenceToProps(updatedCorrespondence);
+    let correspondence;
 
-        if(removeProps.length > 0){
-            return await removeProperties(NodeType.CORRESPONDENCE, 'c', 'correspondenceID', removeProps, { correspondenceID: correspondence.correspondenceID });
+    if(anythingToUpdate.length > 0){
+        const preCorrespondence = await getCorrespondence(updatedCorrespondence.correspondenceID);
+        correspondence = await updateNode(NodeType.CORRESPONDENCE, 'c', 'correspondenceID', updatedCorrespondenceToProps(updatedCorrespondence), updatedCorrespondence);
+        
+        if(correspondence && preCorrespondence){
+            await updateCorrespondenceRelationships(correspondence.correspondenceID, updatedCorrespondence.updatedFromID, preCorrespondence.fromID, 'c.fromID', RelationshipType.SENT);
+            await updateCorrespondenceRelationships(correspondence.correspondenceID, updatedCorrespondence.updatedToID, preCorrespondence.toID, 'c.toID', RelationshipType.RECEIVED);
         }
+    }
+
+    const removedProps = updatedCorrespondenceRemovedProps(updatedCorrespondence);
+            
+    if(removedProps.length > 0){
+        correspondence = await removeProperties(NodeType.CORRESPONDENCE, 'c', 'correspondenceID', removedProps, { correspondenceID: updatedCorrespondence.correspondenceID });
     }
     
     return correspondence;
 }
 
-async function updateCorrespondenceRelationships(correspondenceID: string, updatedIDs: string[] | undefined, preUpdateIDs: string[] | undefined, propToRemove: string, relationshipType: RelationshipType): Promise<string | undefined>{
-    let removedIDs: string[] = [],
-        removeCorrespondenceRelationship: string | undefined;
-    
+async function updateCorrespondenceRelationships(correspondenceID: string, updatedIDs: string[] | undefined | null, preUpdateIDs: string[] | undefined | null, propToRemove: string, relationshipType: RelationshipType){
+    let removedIDs: string[] = [];
+
     if(updatedIDs && preUpdateIDs){
         removedIDs = removedValues(preUpdateIDs, updatedIDs);
-    }else if(!updatedIDs && preUpdateIDs){
+    }else if(updatedIDs === null && preUpdateIDs){
         removedIDs = preUpdateIDs;
-        removeCorrespondenceRelationship = propToRemove;
     }
-
+    
     await Promise.all(removedIDs.map(async (id) => {
         await deleteToFromRelationship(correspondenceID, id, relationshipType);
     }));
@@ -74,11 +74,9 @@ async function updateCorrespondenceRelationships(correspondenceID: string, updat
     await Promise.all(addedIDs.map(async (id) => {
         await createToFromRelationship(correspondenceID, id, relationshipType);
     }));
-
-    return removeCorrespondenceRelationship;
 }
 
-async function createToFromRelationships(correspondence: CorrespondenceI, createdCorrespondenceID: string): Promise<[string[] | undefined, string[] | undefined]> {
+async function createToFromRelationships(correspondence: CorrespondenceI, createdCorrespondenceID: string): Promise<[string[] | undefined | null, string[] | undefined | null]> {
     const createdFromRelationships: string[] = [];
     const createdToRelationships: string[] = [];
     let flagChange: boolean = false;
@@ -151,6 +149,17 @@ async function deleteToFromRelationship(correspondenceID: string, id: string, re
     return id;
 }
 
+function updatedCorrespondenceRemovedProps(updatedCorrespondence: UpdatedCorrespondenceI): string[]{
+    const removedProps: string[] = [];
+
+    if(updatedCorrespondence.updatedCorrespondenceDate === null) removedProps.push(`c.correspondenceDate`);
+    if(updatedCorrespondence.updatedCorrespondenceType === null) removedProps.push(`c.correspondenceType`);
+    if(updatedCorrespondence.updatedToID === null) removedProps.push(`c.toID`);
+    if(updatedCorrespondence.updatedFromID === null) removedProps.push(`c.fromID`);
+
+    return removedProps;
+}
+
 function updatedCorrespondenceToProps(updatedCorrespondence: UpdatedCorrespondenceI): string[] {
     const props: string[] = [];
 
@@ -165,10 +174,10 @@ function updatedCorrespondenceToProps(updatedCorrespondence: UpdatedCorresponden
 function prepCorrespondenceProps(correspondence: CorrespondenceI): string[] {
     const props: string[] = [`correspondenceID:apoc.create.uuid()`];
 
-    if(correspondence.fromID) props.push(`fromID: $fromID`);
-    if(correspondence.toID) props.push(`toID: $toID`);
-    if(correspondence.correspondenceDate) props.push(`correspondenceDate: $correspondenceDate`);
-    if(correspondence.correspondenceType) props.push(`correspondenceType: $correspondenceType`);
+    if(correspondence.fromID !== undefined && correspondence.fromID !== null) props.push(`fromID: $fromID`);
+    if(correspondence.toID !== undefined && correspondence.toID !== null) props.push(`toID: $toID`);
+    if(correspondence.correspondenceDate !== undefined && correspondence.correspondenceDate !== null) props.push(`correspondenceDate: $correspondenceDate`);
+    if(correspondence.correspondenceType !== undefined && correspondence.correspondenceType !== null) props.push(`correspondenceType: $correspondenceType`);
 
     return props;
 }

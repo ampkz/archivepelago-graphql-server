@@ -30,8 +30,8 @@ export interface CorrespondenceI {
 
 export interface UpdatedCorrespondenceI {
     correspondenceID: string,
-    updatedFromID?: string[],
-    updatedToID?: string[],
-    updatedCorrespondenceDate?: string,
-    updatedCorrespondenceType?: CorrespondenceType
+    updatedFromID?: string[] | null,
+    updatedToID?: string[] | null,
+    updatedCorrespondenceDate?: string | null,
+    updatedCorrespondenceType?: CorrespondenceType | null
 }

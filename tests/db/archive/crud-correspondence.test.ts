@@ -154,7 +154,7 @@ describe(`CRUD Correspondence Tests`, () => {
         expect(matchedCorrespondence).toEqual({ correspondenceID: updatedCorrespondence.correspondenceID, correspondenceDate: updatedCorrespondence.updatedCorrespondenceDate, correspondenceType: updatedCorrespondence.updatedCorrespondenceType, toID: updatedCorrespondence.updatedToID, fromID: updatedCorrespondence.updatedFromID });
     });
 
-    it(`should update a created correspondence and remove toID and fromID`, async () => {
+    it(`should update a created correspondence and remove properties`, async () => {
         const toPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
         const fromPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
         const correspondenceDate = faker.date.anytime().toDateString();
@@ -166,11 +166,11 @@ describe(`CRUD Correspondence Tests`, () => {
 
         correspondence.correspondenceID = createdCorrespondence?.correspondenceID as string;
 
-        const updatedCorrespondence: UpdatedCorrespondenceI = { correspondenceID: correspondence.correspondenceID, updatedCorrespondenceDate: faker.date.anytime().toDateString(), updatedCorrespondenceType: CorrespondenceType.LETTER }
+        const updatedCorrespondence: UpdatedCorrespondenceI = { correspondenceID: correspondence.correspondenceID, updatedCorrespondenceDate: null, updatedCorrespondenceType: null, updatedFromID: null,  updatedToID: null}
 
         const matchedCorrespondence = await updateCorrespondence(updatedCorrespondence);
-
-        expect(matchedCorrespondence).toEqual({ correspondenceID: updatedCorrespondence.correspondenceID, correspondenceDate: updatedCorrespondence.updatedCorrespondenceDate, correspondenceType: updatedCorrespondence.updatedCorrespondenceType });
+        
+        expect(matchedCorrespondence).toEqual({ correspondenceID: updatedCorrespondence.correspondenceID });
     });
 
     it(`should update a created correspondence and add extra toID and fromID`, async () => {
@@ -215,6 +215,27 @@ describe(`CRUD Correspondence Tests`, () => {
         expect(matchedCorrespondence).toEqual({ correspondenceID: updatedCorrespondence.correspondenceID, correspondenceDate: updatedCorrespondence.updatedCorrespondenceDate, correspondenceType: updatedCorrespondence.updatedCorrespondenceType, fromID: updatedCorrespondence.updatedFromID, toID: updatedCorrespondence.updatedToID });
     });
 
+    it(`should update a created correspondence and remove extra toID and fromID`, async () => {
+        const toPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
+        const fromPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
+        const toPerson2: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
+        const fromPerson2: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
+        const correspondenceDate = faker.date.anytime().toDateString();
+        const correspondenceType = CorrespondenceType.LETTER;
+
+        const correspondence: Correspondence = new Correspondence({ correspondenceID: faker.database.mongodbObjectId(), correspondenceDate, correspondenceType, toID: [toPerson.id, toPerson2.id], fromID: [fromPerson.id, fromPerson2.id] });
+
+        const createdCorrespondence = await createCorrespondence(correspondence);
+
+        correspondence.correspondenceID = createdCorrespondence?.correspondenceID as string;
+
+        const updatedCorrespondence: UpdatedCorrespondenceI = { correspondenceID: correspondence.correspondenceID, updatedCorrespondenceDate: faker.date.anytime().toDateString(), updatedCorrespondenceType: CorrespondenceType.LETTER, updatedFromID: [fromPerson.id], updatedToID: [toPerson.id] }
+
+        const matchedCorrespondence = await updateCorrespondence(updatedCorrespondence);
+
+        expect(matchedCorrespondence).toEqual({ correspondenceID: updatedCorrespondence.correspondenceID, correspondenceDate: updatedCorrespondence.updatedCorrespondenceDate, correspondenceType: updatedCorrespondence.updatedCorrespondenceType, fromID: updatedCorrespondence.updatedFromID, toID: updatedCorrespondence.updatedToID });
+    });
+
     it(`should throw an error if there was an issue with the server when deleting a relationship`, async () => {
         const toPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
         const fromPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
@@ -227,7 +248,7 @@ describe(`CRUD Correspondence Tests`, () => {
 
         correspondence.correspondenceID = createdCorrespondence?.correspondenceID as string;
 
-        const updatedCorrespondence: UpdatedCorrespondenceI = { correspondenceID: correspondence.correspondenceID, updatedCorrespondenceDate: faker.date.anytime().toDateString(), updatedCorrespondenceType: CorrespondenceType.LETTER, updatedToID: [toPerson.id] }
+        const updatedCorrespondence: UpdatedCorrespondenceI = { correspondenceID: correspondence.correspondenceID, updatedCorrespondenceDate: faker.date.anytime().toDateString(), updatedCorrespondenceType: CorrespondenceType.LETTER, updatedToID: [toPerson.id], updatedFromID: null }
 
         const deleteRelationshipSpy = jest.spyOn(CRUDRelationship, "deleteRelationship");
         deleteRelationshipSpy.mockRejectedValue(new InternalError(''));
@@ -247,7 +268,7 @@ describe(`CRUD Correspondence Tests`, () => {
 
         correspondence.correspondenceID = createdCorrespondence?.correspondenceID as string;
 
-        const updatedCorrespondence: UpdatedCorrespondenceI = { correspondenceID: correspondence.correspondenceID, updatedCorrespondenceDate: faker.date.anytime().toDateString(), updatedCorrespondenceType: CorrespondenceType.LETTER, updatedToID: [toPerson.id] }
+        const updatedCorrespondence: UpdatedCorrespondenceI = { correspondenceID: correspondence.correspondenceID, updatedCorrespondenceDate: faker.date.anytime().toDateString(), updatedCorrespondenceType: CorrespondenceType.LETTER, updatedToID: [toPerson.id], updatedFromID: null }
 
         const deleteRelationshipSpy = jest.spyOn(CRUDRelationship, "deleteRelationship");
         deleteRelationshipSpy.mockRejectedValue(new InternalError(CRUDRelationship.Errors.COULD_NOT_DELETE_RELATIONSHIP));

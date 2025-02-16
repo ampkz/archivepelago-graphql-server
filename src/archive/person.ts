@@ -27,9 +27,9 @@ export interface PersonI {
 
 export interface UpdatedPersonI {
     id: string;
-    updatedFirstName?: string;
-    updatedLastName?: string;
-    updatedSecondName?: string;
-    updatedBirthDate?: string;
-    updatedDeathDate?: string;
+    updatedFirstName?: string | null;
+    updatedLastName?: string | null;
+    updatedSecondName?: string | null;
+    updatedBirthDate?: string | null;
+    updatedDeathDate?: string | null;
 }

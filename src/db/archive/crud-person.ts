@@ -1,6 +1,6 @@
 import { NodeType } from "../../_helpers/nodes";
 import { Person, PersonI, UpdatedPersonI } from "../../archive/person";
-import { createNode, deleteNode, getNode, getNodes, updateNode } from "../utils/crud";
+import { createNode, deleteNode, getNode, getNodes, removeProperties, updateNode } from "../utils/crud";
 
 export async function getPerson(id: string): Promise<Person | undefined> {
     const matchedNode: object | undefined = await getNode(NodeType.PERSON, 'id: $id', { id });
@@ -26,9 +26,17 @@ export async function deletePerson(id: string): Promise<Person | undefined> {
 }
 
 export async function updatePerson(updatedPerson: UpdatedPersonI): Promise<Person | undefined> {
+    const anythingToUpdate: string[] = updatedPersonToProps(updatedPerson);
+    let matchedPerson;
 
-    const matchedPerson = await updateNode(NodeType.PERSON, 'p', 'id', updatedPersonToProps(updatedPerson), updatedPerson);
-
+    if(anythingToUpdate.length > 0){
+        matchedPerson = await updateNode(NodeType.PERSON, 'p', 'id', anythingToUpdate, updatedPerson);
+    }
+    
+    const removedProps = updatedPersonRemovedProps(updatedPerson);
+    if(removedProps.length > 0){
+        matchedPerson = await removeProperties(NodeType.PERSON, 'p', 'id', removedProps, { id: updatedPerson.id });
+    }
     return matchedPerson as Person;
 }
 
@@ -56,14 +64,26 @@ function prepPersonProps(person: PersonI): string[] {
     return props;
 }
 
+function updatedPersonRemovedProps(updatedPerson: UpdatedPersonI): string[]{
+    const removedProps: string[] = [];
+
+    if(updatedPerson.updatedFirstName === null) removedProps.push(`p.firstName`);
+    if(updatedPerson.updatedSecondName === null) removedProps.push(`p.secondName`);
+    if(updatedPerson.updatedLastName === null) removedProps.push(`p.lastName`);
+    if(updatedPerson.updatedBirthDate === null) removedProps.push(`p.birthDate`);
+    if(updatedPerson.updatedDeathDate === null) removedProps.push(`p.deathDate`);
+
+    return removedProps;
+}
+
 function updatedPersonToProps(updatedPerson: UpdatedPersonI): string[] {
     const props: string[] = [];
 
-    if(updatedPerson.updatedFirstName) props.push(`p.firstName = $updatedFirstName`);
-    if(updatedPerson.updatedSecondName) props.push(`p.secondName = $updatedSecondName`);
-    if(updatedPerson.updatedLastName) props.push(`p.lastName = $updatedLastName`);
-    if(updatedPerson.updatedBirthDate) props.push(`p.birthDate = $updatedBirthDate`);
-    if(updatedPerson.updatedDeathDate) props.push(`p.deathDate = $updatedDeathDate`);
+    if(updatedPerson.updatedFirstName !== undefined && updatedPerson.updatedFirstName !== null) props.push(`p.firstName = $updatedFirstName`);
+    if(updatedPerson.updatedSecondName!== undefined && updatedPerson.updatedSecondName!== null) props.push(`p.secondName = $updatedSecondName`);
+    if(updatedPerson.updatedLastName!== undefined && updatedPerson.updatedLastName!== null) props.push(`p.lastName = $updatedLastName`);
+    if(updatedPerson.updatedBirthDate!== undefined && updatedPerson.updatedBirthDate!== null) props.push(`p.birthDate = $updatedBirthDate`);
+    if(updatedPerson.updatedDeathDate!== undefined && updatedPerson.updatedDeathDate!== null) props.push(`p.deathDate = $updatedDeathDate`);
  
     return props;
 }

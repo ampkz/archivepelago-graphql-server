@@ -107,6 +107,23 @@ describe(`CRUD Person Tests`, () => {
         expect(matchedPerson).toEqual(new Person({id: createdPerson.id, firstName: updatedFirstName, lastName: updatedLastName, secondName: updatedSecondName, birthDate: updatedBirthDate, deathDate: updatedDeathDate }));
     });
 
+    it(`should update a created person and delete a property set to null`, async () => {
+        const firstName: string = faker.person.firstName(),
+            lastName: string = faker.person.lastName(),
+            secondName: string = faker.person.middleName(),
+            birthDate: string = faker.date.birthdate().toDateString(),
+            deathDate: string = faker.date.birthdate().toDateString();
+
+        const person: Person = new Person({id: '', firstName, lastName, secondName, birthDate, deathDate});
+
+        const createdPerson: Person = await createPerson(person);
+        const updatedPerson: UpdatedPersonI = {id: createdPerson.id, updatedFirstName: null, updatedBirthDate: null, updatedDeathDate: null, updatedLastName: null, updatedSecondName: null };
+
+        const matchedPerson: Person | undefined = await updatePerson(updatedPerson);
+
+        expect(matchedPerson).toEqual(new Person({id: createdPerson.id }));
+    });
+
     test(`updatePerson should return undefined if no person exists`, async () => {
         const updatedPerson: Person | undefined = await updatePerson({ id: faker.database.mongodbObjectId(), updatedFirstName: faker.person.firstName() });
 
