@@ -1,6 +1,6 @@
 import { Correspondence, CorrespondenceI } from "../../archive/correspondence"
 import { Auth, isPermitted } from "../../auth/authorization";
-import { createCorrespondence, deleteCorrespondence, getCorrespondence } from "../../db/archive/crud-correspondence";
+import { createCorrespondence, deleteCorrespondence, getCorrespondence, updateCorrespondence } from "../../db/archive/crud-correspondence";
 import { mutationFailed, serverFailed, unauthorizedError } from "../errors/errors";
 
 export default {
@@ -44,6 +44,22 @@ export default {
 
             try {
                 correspondence = await deleteCorrespondence(correspondenceID);
+            }catch( error: any ){
+                throw mutationFailed(error.message);
+            }
+
+            return correspondence;
+        },
+
+        updateCorrespondence: async (_root: any, { input: { correspondenceID, updatedFromID, updatedToID, updatedCorrespondenceDate, updatedCorrespondenceType }}: any, { authorizedUser }: any) => {
+            if(!isPermitted(authorizedUser, Auth.ADMIN, Auth.CONTRIBUTOR)){
+                throw unauthorizedError(`You are not authorized to make this mutation.`);
+            }
+
+            let correspondence: Correspondence | undefined;
+
+            try {
+                correspondence = await updateCorrespondence({correspondenceID, updatedFromID, updatedToID, updatedCorrespondenceDate, updatedCorrespondenceType });
             }catch( error: any ){
                 throw mutationFailed(error.message);
             }

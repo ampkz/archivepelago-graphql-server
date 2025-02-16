@@ -14,6 +14,7 @@ type Query {
 type Mutation {
     createCorrespondence(input: CreateCorrespondenceInput!): Correspondence
     deleteCorrespondence(correspondenceID: ID!): Correspondence
+    updateCorrespondence(input: UpdateCorrespondenceInput!): Correspondence
 }
 
 input CreateCorrespondenceInput {
@@ -21,5 +22,13 @@ input CreateCorrespondenceInput {
     toID: [ID]
     correspondenceDate: String
     correspondenceType: String
+}
+
+input UpdateCorrespondenceInput {
+    correspondenceID: ID!
+    updatedFromID: [ID]
+    updatedToID: [ID]
+    updatedCorrespondenceDate: String
+    updatedCorrespondenceType: String
 }
 `
