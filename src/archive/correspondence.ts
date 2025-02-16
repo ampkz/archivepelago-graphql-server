@@ -28,7 +28,7 @@ export interface CorrespondenceI {
     correspondenceType?: CorrespondenceType
 }
 
-export interface updatedCorrespondenceI {
+export interface UpdatedCorrespondenceI {
     correspondenceID: string,
     updatedFromID?: string[],
     updatedToID?: string[],

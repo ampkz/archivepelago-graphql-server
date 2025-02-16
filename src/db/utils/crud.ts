@@ -177,3 +177,37 @@ export async function updateNode(nodeType: NodeType, nodePrefix: string, idProp:
 
     return match.records[0].get(0).properties;
 }
+
+export async function removeProperties(nodeType: NodeType, nodePrefix: string, idProp: string, propsToRemove: string[], params: object, dbName: string = (process.env.ARCHIVE_DB as string)): Promise<any | undefined>{
+    const driver: Driver = await connect();
+    const session: Session = driver.session(getSessionOptions(dbName));
+    
+    let match: RecordShape | undefined = undefined;
+
+    try{
+        match = await session.run(`MATCH(${nodePrefix}:${nodeType} { ${idProp}: $${idProp} }) REMOVE ${ propsToRemove.join(', ') } RETURN ${nodePrefix}`, params);
+    }catch ( error: unknown ) {
+        let data = {};
+
+        if(error instanceof Neo4jError){
+            data = { info: error.code };
+        }
+
+        await session.close();
+        await driver.close();
+        
+        throw new InternalError(Errors.CANNOT_UPDATE_NODE, data);
+    }
+    
+    if(match && match.records.length === 0) {
+        await session.close();
+        await driver.close();
+
+        return undefined;
+    }
+
+    await session.close();
+    await driver.close();
+
+    return match.records[0].get(0).properties;
+}

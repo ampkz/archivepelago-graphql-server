@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { createNode, Errors as CRUDErrors, deleteNode, getNode, getNodes, updateNode } from '../../../src/db/utils/crud';
+import { createNode, Errors as CRUDErrors, deleteNode, getNode, getNodes, removeProperties, updateNode } from '../../../src/db/utils/crud';
 import { faker } from '@faker-js/faker';
 import { destroyTestingDBs, initializeDBs } from '../../../src/db/utils/init-dbs';
 import { Neo4jError, Record, Session } from 'neo4j-driver';
@@ -12,12 +12,16 @@ dotenv.config();
 
 describe(`CRUD Tests`, () => {
     beforeAll(async () => {
-            await initializeDBs();
-        });
-    
-        afterAll(async () => {
-            await destroyTestingDBs();
-        });
+        await initializeDBs();
+    });
+
+    afterAll(async () => {
+        await destroyTestingDBs();
+    });
+
+    beforeEach(() => {
+        jest.restoreAllMocks();
+    })
     
     it(`should create a new node`, async () => {
         const email: string = faker.internet.email();
@@ -249,6 +253,45 @@ describe(`CRUD Tests`, () => {
         expect(labels).toContainEqual(label);
         expect(labels).toContainEqual(label2);
         expect(labels).toContainEqual(label3);
+    });
+
+    it(`should delete a property on a created node`, async () => {
+        const email: string = faker.internet.email(),
+            firstName: string = faker.person.firstName(),
+            updatedFirstName: string = faker.person.firstName();
+
+        await createNode(NodeType.USER, ['email: $email', 'firstName: $firstName'], { email, firstName });
+        
+        const updatedNode: any | undefined = await removeProperties(NodeType.USER, 'u', 'email', ['u.firstName'], { email });
+        
+        expect(updatedNode).toEqual({ email });
+        expect(updatedNode.firstName).toBeUndefined();
+    });
+
+    it(`should throw an error if there was an issue with the database in removing properties from a node`, async () => {
+        const driverMock = {
+            session: jest.fn().mockReturnValue({
+                run: jest.fn().mockRejectedValueOnce(new Neo4jError('','','','')),
+                close: jest.fn(),
+            } as unknown as Session),
+            close: jest.fn(),
+            getServerInfo: jest.fn()
+        } as unknown as Driver;
+
+        const driverSpy = jest.spyOn(neo4j, "driver");
+        driverSpy.mockReturnValueOnce(driverMock);
+
+        const email: string = faker.internet.email();
+
+        await expect(removeProperties(NodeType.USER, 'u', 'email', ['u.firstName'], { email })).rejects.toThrow(CRUDErrors.CANNOT_UPDATE_NODE);
+    });
+
+    it(`should return undefined if no node exists to remove properties`, async () => {
+        const email: string = faker.internet.email();
+
+        const updatedNode: any | undefined = await removeProperties(NodeType.USER, 'u', 'email', ['u.firstName'], { email });
+        
+        expect(updatedNode).toBeUndefined();
     });
     
 });
