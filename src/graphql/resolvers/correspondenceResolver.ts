@@ -19,7 +19,7 @@ export default {
     },
 
     Mutation: {
-        createCorrespondence: async (_root: any, { input: { fromID, toID, correspondenceDate, correspondenceType } }: any, { authorizedUser }: any) => {
+        createCorrespondence: async (_root: any, { input: { correspondenceDate, correspondenceType } }: any, { authorizedUser }: any) => {
             if(!isPermitted(authorizedUser, Auth.ADMIN, Auth.CONTRIBUTOR)){
                 throw unauthorizedError(`You are not authorized to make this mutation.`);
             }
@@ -27,7 +27,7 @@ export default {
             let correspondence: Correspondence | undefined;
 
             try {
-                correspondence = await createCorrespondence({ fromID, toID, correspondenceDate, correspondenceType} as CorrespondenceI)
+                correspondence = await createCorrespondence({ correspondenceDate, correspondenceType } as CorrespondenceI)
             }catch( error: any ){
                 throw mutationFailed(error.message);
             }
@@ -51,7 +51,7 @@ export default {
             return correspondence;
         },
 
-        updateCorrespondence: async (_root: any, { input: { correspondenceID, updatedFromID, updatedToID, updatedCorrespondenceDate, updatedCorrespondenceType }}: any, { authorizedUser }: any) => {
+        updateCorrespondence: async (_root: any, { input: { correspondenceID, updatedCorrespondenceDate, updatedCorrespondenceType }}: any, { authorizedUser }: any) => {
             if(!isPermitted(authorizedUser, Auth.ADMIN, Auth.CONTRIBUTOR)){
                 throw unauthorizedError(`You are not authorized to make this mutation.`);
             }
@@ -59,7 +59,7 @@ export default {
             let correspondence: Correspondence | undefined;
 
             try {
-                correspondence = await updateCorrespondence({correspondenceID, updatedFromID, updatedToID, updatedCorrespondenceDate, updatedCorrespondenceType });
+                correspondence = await updateCorrespondence({correspondenceID, updatedCorrespondenceDate, updatedCorrespondenceType });
             }catch( error: any ){
                 throw mutationFailed(error.message);
             }

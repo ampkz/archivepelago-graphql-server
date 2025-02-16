@@ -16,7 +16,11 @@ describe(`updateCorrespondence Mutation Tests`, () => {
 
     beforeAll(async() => {
         app = await startServer();
-    })
+    });
+
+    beforeEach(() => {
+        jest.restoreAllMocks();
+    });
 
     it(`should throw an unauthorized error without authorization`, async () => {
         const query = `
@@ -45,7 +49,7 @@ describe(`updateCorrespondence Mutation Tests`, () => {
         const correspondenceID: string = faker.database.mongodbObjectId();
         
         const updateCorrespondenceSpy = jest.spyOn(crudCorrespondence, "updateCorrespondence");
-        updateCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID }));
+        updateCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.LETTER }));
 
         const query = `
             mutation UpdateCorrespondence($input: UpdateCorrespondenceInput!) {
@@ -76,7 +80,7 @@ describe(`updateCorrespondence Mutation Tests`, () => {
         const correspondenceID: string = faker.database.mongodbObjectId();
         
         const updateCorrespondenceSpy = jest.spyOn(crudCorrespondence, "updateCorrespondence");
-        updateCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID }));
+        updateCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.LETTER }));
 
         const query = `
             mutation UpdateCorrespondence($input: UpdateCorrespondenceInput!) {

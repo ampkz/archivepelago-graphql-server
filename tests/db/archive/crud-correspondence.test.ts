@@ -1,12 +1,9 @@
 import dotenv from 'dotenv';
 import { destroyTestingDBs, initializeDBs } from '../../../src/db/utils/init-dbs';
 import { faker } from '@faker-js/faker';
-import { Correspondence, CorrespondenceType, UpdatedCorrespondenceI } from '../../../src/archive/correspondence';
-import { Person } from '../../../src/archive/person';
-import { createPerson } from '../../../src/db/archive/crud-person';
+import { Correspondence, CorrespondenceType } from '../../../src/archive/correspondence';
 import { createCorrespondence, deleteCorrespondence, getCorrespondence, updateCorrespondence } from '../../../src/db/archive/crud-correspondence';
-import * as CRUDRelationship from '../../../src/db/utils/relationship/crud-relationship';
-import { InternalError } from '../../../src/_helpers/errors-helper';
+
 
 dotenv.config();
 
@@ -21,261 +18,74 @@ describe(`CRUD Correspondence Tests`, () => {
 
     beforeEach(() => {
         jest.restoreAllMocks();
-    });
-
-    it(`should create a correspondence`, async () => {
-        const toPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const fromPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const correspondenceDate = faker.date.anytime().toDateString();
-        const correspondenceType = CorrespondenceType.LETTER;
-
-        const correspondence: Correspondence = new Correspondence({ correspondenceID: faker.database.mongodbObjectId(), toID: [toPerson.id], fromID: [fromPerson.id], correspondenceDate, correspondenceType });
-
-        const createdCorrespondence = await createCorrespondence(correspondence);
-
-        correspondence.correspondenceID = createdCorrespondence?.correspondenceID as string;
-
-        expect(createdCorrespondence).toEqual(correspondence);
-    });
-
-    it(`should create a correspondence with multiple toIDs and fromIDs`, async () => {
-        const toPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const fromPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const toPerson2: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const fromPerson2: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const toPerson3: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const fromPerson3: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-
-        const correspondenceDate = faker.date.anytime().toDateString();
-        const correspondenceType = CorrespondenceType.LETTER;
-
-        const correspondence: Correspondence = new Correspondence({ correspondenceID: faker.database.mongodbObjectId(), toID: [toPerson.id, toPerson2.id, toPerson3.id], fromID: [fromPerson.id, fromPerson2.id, fromPerson3.id], correspondenceDate, correspondenceType });
-
-        const createdCorrespondence = await createCorrespondence(correspondence) as Correspondence;
-
-        correspondence.correspondenceID = createdCorrespondence?.correspondenceID as string;
-
-        expect(createdCorrespondence.toID).toEqual(expect.arrayContaining(correspondence.toID as string[]));
-        expect(createdCorrespondence.fromID).toEqual(expect.arrayContaining(correspondence.fromID as string[]));
-    });
-
-    it(`should throw an error if there was an issue with the server when creating a relationship`, async () => {
-        const toPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const fromPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const correspondenceDate = faker.date.anytime().toDateString();
-        const correspondenceType = CorrespondenceType.LETTER;
-
-        const correspondence: Correspondence = new Correspondence({ correspondenceID: faker.database.mongodbObjectId(), toID: [toPerson.id], fromID: [fromPerson.id], correspondenceDate, correspondenceType });
-
-        const createRelationshipSpy = jest.spyOn(CRUDRelationship, "createRelationship");
-        createRelationshipSpy.mockRejectedValue(new InternalError(''));
-
-        await expect(createCorrespondence(correspondence)).rejects.toThrow();
-    });
-
-    it(`should created a correspondence with no matching fromID`, async () => {
-        const toPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const correspondenceDate = faker.date.anytime().toDateString();
-        const correspondenceType = CorrespondenceType.LETTER;
-
-        const correspondence: Correspondence = new Correspondence({ correspondenceID: faker.database.mongodbObjectId(), toID: [toPerson.id], fromID: ["does-not-exist"], correspondenceDate, correspondenceType });
-
-        const createdCorrespondence = await createCorrespondence(correspondence);
-
-        correspondence.correspondenceID = createdCorrespondence?.correspondenceID as string;
-        correspondence.fromID = [];
-        expect(createdCorrespondence).toEqual(correspondence);
-    });
-
-    it(`should created a correspondence with no matching toID`, async () => {
-        const fromPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const correspondenceDate = faker.date.anytime().toDateString();
-        const correspondenceType = CorrespondenceType.LETTER;
-
-        const correspondence: Correspondence = new Correspondence({ correspondenceID: faker.database.mongodbObjectId(), toID: ["does-not-exist"], fromID: [fromPerson.id], correspondenceDate, correspondenceType });
-
-        const createdCorrespondence = await createCorrespondence(correspondence);
-
-        correspondence.correspondenceID = createdCorrespondence?.correspondenceID as string;
-        correspondence.toID = [];
-        expect(createdCorrespondence).toEqual(correspondence);
-    });
-
-    it(`should get a created correspondence`, async () => {
-        const toPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const fromPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const correspondenceDate = faker.date.anytime().toDateString();
-        const correspondenceType = CorrespondenceType.LETTER;
-
-        const correspondence: Correspondence = new Correspondence({ correspondenceID: faker.database.mongodbObjectId(), toID: [toPerson.id], fromID: [fromPerson.id], correspondenceDate, correspondenceType });
-
-        const createdCorrespondence = await createCorrespondence(correspondence);
-
-        correspondence.correspondenceID = createdCorrespondence?.correspondenceID as string;
-
-        const matchedCorrespondence = await getCorrespondence(correspondence.correspondenceID);
-
-        expect(matchedCorrespondence).toEqual(correspondence);
     })
+    
+    it(`should create a Correspondence`, async () => {
+        const correspondenceType: CorrespondenceType = CorrespondenceType.LETTER,
+            correspondenceDate: string = faker.date.anytime().toDateString();
 
-    it(`should delete a created correspondence`, async () => {
-        const toPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const fromPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const correspondenceDate = faker.date.anytime().toDateString();
-        const correspondenceType = CorrespondenceType.LETTER;
+        const correspondence: Correspondence = new Correspondence({ correspondenceID: '', correspondenceType, correspondenceDate })
 
-        const correspondence: Correspondence = new Correspondence({ correspondenceID: faker.database.mongodbObjectId(), toID: [toPerson.id], fromID: [fromPerson.id], correspondenceDate, correspondenceType });
-
-        const createdCorrespondence = await createCorrespondence(correspondence);
+        const createdCorrespondence = await createCorrespondence({ correspondenceID: '', correspondenceType, correspondenceDate });
 
         correspondence.correspondenceID = createdCorrespondence?.correspondenceID as string;
 
-        const matchedCorrespondence = await deleteCorrespondence(correspondence.correspondenceID);
+        expect(createdCorrespondence).toEqual(correspondence);
+    });
 
-        expect(matchedCorrespondence).toEqual(correspondence);
-    })
+    it(`should get a created Correspondence`, async () => {
+        const correspondenceType: CorrespondenceType = CorrespondenceType.LETTER,
+        correspondenceDate: string = faker.date.anytime().toDateString();
+
+        const createdCorrespondence = await createCorrespondence({ correspondenceID: '', correspondenceType, correspondenceDate });
+
+        const matchedCorrespondence = await getCorrespondence(createdCorrespondence?.correspondenceID as string);
+
+        expect(matchedCorrespondence).toEqual(createdCorrespondence);
+    });
+
+    it(`should delete a created Correspondence`, async () => {
+        const correspondenceType: CorrespondenceType = CorrespondenceType.LETTER,
+        correspondenceDate: string = faker.date.anytime().toDateString();
+
+        const createdCorrespondence = await createCorrespondence({ correspondenceID: '', correspondenceType, correspondenceDate });
+
+        const deletedCorrespondence = await deleteCorrespondence(createdCorrespondence?.correspondenceID as string);
+
+        expect(deletedCorrespondence).toEqual(createdCorrespondence);
+    });
+
+    test(`getCorrespondence should return undefined if no Correspondence exists`, async () => {
+        const matchedCorrespondence = await getCorrespondence(faker.database.mongodbObjectId());
+        expect(matchedCorrespondence).toBeUndefined();
+    });
+
+    test(`deleteCorrespondence should return undefined if no Correspondence exists`, async () => {
+        const deletedCorrespondence = await deleteCorrespondence(faker.database.mongodbObjectId());
+        expect(deletedCorrespondence).toBeUndefined();
+    });
+
+    test(`updateCorrespondence should return undefined if no Label exists`, async () => {
+        const updatedCorrespondence = await updateCorrespondence({ correspondenceID: faker.database.mongodbObjectId(), updatedCorrespondenceDate: faker.date.anytime().toDateString() });
+
+        expect(updatedCorrespondence).toBeUndefined();
+    });
 
     it(`should update a created correspondence`, async () => {
-        const toPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const fromPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const correspondenceDate = faker.date.anytime().toDateString();
-        const correspondenceType = CorrespondenceType.LETTER;
+        const updatedCorrespondenceDate = faker.date.anytime().toDateString();
 
-        const correspondence: Correspondence = new Correspondence({ correspondenceID: faker.database.mongodbObjectId(), toID: [toPerson.id], fromID: [fromPerson.id], correspondenceDate, correspondenceType });
-
-        const createdCorrespondence = await createCorrespondence(correspondence);
-
-        correspondence.correspondenceID = createdCorrespondence?.correspondenceID as string;
-
-        const updatedCorrespondence: UpdatedCorrespondenceI = { correspondenceID: correspondence.correspondenceID, updatedCorrespondenceDate: faker.date.anytime().toDateString(), updatedCorrespondenceType: CorrespondenceType.LETTER, updatedFromID: [fromPerson.id], updatedToID: [toPerson.id] }
-
-        const matchedCorrespondence = await updateCorrespondence(updatedCorrespondence);
-
-        expect(matchedCorrespondence).toEqual({ correspondenceID: updatedCorrespondence.correspondenceID, correspondenceDate: updatedCorrespondence.updatedCorrespondenceDate, correspondenceType: updatedCorrespondence.updatedCorrespondenceType, toID: updatedCorrespondence.updatedToID, fromID: updatedCorrespondence.updatedFromID });
-    });
-
-    it(`should update a created correspondence and remove properties`, async () => {
-        const toPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const fromPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const correspondenceDate = faker.date.anytime().toDateString();
-        const correspondenceType = CorrespondenceType.LETTER;
-
-        const correspondence: Correspondence = new Correspondence({ correspondenceID: faker.database.mongodbObjectId(), toID: [toPerson.id], fromID: [fromPerson.id], correspondenceDate, correspondenceType });
-
-        const createdCorrespondence = await createCorrespondence(correspondence);
-
-        correspondence.correspondenceID = createdCorrespondence?.correspondenceID as string;
-
-        const updatedCorrespondence: UpdatedCorrespondenceI = { correspondenceID: correspondence.correspondenceID, updatedCorrespondenceDate: null, updatedCorrespondenceType: null, updatedFromID: null,  updatedToID: null}
-
-        const matchedCorrespondence = await updateCorrespondence(updatedCorrespondence);
+        const createdCorrespondence = await createCorrespondence({correspondenceID: '', correspondenceType: CorrespondenceType.LETTER});
         
-        expect(matchedCorrespondence).toEqual({ correspondenceID: updatedCorrespondence.correspondenceID });
+        const updatedCorrespondence = await updateCorrespondence({ correspondenceID: createdCorrespondence?.correspondenceID as string, updatedCorrespondenceDate, updatedCorrespondenceType: CorrespondenceType.LETTER });
+
+        expect(updatedCorrespondence).toEqual({ correspondenceID: createdCorrespondence?.correspondenceID as string, correspondenceDate: updatedCorrespondenceDate, correspondenceType: CorrespondenceType.LETTER });
     });
+    
+    it(`should update a created correspondence by deleted a null date`, async () => {
+        const createdCorrespondence = await createCorrespondence({correspondenceID: '', correspondenceType: CorrespondenceType.LETTER});
+        
+        const updatedCorrespondence = await updateCorrespondence({ correspondenceID: createdCorrespondence?.correspondenceID as string, updatedCorrespondenceDate: null });
 
-    it(`should update a created correspondence and add extra toID and fromID`, async () => {
-        const toPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const fromPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const toPerson2: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const fromPerson2: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const correspondenceDate = faker.date.anytime().toDateString();
-        const correspondenceType = CorrespondenceType.LETTER;
-
-        const correspondence: Correspondence = new Correspondence({ correspondenceID: faker.database.mongodbObjectId(), toID: [toPerson.id], fromID: [fromPerson.id], correspondenceDate, correspondenceType });
-
-        const createdCorrespondence = await createCorrespondence(correspondence);
-
-        correspondence.correspondenceID = createdCorrespondence?.correspondenceID as string;
-
-        const updatedCorrespondence: UpdatedCorrespondenceI = { correspondenceID: correspondence.correspondenceID, updatedCorrespondenceDate: faker.date.anytime().toDateString(), updatedCorrespondenceType: CorrespondenceType.LETTER, updatedFromID: [fromPerson.id, fromPerson2.id], updatedToID: [toPerson.id, toPerson2.id] }
-
-        const matchedCorrespondence = await updateCorrespondence(updatedCorrespondence);
-
-        expect(matchedCorrespondence).toEqual({ correspondenceID: updatedCorrespondence.correspondenceID, correspondenceDate: updatedCorrespondence.updatedCorrespondenceDate, correspondenceType: updatedCorrespondence.updatedCorrespondenceType, fromID: updatedCorrespondence.updatedFromID, toID: updatedCorrespondence.updatedToID });
+        expect(updatedCorrespondence).toEqual({ correspondenceID: createdCorrespondence?.correspondenceID as string, correspondenceType: CorrespondenceType.LETTER });
     });
-
-    it(`should update a created correspondence and add toID and fromID`, async () => {
-        const toPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const fromPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const toPerson2: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const fromPerson2: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const correspondenceDate = faker.date.anytime().toDateString();
-        const correspondenceType = CorrespondenceType.LETTER;
-
-        const correspondence: Correspondence = new Correspondence({ correspondenceID: faker.database.mongodbObjectId(), correspondenceDate, correspondenceType });
-
-        const createdCorrespondence = await createCorrespondence(correspondence);
-
-        correspondence.correspondenceID = createdCorrespondence?.correspondenceID as string;
-
-        const updatedCorrespondence: UpdatedCorrespondenceI = { correspondenceID: correspondence.correspondenceID, updatedCorrespondenceDate: faker.date.anytime().toDateString(), updatedCorrespondenceType: CorrespondenceType.LETTER, updatedFromID: [fromPerson.id, fromPerson2.id], updatedToID: [toPerson.id, toPerson2.id] }
-
-        const matchedCorrespondence = await updateCorrespondence(updatedCorrespondence);
-
-        expect(matchedCorrespondence).toEqual({ correspondenceID: updatedCorrespondence.correspondenceID, correspondenceDate: updatedCorrespondence.updatedCorrespondenceDate, correspondenceType: updatedCorrespondence.updatedCorrespondenceType, fromID: updatedCorrespondence.updatedFromID, toID: updatedCorrespondence.updatedToID });
-    });
-
-    it(`should update a created correspondence and remove extra toID and fromID`, async () => {
-        const toPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const fromPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const toPerson2: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const fromPerson2: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const correspondenceDate = faker.date.anytime().toDateString();
-        const correspondenceType = CorrespondenceType.LETTER;
-
-        const correspondence: Correspondence = new Correspondence({ correspondenceID: faker.database.mongodbObjectId(), correspondenceDate, correspondenceType, toID: [toPerson.id, toPerson2.id], fromID: [fromPerson.id, fromPerson2.id] });
-
-        const createdCorrespondence = await createCorrespondence(correspondence);
-
-        correspondence.correspondenceID = createdCorrespondence?.correspondenceID as string;
-
-        const updatedCorrespondence: UpdatedCorrespondenceI = { correspondenceID: correspondence.correspondenceID, updatedCorrespondenceDate: faker.date.anytime().toDateString(), updatedCorrespondenceType: CorrespondenceType.LETTER, updatedFromID: [fromPerson.id], updatedToID: [toPerson.id] }
-
-        const matchedCorrespondence = await updateCorrespondence(updatedCorrespondence);
-
-        expect(matchedCorrespondence).toEqual({ correspondenceID: updatedCorrespondence.correspondenceID, correspondenceDate: updatedCorrespondence.updatedCorrespondenceDate, correspondenceType: updatedCorrespondence.updatedCorrespondenceType, fromID: updatedCorrespondence.updatedFromID, toID: updatedCorrespondence.updatedToID });
-    });
-
-    it(`should throw an error if there was an issue with the server when deleting a relationship`, async () => {
-        const toPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const fromPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const correspondenceDate = faker.date.anytime().toDateString();
-        const correspondenceType = CorrespondenceType.LETTER;
-
-        const correspondence: Correspondence = new Correspondence({ correspondenceID: faker.database.mongodbObjectId(), toID: [toPerson.id], fromID: [fromPerson.id], correspondenceDate, correspondenceType });
-
-        const createdCorrespondence = await createCorrespondence(correspondence);
-
-        correspondence.correspondenceID = createdCorrespondence?.correspondenceID as string;
-
-        const updatedCorrespondence: UpdatedCorrespondenceI = { correspondenceID: correspondence.correspondenceID, updatedCorrespondenceDate: faker.date.anytime().toDateString(), updatedCorrespondenceType: CorrespondenceType.LETTER, updatedToID: [toPerson.id], updatedFromID: null }
-
-        const deleteRelationshipSpy = jest.spyOn(CRUDRelationship, "deleteRelationship");
-        deleteRelationshipSpy.mockRejectedValue(new InternalError(''));
-
-        await expect(updateCorrespondence(updatedCorrespondence)).rejects.toThrow();
-    });
-
-    it(`should throw an error if it could not delete a relationship`, async () => {
-        const toPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const fromPerson: Person = await createPerson({ id: '', firstName: faker.person.firstName() });
-        const correspondenceDate = faker.date.anytime().toDateString();
-        const correspondenceType = CorrespondenceType.LETTER;
-
-        const correspondence: Correspondence = new Correspondence({ correspondenceID: faker.database.mongodbObjectId(), toID: [toPerson.id], fromID: [fromPerson.id], correspondenceDate, correspondenceType });
-
-        const createdCorrespondence = await createCorrespondence(correspondence);
-
-        correspondence.correspondenceID = createdCorrespondence?.correspondenceID as string;
-
-        const updatedCorrespondence: UpdatedCorrespondenceI = { correspondenceID: correspondence.correspondenceID, updatedCorrespondenceDate: faker.date.anytime().toDateString(), updatedCorrespondenceType: CorrespondenceType.LETTER, updatedToID: [toPerson.id], updatedFromID: null }
-
-        const deleteRelationshipSpy = jest.spyOn(CRUDRelationship, "deleteRelationship");
-        deleteRelationshipSpy.mockRejectedValue(new InternalError(CRUDRelationship.Errors.COULD_NOT_DELETE_RELATIONSHIP));
-
-        const matchedCorrespondence = await updateCorrespondence(updatedCorrespondence);
-
-        expect(matchedCorrespondence).toEqual({ correspondenceID: updatedCorrespondence.correspondenceID, correspondenceDate: updatedCorrespondence.updatedCorrespondenceDate, correspondenceType: updatedCorrespondence.updatedCorrespondenceType, toID: updatedCorrespondence.updatedToID });
-    });
-
 });

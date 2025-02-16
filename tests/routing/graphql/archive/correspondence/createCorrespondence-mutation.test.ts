@@ -8,6 +8,7 @@ import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/error
 import { Correspondence, CorrespondenceType } from '../../../../../src/archive/correspondence';
 import { signToken } from '../../../../../src/_helpers/auth-helpers';
 import { Auth } from '../../../../../src/auth/authorization';
+import correspondenceType from '../../../../../src/graphql/typeDefs/correspondenceType';
 
 dotenv.config();
 
@@ -16,6 +17,10 @@ describe(`createCorrespondence Mutation Tests`, () => {
 
     beforeAll(async() => {
         app = await startServer();
+    });
+
+    beforeEach(()=>{
+        jest.restoreAllMocks();
     })
 
     it(`should throw an unauthorized error without authorization`, async () => {
@@ -29,7 +34,7 @@ describe(`createCorrespondence Mutation Tests`, () => {
 
         const variables = {
             input: {
-                toID: faker.database.mongodbObjectId()
+                correspondenceType: CorrespondenceType.LETTER
             }
         }
 
@@ -43,10 +48,10 @@ describe(`createCorrespondence Mutation Tests`, () => {
 
     it(`should create a correspondence as admin`, async () => {
         const correspondenceID: string = faker.database.mongodbObjectId(),
-            toID: string[] = [faker.database.mongodbObjectId()];
+            correspondenceType: CorrespondenceType = CorrespondenceType.LETTER;
         
         const createCorrespondenceSpy = jest.spyOn(crudCorrespondence, "createCorrespondence");
-        createCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, toID }));
+        createCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, correspondenceType }));
 
         const query = `
             mutation CreateCorrespondence($input: CreateCorrespondenceInput!) {
@@ -58,7 +63,7 @@ describe(`createCorrespondence Mutation Tests`, () => {
 
         const variables = {
             input: {
-                toID
+                correspondenceType
             }
         }
 
@@ -75,23 +80,22 @@ describe(`createCorrespondence Mutation Tests`, () => {
 
     it(`should create a correspondence as contributor`, async () => {
         const correspondenceID: string = faker.database.mongodbObjectId(),
-            toID: string[] = [faker.database.mongodbObjectId()];
+            correspondenceType: CorrespondenceType = CorrespondenceType.LETTER;
         
         const createCorrespondenceSpy = jest.spyOn(crudCorrespondence, "createCorrespondence");
-        createCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, toID }));
+        createCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, correspondenceType }));
 
         const query = `
             mutation CreateCorrespondence($input: CreateCorrespondenceInput!) {
                 createCorrespondence(input: $input) {
                     correspondenceID
-                    toID
                 }
             }
         `
 
         const variables = {
             input: {
-                toID
+                correspondenceType
             }
         }
 
@@ -102,9 +106,8 @@ describe(`createCorrespondence Mutation Tests`, () => {
                 .send({ query, variables })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`jwt=${jwtToken}`]);
-            
+    
             expect(body.data.createCorrespondence.correspondenceID).toEqual(correspondenceID);
-            expect(body.data.createCorrespondence.toID).toEqual(toID);
     });
 
     it(`should throw an error if there was an issue with the server`, async () => {
@@ -121,7 +124,7 @@ describe(`createCorrespondence Mutation Tests`, () => {
 
         const variables = {
             input: {
-                toID: faker.database.mongodbObjectId()
+                correspondenceType: CorrespondenceType.LETTER
             }
         }
 

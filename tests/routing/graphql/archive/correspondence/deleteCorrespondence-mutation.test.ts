@@ -40,11 +40,10 @@ describe(`Correspondence Mutation Tests`, () => {
     });
 
     it(`should delete a correspondence as admin`, async () => {
-        const correspondenceID: string = faker.database.mongodbObjectId(),
-            toID: string[] = [faker.database.mongodbObjectId()];
+        const correspondenceID: string = faker.database.mongodbObjectId();
         
         const deleteCorrespondenceSpy = jest.spyOn(crudCorrespondence, "deleteCorrespondence");
-        deleteCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, toID }));
+        deleteCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.LETTER }));
 
         const query = `
             mutation DeleteCorrespondence($correspondenceID: ID!) {
@@ -70,11 +69,10 @@ describe(`Correspondence Mutation Tests`, () => {
     });
 
     it(`should delete a correspondence as admin`, async () => {
-        const correspondenceID: string = faker.database.mongodbObjectId(),
-            toID: string[] = [faker.database.mongodbObjectId()];
+        const correspondenceID: string = faker.database.mongodbObjectId();
         
         const deleteCorrespondenceSpy = jest.spyOn(crudCorrespondence, "deleteCorrespondence");
-        deleteCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, toID }));
+        deleteCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.LETTER }));
 
         const query = `
             mutation DeleteCorrespondence($correspondenceID: ID!) {

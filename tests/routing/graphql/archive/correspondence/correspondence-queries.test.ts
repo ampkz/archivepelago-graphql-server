@@ -20,7 +20,7 @@ describe(`Correspondence Query Tests`, () => {
         const correspondenceID: string = faker.database.mongodbObjectId();
 
         const getCorrespondenceSpy = jest.spyOn(crudCorrespondence, "getCorrespondence");
-        getCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, toID: [faker.database.mongodbObjectId()], fromID: [faker.database.mongodbObjectId()], correspondenceDate: faker.date.anytime().toDateString(), correspondenceType: CorrespondenceType.LETTER }));
+        getCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, correspondenceDate: faker.date.anytime().toDateString(), correspondenceType: CorrespondenceType.LETTER }));
         
         const query = `
             query {
