@@ -8,6 +8,9 @@ import { InternalError } from '../../../../../src/_helpers/errors-helper';
 import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/errors';
 import * as personLabelRelationship from '../../../../../src/db/archive/relationship/person-label-relationship';
 import { Label, LabelType } from '../../../../../src/archive/label';
+import { Correspondence, CorrespondenceType } from '../../../../../src/archive/correspondence';
+import * as crudCorrespondence from '../../../../../src/db/archive/crud-correspondence';
+import * as personCorrespondence from '../../../../../src/db/archive/relationship/person-correspondence-relationship';
 
 dotenv.config();
 
@@ -115,6 +118,68 @@ describe(`Person Query Tests`, () => {
 
         expect(body.data.person.labels).toContainEqual(label);
         expect(body.data.person.labels).toContainEqual(label2);
+    });
+
+    it(`should return a list of associated sent correspondences of a person`, async () => {
+        const id: string = faker.database.mongodbObjectId();
+
+        const correspondence: Correspondence = new Correspondence({correspondenceID: faker.database.mongodbObjectId(), correspondenceType: CorrespondenceType.LETTER});
+
+        const getPersonSpy = jest.spyOn(crudPerson, "getPerson");
+        getPersonSpy.mockResolvedValue(new Person({ id }));
+
+        const getCorrespondencesByPersonSpy = jest.spyOn(personCorrespondence, "getCorrespondencesByPerson");
+        getCorrespondencesByPersonSpy.mockResolvedValue([correspondence]);
+        
+        const query = `
+            query {
+                person(id: "${ id }") {
+                    id
+                    sentCorrespondences{
+                        correspondenceID
+                        correspondenceType
+                    }
+                }
+            }
+        `
+
+        const { body } = await request(app)
+            .post('/graphql')
+            .send({ query })
+            .set('Accept', 'application/json');
+        
+        expect(body.data.person.sentCorrespondences).toContainEqual(correspondence);
+    });
+
+    it(`should return a list of associated received correspondences of a person`, async () => {
+        const id: string = faker.database.mongodbObjectId();
+
+        const correspondence: Correspondence = new Correspondence({correspondenceID: faker.database.mongodbObjectId(), correspondenceType: CorrespondenceType.LETTER});
+
+        const getPersonSpy = jest.spyOn(crudPerson, "getPerson");
+        getPersonSpy.mockResolvedValue(new Person({ id }));
+
+        const getCorrespondencesByPersonSpy = jest.spyOn(personCorrespondence, "getCorrespondencesByPerson");
+        getCorrespondencesByPersonSpy.mockResolvedValue([correspondence]);
+        
+        const query = `
+            query {
+                person(id: "${ id }") {
+                    id
+                    receivedCorrespondences{
+                        correspondenceID
+                        correspondenceType
+                    }
+                }
+            }
+        `
+
+        const { body } = await request(app)
+            .post('/graphql')
+            .send({ query })
+            .set('Accept', 'application/json');
+        
+        expect(body.data.person.receivedCorrespondences).toContainEqual(correspondence);
     });
 
     it(`should return a list of created persons`, async () => {

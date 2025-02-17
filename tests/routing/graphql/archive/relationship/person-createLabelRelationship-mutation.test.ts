@@ -4,7 +4,7 @@ import request from 'supertest';
 import dotenv from 'dotenv';
 import { signToken } from "../../../../../src/_helpers/auth-helpers";
 import * as personLabelRelationship from '../../../../../src/db/archive/relationship/person-label-relationship';
-import { InternalError, ResourceExistsError } from "../../../../../src/_helpers/errors-helper";
+import { InternalError } from "../../../../../src/_helpers/errors-helper";
 import { Person } from "../../../../../src/archive/person";
 import { Errors as GraphQLErrors } from "../../../../../src/graphql/errors/errors";
 import { Auth } from "../../../../../src/auth/authorization";
@@ -16,6 +16,10 @@ describe(`createLabelRelationship Mutation Tests`, () => {
   
       beforeAll(async() => {
           app = await startServer();
+      });
+
+      beforeEach(() => {
+        jest.restoreAllMocks();
       });
   
       it(`should throw an unauthorized error with no authorized user`, async() => {

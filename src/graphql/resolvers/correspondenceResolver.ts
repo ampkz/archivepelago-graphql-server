@@ -1,6 +1,9 @@
 import { Correspondence, CorrespondenceI } from "../../archive/correspondence"
+import { Person } from "../../archive/person";
+import { RelationshipType } from "../../archive/relationship/relationship";
 import { Auth, isPermitted } from "../../auth/authorization";
 import { createCorrespondence, deleteCorrespondence, getCorrespondence, updateCorrespondence } from "../../db/archive/crud-correspondence";
+import { createPersonRelationship, deletePersonRelationship, getPersonsByCorrespondence } from "../../db/archive/relationship/person-correspondence-relationship";
 import { mutationFailed, serverFailed, unauthorizedError } from "../errors/errors";
 
 export default {
@@ -65,6 +68,75 @@ export default {
             }
 
             return correspondence;
-        }
+        },
+
+        addReceived: async (_root: any, { correspondenceID, receivedID }: any, { authorizedUser }: any) => {
+            if(!isPermitted(authorizedUser, Auth.ADMIN, Auth.CONTRIBUTOR)){
+                throw unauthorizedError(`You are not authorized to make this mutation.`);
+            }
+
+            let correspondence: Correspondence | undefined;
+
+            try {
+                correspondence = await createPersonRelationship(correspondenceID, receivedID, RelationshipType.RECEIVED);
+            }catch( error: any ){
+                throw mutationFailed(error.message);
+            }
+
+            return correspondence;
+        },
+
+        removeReceived: async (_root: any, { correspondenceID, receivedID }: any, { authorizedUser }: any) => {
+            if(!isPermitted(authorizedUser, Auth.ADMIN, Auth.CONTRIBUTOR)){
+                throw unauthorizedError(`You are not authorized to make this mutation.`);
+            }
+
+            let correspondence: Correspondence | undefined;
+
+            try {
+                correspondence = await deletePersonRelationship(correspondenceID, receivedID, RelationshipType.RECEIVED);
+            }catch( error: any ){
+                throw mutationFailed(error.message);
+            }
+
+            return correspondence;
+        },
+
+        addSent: async (_root: any, { correspondenceID, sentID }: any, { authorizedUser }: any) => {
+            if(!isPermitted(authorizedUser, Auth.ADMIN, Auth.CONTRIBUTOR)){
+                throw unauthorizedError(`You are not authorized to make this mutation.`);
+            }
+
+            let correspondence: Correspondence | undefined;
+
+            try {
+                correspondence = await createPersonRelationship(correspondenceID, sentID, RelationshipType.SENT);
+            }catch( error: any ){
+                throw mutationFailed(error.message);
+            }
+
+            return correspondence;
+        },
+
+        removeSent: async (_root: any, { correspondenceID, sentID }: any, { authorizedUser }: any) => {
+            if(!isPermitted(authorizedUser, Auth.ADMIN, Auth.CONTRIBUTOR)){
+                throw unauthorizedError(`You are not authorized to make this mutation.`);
+            }
+
+            let correspondence: Correspondence | undefined;
+
+            try {
+                correspondence = await deletePersonRelationship(correspondenceID, sentID, RelationshipType.SENT);
+            }catch( error: any ){
+                throw mutationFailed(error.message);
+            }
+
+            return correspondence;
+        },
+    },
+
+    Correspondence: {
+        to: (correspondence: Correspondence) => getPersonsByCorrespondence(correspondence.correspondenceID, RelationshipType.RECEIVED),
+        from: (Correspondence: Correspondence) => getPersonsByCorrespondence(Correspondence.correspondenceID, RelationshipType.SENT),
     }
 }

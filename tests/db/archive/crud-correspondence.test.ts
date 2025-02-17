@@ -4,7 +4,6 @@ import { faker } from '@faker-js/faker';
 import { Correspondence, CorrespondenceType } from '../../../src/archive/correspondence';
 import { createCorrespondence, deleteCorrespondence, getCorrespondence, updateCorrespondence } from '../../../src/db/archive/crud-correspondence';
 
-
 dotenv.config();
 
 describe(`CRUD Correspondence Tests`, () => {

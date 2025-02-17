@@ -7,6 +7,8 @@ type Person {
     birthDate: String
     deathDate: String
     labels: [Label]
+    sentCorrespondences: [Correspondence]
+    receivedCorrespondences: [Correspondence]
 }
 
 type Query {

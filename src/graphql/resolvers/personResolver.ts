@@ -1,7 +1,8 @@
 import { Person, PersonI } from "../../archive/person";
-import { PersonLabel } from "../../archive/relationship/relationship";
+import { PersonLabel, RelationshipType } from "../../archive/relationship/relationship";
 import { Auth, isPermitted } from "../../auth/authorization";
 import { createPerson, deletePerson, getPerson, getPersons, updatePerson } from "../../db/archive/crud-person"
+import { getCorrespondencesByPerson } from "../../db/archive/relationship/person-correspondence-relationship";
 import { createPersonLabel, deletePersonLabel, getLabelsByPerson } from "../../db/archive/relationship/person-label-relationship";
 import { mutationFailed, serverFailed, unauthorizedError } from "../errors/errors";
 
@@ -116,5 +117,7 @@ export default {
 
     Person: {
         labels: (person: Person) => getLabelsByPerson(person),
+        sentCorrespondences: (person: Person) => getCorrespondencesByPerson(person.id, RelationshipType.SENT),
+        receivedCorrespondences: (person: Person) => getCorrespondencesByPerson(person.id, RelationshipType.RECEIVED),
     },
 };
