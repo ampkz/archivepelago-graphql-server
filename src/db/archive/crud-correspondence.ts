@@ -38,6 +38,18 @@ export async function updateCorrespondence(updatedCorrespondence: UpdatedCorresp
     return matchedCorrespondence;
 }
 
+export async function getCorrespondences(): Promise<Correspondence[]> {
+    const correspondences: Correspondence[] = [];
+
+    const matchedCorrespondences = await getNodes(NodeType.CORRESPONDENCE);
+
+    matchedCorrespondences.map((rawCorrespondence: any) => {
+        correspondences.push(new Correspondence(rawCorrespondence));
+    })
+
+    return correspondences;
+}
+
 function prepCorrespondenceProps(correspondence: CorrespondenceI): string[]{
     const props: string[] = [`correspondenceID:apoc.create.uuid()`];
 

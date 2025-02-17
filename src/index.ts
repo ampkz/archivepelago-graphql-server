@@ -1,3 +1,5 @@
+import { signToken } from './_helpers/auth-helpers';
+import { Auth } from './auth/authorization';
 import startServer from './server/server';
 import dotenv from 'dotenv';
 
@@ -8,6 +10,7 @@ const port = process.env.PORT || 3001;
 (async () => {
     const app = await startServer();
     app.listen(port, () => {
-        console.log(`[server]: Server is running at http://localhost:${port}`);
+        console.log(`[server]: Server is running at http://localhost:${port}/`);
+        console.log(`[server]: Graphql endpoint at http://localhost:${port}/graphql`);
     });
 })();

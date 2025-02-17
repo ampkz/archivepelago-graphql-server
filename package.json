@@ -11,7 +11,7 @@
     "build": "tsc",
     "init": "tsc && node ./build/server/utils/init-server.js",
     "start": "tsc && node ./build",
-    "test": "jest --runInBand"
+    "test": "jest --runInBand --coverage"
   },
   "keywords": [],
   "author": "Andrew M. Pankratz",

@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import { destroyTestingDBs, initializeDBs } from '../../../src/db/utils/init-dbs';
 import { faker } from '@faker-js/faker';
 import { Correspondence, CorrespondenceType } from '../../../src/archive/correspondence';
-import { createCorrespondence, deleteCorrespondence, getCorrespondence, updateCorrespondence } from '../../../src/db/archive/crud-correspondence';
+import { createCorrespondence, deleteCorrespondence, getCorrespondence, getCorrespondences, updateCorrespondence } from '../../../src/db/archive/crud-correspondence';
 
 dotenv.config();
 
@@ -86,5 +86,23 @@ describe(`CRUD Correspondence Tests`, () => {
         const updatedCorrespondence = await updateCorrespondence({ correspondenceID: createdCorrespondence?.correspondenceID as string, updatedCorrespondenceDate: null });
 
         expect(updatedCorrespondence).toEqual({ correspondenceID: createdCorrespondence?.correspondenceID as string, correspondenceType: CorrespondenceType.LETTER });
+    });
+
+    it(`should get a list of created Correspondences`, async () => {
+        const correspondenceType: CorrespondenceType = CorrespondenceType.LETTER,
+        correspondenceDate: string = faker.date.anytime().toDateString(),
+        correspondenceDate2: string = faker.date.anytime().toDateString(),
+        correspondenceDate3: string = faker.date.anytime().toDateString();
+        
+
+        const createdCorrespondence = await createCorrespondence({ correspondenceID: '', correspondenceType, correspondenceDate });
+        const createdCorrespondence2 = await createCorrespondence({ correspondenceID: '', correspondenceType, correspondenceDate: correspondenceDate2 });
+        const createdCorrespondence3 = await createCorrespondence({ correspondenceID: '', correspondenceType, correspondenceDate: correspondenceDate3 });
+
+        const matchedCorrespondence = await getCorrespondences();
+
+        expect(matchedCorrespondence).toContainEqual(createdCorrespondence);
+        expect(matchedCorrespondence).toContainEqual(createdCorrespondence2);
+        expect(matchedCorrespondence).toContainEqual(createdCorrespondence3);
     });
 });

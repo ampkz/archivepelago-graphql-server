@@ -9,6 +9,7 @@ type Correspondence {
 
 type Query {
     correspondence(correspondenceID: ID!): Correspondence
+    correspondences: [Correspondence]
     from: [Person]
     to: [Person]
 }

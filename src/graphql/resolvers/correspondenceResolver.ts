@@ -2,7 +2,7 @@ import { Correspondence, CorrespondenceI } from "../../archive/correspondence"
 import { Person } from "../../archive/person";
 import { RelationshipType } from "../../archive/relationship/relationship";
 import { Auth, isPermitted } from "../../auth/authorization";
-import { createCorrespondence, deleteCorrespondence, getCorrespondence, updateCorrespondence } from "../../db/archive/crud-correspondence";
+import { createCorrespondence, deleteCorrespondence, getCorrespondence, getCorrespondences, updateCorrespondence } from "../../db/archive/crud-correspondence";
 import { createPersonRelationship, deletePersonRelationship, getPersonsByCorrespondence } from "../../db/archive/relationship/person-correspondence-relationship";
 import { mutationFailed, serverFailed, unauthorizedError } from "../errors/errors";
 
@@ -18,6 +18,18 @@ export default {
             }
 
             return correspondence;
+        },
+
+        correspondences: async () => {
+            let correspondences: Correspondence[] = [];
+
+            try{
+                correspondences = await getCorrespondences();
+            }catch( error: any ){
+                throw serverFailed(error.message);
+            }
+
+            return correspondences;
         }
     },
 

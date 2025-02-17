@@ -16,6 +16,10 @@ describe(`Correspondence Query Tests`, () => {
 
     beforeAll(async() => {
         app = await startServer();
+    });
+
+    beforeEach(() => {
+        jest.restoreAllMocks();
     })
 
     it(`should return a created correspondence`, async () => {
@@ -118,5 +122,52 @@ describe(`Correspondence Query Tests`, () => {
             .set('Accept', 'application/json');
 
             expect(body.data.correspondence.from).toContainEqual(person);
+    });
+
+    it(`should retrieve a list of correspondences`, async () => {
+        
+        const correspondence1 = new Correspondence({ correspondenceID: faker.database.mongodbObjectId(), correspondenceType: CorrespondenceType.LETTER });
+        const correspondence2 = new Correspondence({ correspondenceID: faker.database.mongodbObjectId(), correspondenceType: CorrespondenceType.LETTER });
+
+        const getCorrespondencesSpy = jest.spyOn(crudCorrespondence, "getCorrespondences");
+        getCorrespondencesSpy.mockResolvedValue([correspondence1, correspondence2]);
+        
+        const query = `
+            query {
+                correspondences{
+                    correspondenceID
+                    correspondenceType
+                }
+            }
+        `
+        const { body } = await request(app)
+            .post('/graphql')
+            .send({ query })
+            .set('Accept', 'application/json');
+        
+        expect(body.data.correspondences).toContainEqual(correspondence1);
+        expect(body.data.correspondences).toContainEqual(correspondence2);
+    });
+
+
+    test(`correspondences should throw an error if there is an issue with the server`, async () => {
+        
+        const getCorrespondencesSpy = jest.spyOn(crudCorrespondence, "getCorrespondences");
+        getCorrespondencesSpy.mockRejectedValue(new InternalError(GraphQLErrors.SERVER_ERROR));
+        
+        const query = `
+            query {
+                correspondences{
+                    correspondenceID
+                    correspondenceType
+                }
+            }
+        `
+        const { body } = await request(app)
+            .post('/graphql')
+            .send({ query })
+            .set('Accept', 'application/json');
+        
+        expect(body.errors[0].message).toEqual(GraphQLErrors.SERVER_ERROR);
     });
 });
