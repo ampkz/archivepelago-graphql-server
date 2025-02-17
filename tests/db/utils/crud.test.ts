@@ -51,6 +51,8 @@ describe(`CRUD Tests`, () => {
     it(`should throw an error if trying to create a user with an existing email`, async () => {
         const email: string = faker.internet.email();
     
+        await createNode(NodeType.USER, ['email: $email'], { email }, (process.env.USERS_DB as string));
+
         await expect(createNode(NodeType.USER, ['email: $email'], { email }, (process.env.USERS_DB as string))).rejects.toThrow(CRUDErrors.CANNOT_CREATE_NODE);
 
     });
