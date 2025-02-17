@@ -30,7 +30,7 @@ describe(`createLabel Mutation Tests`, () => {
         const variables = {
             input: {
                 name: faker.word.adjective(),
-                type: LabelType.CAREER
+                type: LabelType.PROFESSION
             }
         }
 
@@ -46,7 +46,7 @@ describe(`createLabel Mutation Tests`, () => {
         const name: string = faker.word.adjective();
         
         const createLabelSpy = jest.spyOn(crudLabel, "createLabel");
-        createLabelSpy.mockResolvedValue(new Label({name, type: LabelType.CAREER}));
+        createLabelSpy.mockResolvedValue(new Label({name, type: LabelType.PROFESSION}));
 
         const query = `
             mutation CreateLabel($input: CreateLabelInput!) {
@@ -59,7 +59,7 @@ describe(`createLabel Mutation Tests`, () => {
         const variables = {
             input: {
                 name,
-                type: LabelType.CAREER
+                type: LabelType.PROFESSION
             }
         }
         const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
@@ -77,7 +77,7 @@ describe(`createLabel Mutation Tests`, () => {
         const name: string = faker.word.adjective();
         
         const createLabelSpy = jest.spyOn(crudLabel, "createLabel");
-        createLabelSpy.mockResolvedValue(new Label({name, type: LabelType.CAREER}));
+        createLabelSpy.mockResolvedValue(new Label({name, type: LabelType.PROFESSION}));
 
         const query = `
             mutation CreateLabel($input: CreateLabelInput!) {
@@ -90,7 +90,7 @@ describe(`createLabel Mutation Tests`, () => {
         const variables = {
             input: {
                 name,
-                type: LabelType.CAREER
+                type: LabelType.PROFESSION
             }
         }
         const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
@@ -121,7 +121,7 @@ describe(`createLabel Mutation Tests`, () => {
         const variables = {
             input: {
                 name,
-                type: LabelType.CAREER
+                type: LabelType.PROFESSION
             }
         }
         const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');

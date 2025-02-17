@@ -19,9 +19,9 @@ describe(`CRUD Label Tests`, () => {
     it(`should create a Label`, async () => {
         const name: string = faker.word.adjective();
 
-        const label: Label = new Label({name, type: LabelType.CAREER});
+        const label: Label = new Label({name, type: LabelType.PROFESSION});
 
-        const createdLabel: Label | undefined = await createLabel({name, type: LabelType.CAREER});
+        const createdLabel: Label | undefined = await createLabel({name, type: LabelType.PROFESSION});
 
         expect(createdLabel).toEqual(label);
     });
@@ -29,9 +29,9 @@ describe(`CRUD Label Tests`, () => {
     it(`should get a created Label`, async () => {
         const name: string = faker.word.adjective();
 
-        const label: Label = new Label({name, type: LabelType.CAREER});
+        const label: Label = new Label({name, type: LabelType.PROFESSION});
 
-        await createLabel({name, type: LabelType.CAREER});
+        await createLabel({name, type: LabelType.PROFESSION});
 
         const matchedLabel: Label | undefined = await getLabel(name);
 
@@ -41,17 +41,17 @@ describe(`CRUD Label Tests`, () => {
     it(`should throw an error if trying to create an existing label`, async () => {
         const name: string = faker.word.adjective();
 
-        await createLabel({name, type: LabelType.CAREER});
+        await createLabel({name, type: LabelType.PROFESSION});
 
-        await expect(createLabel({name, type: LabelType.CAREER})).rejects.toThrow(Errors.CANNOT_CREATE_NODE);
+        await expect(createLabel({name, type: LabelType.PROFESSION})).rejects.toThrow(Errors.CANNOT_CREATE_NODE);
     });
 
     it(`should delete a created Label`, async () => {
         const name: string = faker.word.adjective();
 
-        const label: Label = new Label({name, type: LabelType.CAREER});
+        const label: Label = new Label({name, type: LabelType.PROFESSION});
 
-        await createLabel({name, type: LabelType.CAREER});
+        await createLabel({name, type: LabelType.PROFESSION});
 
         const matchedLabel: Label | undefined = await deleteLabel(name);
 
@@ -73,7 +73,7 @@ describe(`CRUD Label Tests`, () => {
         const name: string = faker.word.adjective();
         const updatedName: string = faker.word.adjective();
 
-        await createLabel({name, type: LabelType.CAREER});
+        await createLabel({name, type: LabelType.PROFESSION});
         const updatedLabel: Label | undefined = await updateLabel(name, { updatedName, updatedType: LabelType.SEXUALITY });
 
         expect(updatedLabel).toEqual(new Label({name: updatedName, type: LabelType.SEXUALITY}));
@@ -86,9 +86,9 @@ describe(`CRUD Label Tests`, () => {
     });
 
     test(`getLabels should return a list of created labels`, async () => {
-        const label: Label = new Label({name: faker.word.adjective(), type: LabelType.CAREER});
-        const label2: Label = new Label({name: faker.word.adjective(), type: LabelType.CAREER});
-        const label3: Label = new Label({name: faker.word.adjective(), type: LabelType.CAREER});
+        const label: Label = new Label({name: faker.word.adjective(), type: LabelType.PROFESSION});
+        const label2: Label = new Label({name: faker.word.adjective(), type: LabelType.PROFESSION});
+        const label3: Label = new Label({name: faker.word.adjective(), type: LabelType.PROFESSION});
 
         const createdLabel: Label | undefined = await createLabel(label);
         const createdLabel2: Label | undefined = await createLabel(label2);

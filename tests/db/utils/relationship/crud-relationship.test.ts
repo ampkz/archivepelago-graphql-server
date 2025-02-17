@@ -23,7 +23,7 @@ describe(`Relationship CRUD Tests`, () => {
     
     it(`should create a relationship`, async () => {
         const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
-        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.CAREER}) as Label;
+        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
 
         const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id, true);
         const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name, true);
@@ -36,7 +36,7 @@ describe(`Relationship CRUD Tests`, () => {
 
     it(`should create a COMING relationship`, async () => {
         const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
-        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.CAREER}) as Label;
+        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
 
         const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id, true);
         const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name, true);
@@ -49,7 +49,7 @@ describe(`Relationship CRUD Tests`, () => {
 
     it(`should throw an error if a relationship was not created`, async () => {
         const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
-        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.CAREER}) as Label;
+        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
 
         const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id);
         const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name);
@@ -74,7 +74,7 @@ describe(`Relationship CRUD Tests`, () => {
 
     it(`should delete a relationship`, async () => {
         const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
-        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.CAREER}) as Label;
+        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
 
         const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id, true);
         const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name, true);
@@ -89,7 +89,7 @@ describe(`Relationship CRUD Tests`, () => {
 
     it(`should delete a COMING relationship`, async () => {
         const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
-        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.CAREER}) as Label;
+        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
 
         const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id, true);
         const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name, true);
@@ -104,7 +104,7 @@ describe(`Relationship CRUD Tests`, () => {
 
     it(`should throw an error if a relationship was not deleted`, async () => {
         const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
-        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.CAREER}) as Label;
+        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
 
         const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id);
         const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name);
@@ -129,7 +129,7 @@ describe(`Relationship CRUD Tests`, () => {
 
     it(`should delete a node with a relationship`, async () => {
         const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
-        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.CAREER}) as Label;
+        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
 
         const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id);
         const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name);
@@ -144,7 +144,7 @@ describe(`Relationship CRUD Tests`, () => {
 
     it(`should retrieve a relationship`, async () => {
         const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
-        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.CAREER}) as Label;
+        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
 
         const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id);
         const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name);
@@ -159,7 +159,7 @@ describe(`Relationship CRUD Tests`, () => {
 
     it(`should retrieve a COMING relationship`, async () => {
         const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
-        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.CAREER}) as Label;
+        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
 
         const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id);
         const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name);
@@ -174,9 +174,9 @@ describe(`Relationship CRUD Tests`, () => {
 
     it(`should retrieve a list of relationships`, async () => {
         const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
-        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.CAREER}) as Label;
-        const createdLabel2: Label = await createLabel({name: faker.word.adjective(), type: LabelType.CAREER}) as Label;
-        const createdLabel3: Label = await createLabel({name: faker.word.adjective(), type: LabelType.CAREER}) as Label;
+        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
+        const createdLabel2: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
+        const createdLabel3: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
 
         const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id);
         const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name);

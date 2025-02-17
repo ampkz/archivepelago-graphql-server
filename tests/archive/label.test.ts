@@ -4,10 +4,10 @@ import { Label, LabelType } from '../../src/archive/label';
 describe(`Label Tests`, () => {
     it(`should create a label with CAREER type`, () => {
         const name: string = faker.word.adjective();
-        const label:Label = new Label({name, type: LabelType.CAREER});
+        const label:Label = new Label({name, type: LabelType.PROFESSION});
 
         expect(label.name).toEqual(name);
-        expect(label.type).toEqual(LabelType.CAREER);
+        expect(label.type).toEqual(LabelType.PROFESSION);
     })
 
     it(`should create a label with SEXUALITY type`, () => {

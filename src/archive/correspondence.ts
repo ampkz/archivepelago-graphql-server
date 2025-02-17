@@ -1,5 +1,5 @@
 export enum CorrespondenceType {
-    LETTER = 'Letter'
+    LETTER = 'LETTER'
 }
 
 export interface CorrespondenceI {

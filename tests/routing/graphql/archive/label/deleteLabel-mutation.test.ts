@@ -43,7 +43,7 @@ describe(`deleteLabel Mutation Tests`, () => {
         const name: string = faker.word.adjective();
         
         const deleteLabelSpy = jest.spyOn(crudLabel, "deleteLabel");
-        deleteLabelSpy.mockResolvedValue(new Label({name, type: LabelType.CAREER}));
+        deleteLabelSpy.mockResolvedValue(new Label({name, type: LabelType.PROFESSION}));
 
         const query = `
             mutation DeleteLabel($name: ID!) {
@@ -72,7 +72,7 @@ describe(`deleteLabel Mutation Tests`, () => {
         const name: string = faker.word.adjective();
         
         const deleteLabelSpy = jest.spyOn(crudLabel, "deleteLabel");
-        deleteLabelSpy.mockResolvedValue(new Label({name, type: LabelType.CAREER}));
+        deleteLabelSpy.mockResolvedValue(new Label({name, type: LabelType.PROFESSION}));
 
         const query = `
             mutation DeleteLabel($name: ID!) {

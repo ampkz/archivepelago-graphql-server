@@ -85,7 +85,7 @@ describe(`updateLabel Mutation Tests`, () => {
             updatedName: string = faker.word.adjective();
         
         const updateLabelSpy = jest.spyOn(crudLabel, "updateLabel");
-        updateLabelSpy.mockResolvedValue(new Label({name: updatedName, type:LabelType.CAREER}));
+        updateLabelSpy.mockResolvedValue(new Label({name: updatedName, type:LabelType.PROFESSION}));
 
         const query = `
             mutation UpdateLabel($input: UpdateLabelInput!) {

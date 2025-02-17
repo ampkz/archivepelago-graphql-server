@@ -3,7 +3,7 @@ type Correspondence {
     correspondenceID: ID!
     correspondenceDate: String
     correspondenceStartDate: String
-    correspondenceType: String
+    correspondenceType: CorrespondenceType
     from: [Person]
     to: [Person]
 }
@@ -26,7 +26,7 @@ type Mutation {
 }
 
 input CreateCorrespondenceInput {
-    correspondenceType: String!
+    correspondenceType: CorrespondenceType!
     correspondenceDate: String
     correspondenceStartDate: String
 }
@@ -35,6 +35,10 @@ input UpdateCorrespondenceInput {
     correspondenceID: ID!
     updatedCorrespondenceDate: String
     updatedCorrespondenceStartDate: String
-    updatedCorrespondenceType: String
+    updatedCorrespondenceType: CorrespondenceType
+}
+
+enum CorrespondenceType {
+    LETTER
 }
 `

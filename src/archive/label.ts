@@ -1,7 +1,7 @@
 export enum LabelType {
-    SEXUALITY = 'Sexuality',
-    NATIONALITY = 'Nationality',
-    CAREER = 'Career'
+    SEXUALITY = 'SEXUALITY',
+    NATIONALITY = 'NATIONALITY',
+    PROFESSION = 'PROFESSION'
 }
 
 export class Label implements LabelI {

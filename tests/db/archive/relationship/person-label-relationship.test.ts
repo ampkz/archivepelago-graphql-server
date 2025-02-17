@@ -23,7 +23,7 @@ describe(`Person-[:IS]->Label Tests`, () => {
     
     it(`should create a relationship between a person and label`, async () => {
         const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
-        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.CAREER}) as Label;
+        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
 
         const personLabel: PersonLabel = new PersonLabel(createdPerson.id, createdLabel.name);
 
@@ -60,9 +60,9 @@ describe(`Person-[:IS]->Label Tests`, () => {
 
     test(`getLabelsByPerson should get a list of labels`, async () => {
         const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
-        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.CAREER}) as Label;
-        const createdLabel2: Label = await createLabel({name: faker.word.adjective(), type: LabelType.CAREER}) as Label;
-        const createdLabel3: Label = await createLabel({name: faker.word.adjective(), type: LabelType.CAREER}) as Label;
+        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
+        const createdLabel2: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
+        const createdLabel3: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
 
         const personLabel: PersonLabel = new PersonLabel(createdPerson.id, createdLabel.name);
         const personLabel2: PersonLabel = new PersonLabel(createdPerson.id, createdLabel2.name);
@@ -84,7 +84,7 @@ describe(`Person-[:IS]->Label Tests`, () => {
         const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
         const createdPerson2: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
         const createdPerson3: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
-        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.CAREER}) as Label;
+        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
 
         const personLabel: PersonLabel = new PersonLabel(createdPerson.id, createdLabel.name);
         const personLabel2: PersonLabel = new PersonLabel(createdPerson2.id, createdLabel.name);
