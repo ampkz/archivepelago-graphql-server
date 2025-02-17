@@ -39,6 +39,7 @@ export async function initializeDBs() : Promise<boolean> {
     await initializeConstraint(process.env.USERS_DB as string, 'User', 'id');
     await initializeConstraint(process.env.ARCHIVE_DB as string, 'Person', 'id');
     await initializeConstraint(process.env.ARCHIVE_DB as string, 'Label', 'name');
+    await initializeConstraint(process.env.ARCHIVE_DB as string, 'Correspondence', 'correspondenceID');
     
     return true;
 }

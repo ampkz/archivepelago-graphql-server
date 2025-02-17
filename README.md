@@ -75,14 +75,28 @@ Follow the instructions below to install Neo4j, being sure to install the correc
     sudo neo4j start
     ```
 * Enable Neo4j on startup:
+    
+  Try:
+  ```bash
+  sudo systemctl start neo4j
+  sudo systemctl status neo4j
+  ```
+  If it failed to start, saying that the configuration file validation failed, you may need to change ownership of the folder where the logs are kept:
+  ```bash
+  sudo chown neo4j:adm -R /var/log/neo4j
+  ```
+
+  After changing the folder's owner, try to start the neo4j service and check its status again. If successful, enable neo4j to start on startup:
+
   ```bash
   sudo systemctl enable neo4j
   ```
 
-#### Initialize Server
-Run `npm install` to install the dependencies required for the server. 
+  If unsuccessful, make sure `/etc/neo4j` and `/var/lib/neo4j` are owned by `neo4j:adm`.
 
-To initialize the server, `cd` into archivepelago-server's main directory and run `node server-init.js`.
+#### Initialize Server 
+
+To initialize the server, `cd` into archivepelago-server's main directory and run `npm install` to install the dependencies required for the server. Then run `node server-init.js` to initialize the database and create an initial admin user. Finally, run `npm run start` to start the server.
 
 ### NGINX Reverse Proxy
 Although not required, the deployment server uses NGINX as a reverse proxy to improve performance and security. Follow the instructions below for basic setup.
