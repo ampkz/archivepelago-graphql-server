@@ -21,11 +21,12 @@ describe(`CRUD Correspondence Tests`, () => {
     
     it(`should create a Correspondence`, async () => {
         const correspondenceType: CorrespondenceType = CorrespondenceType.LETTER,
-            correspondenceDate: string = faker.date.anytime().toDateString();
+            correspondenceDate: string = faker.date.anytime().toDateString(),
+            correspondenceStartDate: string = faker.date.anytime().toDateString();
 
-        const correspondence: Correspondence = new Correspondence({ correspondenceID: '', correspondenceType, correspondenceDate })
+        const correspondence: Correspondence = new Correspondence({ correspondenceID: '', correspondenceType, correspondenceDate, correspondenceStartDate })
 
-        const createdCorrespondence = await createCorrespondence({ correspondenceID: '', correspondenceType, correspondenceDate });
+        const createdCorrespondence = await createCorrespondence({ correspondenceID: '', correspondenceType, correspondenceDate, correspondenceStartDate });
 
         correspondence.correspondenceID = createdCorrespondence?.correspondenceID as string;
 
@@ -71,19 +72,20 @@ describe(`CRUD Correspondence Tests`, () => {
     });
 
     it(`should update a created correspondence`, async () => {
-        const updatedCorrespondenceDate = faker.date.anytime().toDateString();
+        const updatedCorrespondenceDate = faker.date.anytime().toDateString(),
+            updatedCorrespondenceStartDate = faker.date.anytime().toDateString();
 
         const createdCorrespondence = await createCorrespondence({correspondenceID: '', correspondenceType: CorrespondenceType.LETTER});
         
-        const updatedCorrespondence = await updateCorrespondence({ correspondenceID: createdCorrespondence?.correspondenceID as string, updatedCorrespondenceDate, updatedCorrespondenceType: CorrespondenceType.LETTER });
+        const updatedCorrespondence = await updateCorrespondence({ correspondenceID: createdCorrespondence?.correspondenceID as string, updatedCorrespondenceDate, updatedCorrespondenceStartDate, updatedCorrespondenceType: CorrespondenceType.LETTER });
 
-        expect(updatedCorrespondence).toEqual({ correspondenceID: createdCorrespondence?.correspondenceID as string, correspondenceDate: updatedCorrespondenceDate, correspondenceType: CorrespondenceType.LETTER });
+        expect(updatedCorrespondence).toEqual({ correspondenceID: createdCorrespondence?.correspondenceID as string, correspondenceDate: updatedCorrespondenceDate, correspondenceType: CorrespondenceType.LETTER, correspondenceStartDate: updatedCorrespondenceStartDate });
     });
     
     it(`should update a created correspondence by deleted a null date`, async () => {
-        const createdCorrespondence = await createCorrespondence({correspondenceID: '', correspondenceType: CorrespondenceType.LETTER});
+        const createdCorrespondence = await createCorrespondence({correspondenceID: '', correspondenceType: CorrespondenceType.LETTER, correspondenceDate: faker.date.anytime().toDateString(), correspondenceStartDate: faker.date.anytime().toDateString()});
         
-        const updatedCorrespondence = await updateCorrespondence({ correspondenceID: createdCorrespondence?.correspondenceID as string, updatedCorrespondenceDate: null });
+        const updatedCorrespondence = await updateCorrespondence({ correspondenceID: createdCorrespondence?.correspondenceID as string, updatedCorrespondenceDate: null, updatedCorrespondenceStartDate: null });
 
         expect(updatedCorrespondence).toEqual({ correspondenceID: createdCorrespondence?.correspondenceID as string, correspondenceType: CorrespondenceType.LETTER });
     });

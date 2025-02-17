@@ -1,9 +1,6 @@
-import { Node, NodeType } from "../../_helpers/nodes";
+import { NodeType } from "../../_helpers/nodes";
 import { Correspondence, CorrespondenceI, UpdatedCorrespondenceI } from "../../archive/correspondence";
-import { Person } from "../../archive/person";
-import { Relationship, RelationshipType } from "../../archive/relationship/relationship";
 import { createNode, deleteNode, getNode, getNodes, removeProperties, updateNode } from "../utils/crud";
-import { createRelationship, deleteRelationship, getRelationshipsToNode } from "../utils/relationship/crud-relationship";
 
 export async function getCorrespondence(correspondenceID: string): Promise<Correspondence | undefined> {
     const matchedNode = await getNode(NodeType.CORRESPONDENCE, 'correspondenceID: $correspondenceID', { correspondenceID });
@@ -56,6 +53,7 @@ function prepCorrespondenceProps(correspondence: CorrespondenceI): string[]{
     props.push('correspondenceType: $correspondenceType');
 
     if(correspondence.correspondenceDate) props.push('correspondenceDate: $correspondenceDate');
+    if(correspondence.correspondenceStartDate) props.push('correspondenceStartDate: $correspondenceStartDate')
 
     return props;
 }
@@ -64,6 +62,7 @@ function updatedCorrespondenceToProps(updatedCorrespondence: UpdatedCorresponden
     const props: string[] = [];
 
     if(updatedCorrespondence.updatedCorrespondenceDate !== undefined && updatedCorrespondence.updatedCorrespondenceDate !== null) props.push('c.correspondenceDate = $updatedCorrespondenceDate');
+    if(updatedCorrespondence.updatedCorrespondenceStartDate !== undefined && updatedCorrespondence.updatedCorrespondenceStartDate !== null) props.push('c.correspondenceStartDate = $updatedCorrespondenceStartDate');
     if(updatedCorrespondence.updatedCorrespondenceType !== undefined) props.push('c.correspondenceType = $updatedCorrespondenceType');
 
     return props;
@@ -73,6 +72,7 @@ function updatedCorrespondenceRemovedProps(updatedCorrespondence: UpdatedCorresp
     const removedProps: string[] = [];
 
     if(updatedCorrespondence.updatedCorrespondenceDate === null) removedProps.push('c.correspondenceDate');
+    if(updatedCorrespondence.updatedCorrespondenceStartDate === null) removedProps.push('c.correspondenceStartDate');
 
     return removedProps;
 }
