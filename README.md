@@ -3,9 +3,9 @@
 
 This is the back-end of Archivepelago, a project on the transmission and translation of notions of sexuality and gender by mapping networks of queer writers and artists.
 
-## Server Requirements
-
 Although not required, the server runs on Ubuntu 24.04 through [Digital Ocean](https://www.digitalocean.com/ "Digital Ocean"). The following code is targeted to Ubuntu 24.04 within a Digital Ocean droplet; if using a different operating system or service provider, please adjust accordingly.
+
+## Server Requirements
 
 ### Basic Server setup
 
