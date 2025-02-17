@@ -58,8 +58,7 @@ export async function getRelationshipsToNode(node: Node, secondNodeType: NodeTyp
 
     const driver: Driver = await connect();
     const session: Session = driver.session(getSessionOptions(dbName));
-const query = `MATCH (n:${node.nodeType} {${node.getIdString()}})${relationshipDirection === RelationshipDirection.COMING ? `<` : ``}-[:${relationshipType}]-${relationshipDirection === RelationshipDirection.GOING ? `>` : ``}(m:${secondNodeType}) RETURN m`;
-
+    
     const match: RecordShape = await session.run(`MATCH (n:${node.nodeType} {${node.getIdString()}})${relationshipDirection === RelationshipDirection.COMING ? `<` : ``}-[:${relationshipType}]-${relationshipDirection === RelationshipDirection.GOING ? `>` : ``}(m:${secondNodeType}) RETURN m`, node.getIdParams());
 
     await session.close();

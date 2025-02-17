@@ -1,5 +1,4 @@
-import express, { NextFunction, Request, Response } from "express";
-import { CustomError } from "../_helpers/errors-helper";
+import { Request, Response } from "express";
 
 export function sendStatus405(allow: string) {
     return (req: Request, res: Response) => {

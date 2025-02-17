@@ -4,7 +4,6 @@ import { faker } from '@faker-js/faker';
 import { destroyTestingDBs, initializeDBs } from '../../../src/db/utils/init-dbs';
 import { Neo4jError, Record, Session } from 'neo4j-driver';
 import neo4j, { Driver } from 'neo4j-driver';
-import { InternalError } from '../../../src/_helpers/errors-helper';
 import { Label, LabelType } from '../../../src/archive/label';
 import { NodeType } from '../../../src/_helpers/nodes';
 
@@ -51,7 +50,6 @@ describe(`CRUD Tests`, () => {
 
     it(`should throw an error if trying to create a user with an existing email`, async () => {
         const email: string = faker.internet.email();
-        const node: object | undefined = await createNode(NodeType.USER, ['email: $email'], { email }, (process.env.USERS_DB as string));
     
         await expect(createNode(NodeType.USER, ['email: $email'], { email }, (process.env.USERS_DB as string))).rejects.toThrow(CRUDErrors.CANNOT_CREATE_NODE);
 
@@ -257,8 +255,7 @@ describe(`CRUD Tests`, () => {
 
     it(`should delete a property on a created node`, async () => {
         const email: string = faker.internet.email(),
-            firstName: string = faker.person.firstName(),
-            updatedFirstName: string = faker.person.firstName();
+            firstName: string = faker.person.firstName();
 
         await createNode(NodeType.USER, ['email: $email', 'firstName: $firstName'], { email, firstName });
         

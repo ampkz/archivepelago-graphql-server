@@ -6,7 +6,7 @@ import { mutationFailed, serverFailed, unauthorizedError } from "../errors/error
 
 export default {
     Query: {
-        label: async(_root: any, { name }: any, { authorizedUser }: any) => {
+        label: async(_root: any, { name }: any) => {
             let label: Label | undefined = undefined;
 
             try{
@@ -18,7 +18,7 @@ export default {
             return label;
         },
 
-        labels: async(_root: any, {}: any, { authorizedUser }: any) => {
+        labels: async() => {
             let labels: Label[] = [];
 
             try{

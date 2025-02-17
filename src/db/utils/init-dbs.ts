@@ -11,11 +11,9 @@ export enum ErrorMsgs {
 
 export async function initializeDBs() : Promise<boolean> {
     const driver: Driver = await connect();
-    let session: Session,
-        match: RecordShape;
+    const session = driver.session();
+    let match: RecordShape;
 
-    session = driver.session();
-    
     match = await session.run(`CREATE DATABASE ${getSessionOptions(process.env.USERS_DB as string).database} IF NOT EXISTS WAIT`);
 
     if((match.records[0] as Record).get(`address`) != `${process.env.NEO4J_HOST}:${process.env.NEO4J_PORT}`) {

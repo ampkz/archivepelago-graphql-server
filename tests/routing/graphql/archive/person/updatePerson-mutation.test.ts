@@ -46,7 +46,6 @@ describe(`Update Person Mutation Tests`, () => {
 
     it(`should update a person as an admin`, async () => {
         const id: string = faker.database.mongodbObjectId(),
-            firstName: string = faker.person.firstName(),
             updatedFirstName: string = faker.person.firstName();
         
         const updatePersonSpy = jest.spyOn(crudPerson, "updatePerson");
@@ -82,7 +81,6 @@ describe(`Update Person Mutation Tests`, () => {
 
     it(`should return undefined if no person exists`, async () => {
         const id: string = faker.database.mongodbObjectId(),
-            firstName: string = faker.person.firstName(),
             updatedFirstName: string = faker.person.firstName();
         
         const updatePersonSpy = jest.spyOn(crudPerson, "updatePerson");
@@ -117,7 +115,6 @@ describe(`Update Person Mutation Tests`, () => {
 
     it(`should update a person as a contributor`, async () => {
         const id: string = faker.database.mongodbObjectId(),
-            firstName: string = faker.person.firstName(),
             updatedFirstName: string = faker.person.firstName();
         
         const updatePersonSpy = jest.spyOn(crudPerson, "updatePerson");

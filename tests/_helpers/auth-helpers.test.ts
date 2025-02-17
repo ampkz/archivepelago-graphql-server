@@ -10,10 +10,8 @@ describe(`Auth Helpers Tests`, () => {
         const email: string = faker.internet.email(),
             auth: Auth = Auth.ADMIN;
         
-        let authorizedUser: AuthorizedUser | undefined;
-
         const jwtToken = signToken(email, auth, '1d');
-        authorizedUser = verifyToken(jwtToken);
+        const authorizedUser = verifyToken(jwtToken);
 
         expect(authorizedUser).toBeDefined();
         expect(authorizedUser?.auth).toEqual(auth);

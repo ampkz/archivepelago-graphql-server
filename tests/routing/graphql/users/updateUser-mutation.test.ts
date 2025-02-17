@@ -7,7 +7,7 @@ import dotenv from 'dotenv';
 import { signToken } from "../../../../src/_helpers/auth-helpers";
 import * as crudUser from '../../../../src/db/users/crud-user';
 import { User } from "../../../../src/users/users";
-import { InternalError, ResourceExistsError } from "../../../../src/_helpers/errors-helper";
+import { InternalError } from "../../../../src/_helpers/errors-helper";
 
 dotenv.config();
 
@@ -84,15 +84,6 @@ describe(`updateUser Mutation Tests`, () => {
       });
 
       it(`should throw an error if there was an issue with the server`, async() => {
-        const email = faker.internet.email(),
-            auth = Auth.CONTRIBUTOR,
-            firstName = faker.person.firstName(),
-            lastName = faker.person.lastName(),
-            password = faker.internet.password(),
-            secondName = faker.person.middleName();
-        
-        const user: User = new User(email, auth, firstName, lastName, secondName);
-
         const updateUserSpy = jest.spyOn(crudUser, "updateUser");
         updateUserSpy.mockRejectedValue(new InternalError(crudUser.Errors.CANNOT_UPDATE_USER));
 

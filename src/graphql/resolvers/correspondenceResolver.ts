@@ -1,5 +1,4 @@
 import { Correspondence, CorrespondenceI } from "../../archive/correspondence"
-import { Person } from "../../archive/person";
 import { RelationshipType } from "../../archive/relationship/relationship";
 import { Auth, isPermitted } from "../../auth/authorization";
 import { createCorrespondence, deleteCorrespondence, getCorrespondence, getCorrespondences, updateCorrespondence } from "../../db/archive/crud-correspondence";
@@ -8,7 +7,7 @@ import { mutationFailed, serverFailed, unauthorizedError } from "../errors/error
 
 export default {
     Query: {
-        correspondence: async(_root: any, { correspondenceID }: any, { authorizedUser }: any) => {
+        correspondence: async(_root: any, { correspondenceID }: any) => {
             let correspondence: Correspondence | undefined;
 
             try{

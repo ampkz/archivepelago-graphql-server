@@ -19,8 +19,6 @@ describe(`createPerson Mutation Tests`, () => {
     })
 
     it(`should throw unauthorized error if trying to create person without authorized user`, async () => {
-        const id: string = faker.database.mongodbObjectId();
-
         const query = `
             mutation CreatePerson($input: CreatePersonInput!) {
                 createPerson(input: $input) {
@@ -106,8 +104,6 @@ describe(`createPerson Mutation Tests`, () => {
     });
 
     it(`should throw an error if there was an issue with the server`, async () => {
-        const id: string = faker.database.mongodbObjectId();
-        
         const createPersonSpy = jest.spyOn(crudPerson, "createPerson");
         createPersonSpy.mockRejectedValue(new InternalError(''));
 

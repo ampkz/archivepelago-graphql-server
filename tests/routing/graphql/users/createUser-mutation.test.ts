@@ -137,8 +137,6 @@ describe(`createUser Mutation Tests`, () => {
             password = faker.internet.password(),
             secondName = faker.person.middleName();
         
-        const user: User = new User(email, auth, firstName, lastName, secondName);
-
         const createUserSpy = jest.spyOn(crudUser, "createUser");
         createUserSpy.mockRejectedValue(new ResourceExistsError(crudUser.Errors.CANNOT_CREATE_USER, { info: crudUser.Errors.USER_ALREADY_EXISTS }))
 
@@ -184,8 +182,6 @@ describe(`createUser Mutation Tests`, () => {
             password = faker.internet.password(),
             secondName = faker.person.middleName();
         
-        const user: User = new User(email, auth, firstName, lastName, secondName);
-
         const createUserSpy = jest.spyOn(crudUser, "createUser");
         createUserSpy.mockRejectedValue(new InternalError(crudUser.Errors.CANNOT_CREATE_USER));
         

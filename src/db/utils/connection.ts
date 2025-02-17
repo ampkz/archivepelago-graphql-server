@@ -1,4 +1,4 @@
-import neo4j, { Driver, ServerInfo } from 'neo4j-driver';
+import neo4j, { Driver } from 'neo4j-driver';
 import { InternalError } from '../../_helpers/errors-helper';
 
 export enum Errors{
@@ -11,7 +11,7 @@ export async function connect () : Promise<Driver> {
     
     try{
         // Will throw an error if not authenticated
-        const serverInfo: ServerInfo = await driver.getServerInfo();
+        await driver.getServerInfo();
     }catch{
         throw new InternalError(Errors.DB_CONNECTION_ERROR, { issue: Errors.DB_CONNECTION_UNAUTHORIZED });
     }

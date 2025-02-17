@@ -8,7 +8,6 @@ import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/error
 import { Correspondence, CorrespondenceType } from '../../../../../src/archive/correspondence';
 import { signToken } from '../../../../../src/_helpers/auth-helpers';
 import { Auth } from '../../../../../src/auth/authorization';
-import correspondenceType from '../../../../../src/graphql/typeDefs/correspondenceType';
 
 dotenv.config();
 

@@ -5,7 +5,6 @@ import dotenv from 'dotenv';
 import { signToken } from "../../../../../src/_helpers/auth-helpers";
 import * as personCorrespondence from '../../../../../src/db/archive/relationship/person-correspondence-relationship';
 import { InternalError } from "../../../../../src/_helpers/errors-helper";
-import { Person } from "../../../../../src/archive/person";
 import { Errors as GraphQLErrors } from "../../../../../src/graphql/errors/errors";
 import { Auth } from "../../../../../src/auth/authorization";
 import { Correspondence, CorrespondenceType } from "../../../../../src/archive/correspondence";

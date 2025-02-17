@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { Person } from '../../../../src/archive/person';
-import { PersonLabel, Relationship, RelationshipType } from '../../../../src/archive/relationship/relationship';
+import { PersonLabel } from '../../../../src/archive/relationship/relationship';
 import { createPerson } from '../../../../src/db/archive/crud-person';
 import { Label, LabelType } from '../../../../src/archive/label';
 import { createLabel } from '../../../../src/db/archive/crud-label';

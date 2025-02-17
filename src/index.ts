@@ -1,5 +1,3 @@
-import { signToken } from './_helpers/auth-helpers';
-import { Auth } from './auth/authorization';
 import startServer from './server/server';
 import dotenv from 'dotenv';
 

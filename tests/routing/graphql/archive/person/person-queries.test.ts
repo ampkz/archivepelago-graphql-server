@@ -9,7 +9,6 @@ import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/error
 import * as personLabelRelationship from '../../../../../src/db/archive/relationship/person-label-relationship';
 import { Label, LabelType } from '../../../../../src/archive/label';
 import { Correspondence, CorrespondenceType } from '../../../../../src/archive/correspondence';
-import * as crudCorrespondence from '../../../../../src/db/archive/crud-correspondence';
 import * as personCorrespondence from '../../../../../src/db/archive/relationship/person-correspondence-relationship';
 
 dotenv.config();

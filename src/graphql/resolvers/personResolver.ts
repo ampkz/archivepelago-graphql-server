@@ -8,7 +8,7 @@ import { mutationFailed, serverFailed, unauthorizedError } from "../errors/error
 
 export default {
     Query: {
-        person: async(_root: any, { id }: any, { authorizedUser }: any) => {
+        person: async(_root: any, { id }: any) => {
             let person: Person | undefined = undefined;
 
             try {
@@ -20,7 +20,7 @@ export default {
             return person;
         },
         
-        persons: async(_root: any, {}: any, { authorizedUser }: any) => {
+        persons: async() => {
             let persons: Person[] = [];
 
             try {
