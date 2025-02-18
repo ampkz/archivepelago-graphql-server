@@ -143,4 +143,33 @@ describe(`createCorrespondence Mutation Tests`, () => {
     
         expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
     });
+
+    it(`should return undefined if no correspondence was created`, async () => {
+        const createCorrespondenceSpy = jest.spyOn(crudCorrespondence, "createCorrespondence");
+        createCorrespondenceSpy.mockResolvedValue(undefined);
+
+        const query = `
+            mutation CreateCorrespondence($input: CreateCorrespondenceInput!) {
+                createCorrespondence(input: $input) {
+                    correspondenceID
+                }
+            }
+        `
+
+        const variables = {
+            input: {
+                correspondenceType: CorrespondenceType.LETTER
+            }
+        }
+
+        const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
+
+        const { body } = await request(app)
+                .post('/graphql')
+                .send({ query, variables })
+                .set('Accept', 'application/json')
+                .set('Cookie', [`jwt=${jwtToken}`]);
+    
+        expect(body.createCorrespondence).toBeUndefined();
+    });
 });

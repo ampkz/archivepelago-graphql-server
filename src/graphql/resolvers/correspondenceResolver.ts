@@ -1,5 +1,5 @@
 import { Correspondence, ICorrespondence } from "../../archive/correspondence"
-import { convertArchiveDateToDate } from "../../archive/date";
+import { convertArchiveDateToDate, convertDateStringToArchiveDate } from "../../archive/date";
 import { RelationshipType } from "../../archive/relationship/relationship";
 import { Auth, isPermitted } from "../../auth/authorization";
 import { createCorrespondence, deleteCorrespondence, getCorrespondence, getCorrespondences, updateCorrespondence } from "../../db/archive/crud-correspondence";
@@ -47,7 +47,11 @@ export default {
                 throw mutationFailed(error.message);
             }
 
-            return correspondence;
+            if(correspondence !== undefined){
+                return {... correspondence, correspondenceDate: convertDateStringToArchiveDate(correspondence?.correspondenceDate), correspondenceEndDate: convertDateStringToArchiveDate(correspondence.correspondenceEndDate)}
+            }
+
+            return undefined;
         },
 
         deleteCorrespondence: async (_root: any, { correspondenceID }: any, { authorizedUser }: any) => {
@@ -79,7 +83,11 @@ export default {
                 throw mutationFailed(error.message);
             }
 
-            return correspondence;
+            if(correspondence !== undefined){
+                return {... correspondence, correspondenceDate: convertDateStringToArchiveDate(correspondence?.correspondenceDate), correspondenceEndDate: convertDateStringToArchiveDate(correspondence.correspondenceEndDate)}
+            }
+
+            return undefined;
         },
 
         addReceived: async (_root: any, { correspondenceID, receivedID }: any, { authorizedUser }: any) => {
