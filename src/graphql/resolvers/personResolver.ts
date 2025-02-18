@@ -1,3 +1,4 @@
+import { convertDateStringToArchiveDate } from "../../archive/date";
 import { Person, IPerson } from "../../archive/person";
 import { PersonLabel, RelationshipType } from "../../archive/relationship/relationship";
 import { Auth, isPermitted } from "../../auth/authorization";
@@ -117,7 +118,27 @@ export default {
 
     Person: {
         labels: (person: Person) => getLabelsByPerson(person),
-        sentCorrespondences: (person: Person) => getCorrespondencesByPerson(person.id, RelationshipType.SENT),
-        receivedCorrespondences: (person: Person) => getCorrespondencesByPerson(person.id, RelationshipType.RECEIVED),
+        sentCorrespondences: async (person: Person) => {
+            const convertedCorrespondences: any[] = [];
+            
+            const correspondences = await getCorrespondencesByPerson(person.id, RelationshipType.SENT);
+
+            correspondences.map((correspondence) => {
+                convertedCorrespondences.push({... correspondence, correspondenceDate: convertDateStringToArchiveDate(correspondence?.correspondenceDate), correspondenceEndDate: convertDateStringToArchiveDate(correspondence.correspondenceEndDate)}); 
+            })
+
+            return convertedCorrespondences;
+        },
+        receivedCorrespondences: async (person: Person) => {
+            const convertedCorrespondences: any[] = [];
+            
+            const correspondences = await getCorrespondencesByPerson(person.id, RelationshipType.RECEIVED);
+            
+            correspondences.map((correspondence) => {
+                convertedCorrespondences.push({... correspondence, correspondenceDate: convertDateStringToArchiveDate(correspondence?.correspondenceDate), correspondenceEndDate: convertDateStringToArchiveDate(correspondence.correspondenceEndDate)}); 
+            })
+
+            return convertedCorrespondences;
+        }
     },
 };

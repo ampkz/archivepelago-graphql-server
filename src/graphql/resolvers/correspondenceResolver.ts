@@ -76,7 +76,11 @@ export default {
                 throw mutationFailed(error.message);
             }
 
-            return correspondence;
+            if(correspondence !== undefined){
+                return {... correspondence, correspondenceDate: convertDateStringToArchiveDate(correspondence?.correspondenceDate), correspondenceEndDate: convertDateStringToArchiveDate(correspondence.correspondenceEndDate)}
+            }
+
+            return undefined;
         },
 
         updateCorrespondence: async (_root: any, { input: { correspondenceID, updatedCorrespondenceDate, updatedCorrespondenceEndDate, updatedCorrespondenceType }}: any, { authorizedUser }: any) => {
