@@ -22,7 +22,7 @@ describe(`Update Person Mutation Tests`, () => {
         const id: string = faker.database.mongodbObjectId();
 
         const query = `
-            mutation UpdatePerson($input: UpdateIPersonnput!) {
+            mutation UpdatePerson($input: UpdatePersonInput!) {
                 updatePerson(input: $input) {
                     id
                 }
@@ -52,7 +52,7 @@ describe(`Update Person Mutation Tests`, () => {
         updatePersonSpy.mockResolvedValue(new Person({ id, firstName: updatedFirstName }));
 
         const query = `
-            mutation UpdatePerson($input: UpdateIPersonnput!) {
+            mutation UpdatePerson($input: UpdatePersonInput!) {
                 updatePerson(input: $input) {
                     id
                     firstName
@@ -87,7 +87,7 @@ describe(`Update Person Mutation Tests`, () => {
         updatePersonSpy.mockResolvedValue(undefined);
 
         const query = `
-            mutation UpdatePerson($input: UpdateIPersonnput!) {
+            mutation UpdatePerson($input: UpdatePersonInput!) {
                 updatePerson(input: $input) {
                     id
                     firstName
@@ -121,7 +121,7 @@ describe(`Update Person Mutation Tests`, () => {
         updatePersonSpy.mockResolvedValue(new Person({ id, firstName: updatedFirstName }));
 
         const query = `
-            mutation UpdatePerson($input: UpdateIPersonnput!) {
+            mutation UpdatePerson($input: UpdatePersonInput!) {
                 updatePerson(input: $input) {
                     id
                     firstName
@@ -156,7 +156,7 @@ describe(`Update Person Mutation Tests`, () => {
         updatePersonSpy.mockRejectedValue(new InternalError(''));
 
         const query = `
-            mutation UpdatePerson($input: UpdateIPersonnput!) {
+            mutation UpdatePerson($input: UpdatePersonInput!) {
                 updatePerson(input: $input) {
                     id
                     firstName

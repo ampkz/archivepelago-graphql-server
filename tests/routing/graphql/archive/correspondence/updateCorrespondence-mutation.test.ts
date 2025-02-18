@@ -24,7 +24,7 @@ describe(`updateCorrespondence Mutation Tests`, () => {
 
     it(`should throw an unauthorized error without authorization`, async () => {
         const query = `
-            mutation UpdateCorrespondence($input: UpdateICorrespondencenput!) {
+            mutation UpdateCorrespondence($input: UpdateCorrespondenceInput!) {
                 updateCorrespondence(input: $input) {
                     correspondenceID
                 }
@@ -52,7 +52,7 @@ describe(`updateCorrespondence Mutation Tests`, () => {
         updateCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.LETTER }));
 
         const query = `
-            mutation UpdateCorrespondence($input: UpdateICorrespondencenput!) {
+            mutation UpdateCorrespondence($input: UpdateCorrespondenceInput!) {
                 updateCorrespondence(input: $input) {
                     correspondenceID
                 }
@@ -83,7 +83,7 @@ describe(`updateCorrespondence Mutation Tests`, () => {
         updateCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.LETTER }));
 
         const query = `
-            mutation UpdateCorrespondence($input: UpdateICorrespondencenput!) {
+            mutation UpdateCorrespondence($input: UpdateCorrespondenceInput!) {
                 updateCorrespondence(input: $input) {
                     correspondenceID
                 }
@@ -92,7 +92,10 @@ describe(`updateCorrespondence Mutation Tests`, () => {
 
         const variables = {
             input: {
-                correspondenceID: faker.database.mongodbObjectId()
+                correspondenceID: faker.database.mongodbObjectId(),
+                updatedCorrespondenceDate: {
+                    year: faker.date.anytime().getFullYear().toString()
+                }
             }
         }
 
@@ -112,7 +115,7 @@ describe(`updateCorrespondence Mutation Tests`, () => {
         updateCorrespondenceSpy.mockRejectedValue(new InternalError(GraphQLErrors.MUTATION_FAILED));
 
         const query = `
-            mutation UpdateCorrespondence($input: UpdateICorrespondencenput!) {
+            mutation UpdateCorrespondence($input: UpdateCorrespondenceInput!) {
                 updateCorrespondence(input: $input) {
                     correspondenceID
                 }

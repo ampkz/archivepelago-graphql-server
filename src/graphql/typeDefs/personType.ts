@@ -17,14 +17,14 @@ type Query {
 }
 
 type Mutation {
-    createPerson(input: CreateIPersonnput!): Person
-    updatePerson(input: UpdateIPersonnput!): Person
+    createPerson(input: CreatePersonInput!): Person
+    updatePerson(input: UpdatePersonInput!): Person
     deletePerson(id: ID!): Person
     createLabelRelationship(personID: ID!, labelName: ID!): Person
     deleteLabelRelationship(personID: ID!, labelName: ID!): Person
 }
 
-input CreateIPersonnput {
+input CreatePersonInput {
     firstName: String
     lastName: String
     secondName: String
@@ -32,7 +32,7 @@ input CreateIPersonnput {
     deathDate: String
 }
 
-input UpdateIPersonnput {
+input UpdatePersonInput {
     id: ID!
     updatedFirstName: String
     updatedLastName: String

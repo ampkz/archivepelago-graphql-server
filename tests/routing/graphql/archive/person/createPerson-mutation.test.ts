@@ -20,7 +20,7 @@ describe(`createPerson Mutation Tests`, () => {
 
     it(`should throw unauthorized error if trying to create person without authorized user`, async () => {
         const query = `
-            mutation CreatePerson($input: CreateIPersonnput!) {
+            mutation CreatePerson($input: CreatePersonInput!) {
                 createPerson(input: $input) {
                     id
                 }
@@ -48,7 +48,7 @@ describe(`createPerson Mutation Tests`, () => {
         createPersonSpy.mockResolvedValue(new Person({ id }));
 
         const query = `
-            mutation CreatePerson($input: CreateIPersonnput!) {
+            mutation CreatePerson($input: CreatePersonInput!) {
                 createPerson(input: $input) {
                     id
                 }
@@ -79,7 +79,7 @@ describe(`createPerson Mutation Tests`, () => {
         createPersonSpy.mockResolvedValue(new Person({ id }));
 
         const query = `
-            mutation CreatePerson($input: CreateIPersonnput!) {
+            mutation CreatePerson($input: CreatePersonInput!) {
                 createPerson(input: $input) {
                     id
                 }
@@ -108,7 +108,7 @@ describe(`createPerson Mutation Tests`, () => {
         createPersonSpy.mockRejectedValue(new InternalError(''));
 
         const query = `
-            mutation CreatePerson($input: CreateIPersonnput!) {
+            mutation CreatePerson($input: CreatePersonInput!) {
                 createPerson(input: $input) {
                     id
                 }

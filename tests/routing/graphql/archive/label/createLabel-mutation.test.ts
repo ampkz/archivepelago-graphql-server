@@ -20,7 +20,7 @@ describe(`createLabel Mutation Tests`, () => {
 
     it(`should throw unauthorized error if trying to create label without authorized user`, async () => {
         const query = `
-            mutation CreateLabel($input: CreateILabelnput!) {
+            mutation CreateLabel($input: CreateLabelInput!) {
                 createLabel(input: $input) {
                     name
                 }
@@ -49,7 +49,7 @@ describe(`createLabel Mutation Tests`, () => {
         createLabelSpy.mockResolvedValue(new Label({name, type: LabelType.PROFESSION}));
 
         const query = `
-            mutation CreateLabel($input: CreateILabelnput!) {
+            mutation CreateLabel($input: CreateLabelInput!) {
                 createLabel(input: $input) {
                     name
                 }
@@ -80,7 +80,7 @@ describe(`createLabel Mutation Tests`, () => {
         createLabelSpy.mockResolvedValue(new Label({name, type: LabelType.PROFESSION}));
 
         const query = `
-            mutation CreateLabel($input: CreateILabelnput!) {
+            mutation CreateLabel($input: CreateLabelInput!) {
                 createLabel(input: $input) {
                     name
                 }
@@ -111,7 +111,7 @@ describe(`createLabel Mutation Tests`, () => {
         createLabelSpy.mockRejectedValue(new InternalError(''));
 
         const query = `
-            mutation CreateLabel($input: CreateILabelnput!) {
+            mutation CreateLabel($input: CreateLabelInput!) {
                 createLabel(input: $input) {
                     name
                 }

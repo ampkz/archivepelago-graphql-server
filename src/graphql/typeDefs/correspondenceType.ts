@@ -1,8 +1,8 @@
 export default /* GraphQL */`
 type Correspondence {
     correspondenceID: ID!
-    correspondenceDate: String
-    correspondenceEndDate: String
+    correspondenceDate: ArchiveDate
+    correspondenceEndDate: ArchiveDate
     correspondenceType: CorrespondenceType
     from: [Person]
     to: [Person]
@@ -16,29 +16,41 @@ type Query {
 }
 
 type Mutation {
-    createCorrespondence(input: CreateICorrespondencenput!): Correspondence
+    createCorrespondence(input: CreateCorrespondenceInput!): Correspondence
     deleteCorrespondence(correspondenceID: ID!): Correspondence
-    updateCorrespondence(input: UpdateICorrespondencenput!): Correspondence
+    updateCorrespondence(input: UpdateCorrespondenceInput!): Correspondence
     addReceived(correspondenceID: ID!, receivedID: ID!): Correspondence
     removeReceived(correspondenceID: ID!, receivedID: ID!): Correspondence
     addSent(correspondenceID: ID!, sentID: ID!): Correspondence
     removeSent(correspondenceID: ID!, sentID: ID!): Correspondence
 }
 
-input CreateICorrespondencenput {
+input CreateCorrespondenceInput {
     correspondenceType: CorrespondenceType!
-    correspondenceDate: String
-    correspondenceEndDate: String
+    correspondenceDate: ArchiveDateInput
+    correspondenceEndDate: ArchiveDateInput
 }
 
-input UpdateICorrespondencenput {
+input UpdateCorrespondenceInput {
     correspondenceID: ID!
-    updatedCorrespondenceDate: String
-    updatedCorrespondenceEndDate: String
+    updatedCorrespondenceDate: ArchiveDateInput
+    updatedCorrespondenceEndDate: ArchiveDateInput
     updatedCorrespondenceType: CorrespondenceType
 }
 
 enum CorrespondenceType {
     LETTER
+}
+
+type ArchiveDate {
+    year: String!
+    month: String
+    day: String
+}
+
+input ArchiveDateInput {
+    year: String!
+    month: String
+    day: String
 }
 `
