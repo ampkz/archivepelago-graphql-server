@@ -234,6 +234,38 @@ describe(`addSent and addReceived Mutation Tests`, () => {
           expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
       });
 
+      test(`addSent should return unedfined if no correspondence relationship was created`, async() => {
+        const correspondenceID = faker.database.mongodbObjectId(),
+            sentID = faker.database.mongodbObjectId();
+                
+        const createPersonRelationshipSpy = jest.spyOn(personCorrespondence, "createPersonRelationship");
+        createPersonRelationshipSpy.mockResolvedValue(undefined);
+
+        const query = `
+            mutation AddSent($correspondenceID: ID!, $sentID: ID!){
+            addSent(correspondenceID: $correspondenceID, sentID: $sentID) {
+                correspondenceID
+                correspondenceType
+            }
+            }
+        `;
+    
+        const variables = {
+            correspondenceID,
+            sentID
+        }
+
+        const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
+  
+        const { body } = await request(app)
+          .post('/graphql')
+          .send({ query, variables })
+          .set('Accept', 'application/json')
+          .set('Cookie', [`jwt=${jwtToken}`])
+
+          expect(body.addSent).toBeUndefined();
+      });
+
       test(`addReceived should throw an error if there was an issue with the server`, async() => {
         const correspondenceID = faker.database.mongodbObjectId(),
             receivedID = faker.database.mongodbObjectId();
@@ -264,5 +296,37 @@ describe(`addSent and addReceived Mutation Tests`, () => {
           .set('Cookie', [`jwt=${jwtToken}`])
 
           expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
+      });
+
+      test(`addReceived should return undefined if no relationship was created`, async() => {
+        const correspondenceID = faker.database.mongodbObjectId(),
+            receivedID = faker.database.mongodbObjectId();
+                
+        const createPersonRelationshipSpy = jest.spyOn(personCorrespondence, "createPersonRelationship");
+        createPersonRelationshipSpy.mockResolvedValue(undefined);
+
+        const query = `
+            mutation AddReceived($correspondenceID: ID!, $receivedID: ID!){
+                addReceived(correspondenceID: $correspondenceID, receivedID: $receivedID) {
+                    correspondenceID
+                    correspondenceType
+                }
+            }
+        `;
+    
+        const variables = {
+            correspondenceID,
+            receivedID
+        }
+
+        const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
+  
+        const { body } = await request(app)
+          .post('/graphql')
+          .send({ query, variables })
+          .set('Accept', 'application/json')
+          .set('Cookie', [`jwt=${jwtToken}`])
+
+          expect(body.addReceived).toBeUndefined();
       });
   });

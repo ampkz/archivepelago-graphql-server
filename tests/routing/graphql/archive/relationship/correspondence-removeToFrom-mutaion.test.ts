@@ -234,6 +234,38 @@ describe(`removeReceived and removeSent Mutation Tests`, () => {
           expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
       });
 
+      test(`removeSent should return undefined if no relationship was deleted`, async() => {
+        const correspondenceID = faker.database.mongodbObjectId(),
+            sentID = faker.database.mongodbObjectId();
+                
+        const deletePersonRelationshipSpy = jest.spyOn(personCorrespondence, "deletePersonRelationship");
+        deletePersonRelationshipSpy.mockResolvedValue(undefined);
+
+        const query = `
+            mutation RemoveSent($correspondenceID: ID!, $sentID: ID!){
+            removeSent(correspondenceID: $correspondenceID, sentID: $sentID) {
+                correspondenceID
+                correspondenceType
+            }
+            }
+        `;
+    
+        const variables = {
+            correspondenceID,
+            sentID
+        }
+
+        const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
+  
+        const { body } = await request(app)
+          .post('/graphql')
+          .send({ query, variables })
+          .set('Accept', 'application/json')
+          .set('Cookie', [`jwt=${jwtToken}`])
+
+          expect(body.removeSent).toBeUndefined();
+      });
+
       test(`removeReceived should throw an error if there was an issue with the server`, async() => {
         const correspondenceID = faker.database.mongodbObjectId(),
             receivedID = faker.database.mongodbObjectId();
@@ -264,5 +296,37 @@ describe(`removeReceived and removeSent Mutation Tests`, () => {
           .set('Cookie', [`jwt=${jwtToken}`])
 
           expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
+      });
+
+      test(`removeReceived should return undefined if no relationship was removed`, async() => {
+        const correspondenceID = faker.database.mongodbObjectId(),
+            receivedID = faker.database.mongodbObjectId();
+                
+        const deletePersonRelationshipSpy = jest.spyOn(personCorrespondence, "deletePersonRelationship");
+        deletePersonRelationshipSpy.mockResolvedValue(undefined);
+
+        const query = `
+            mutation RemoveReceived($correspondenceID: ID!, $receivedID: ID!){
+                removeReceived(correspondenceID: $correspondenceID, receivedID: $receivedID) {
+                    correspondenceID
+                    correspondenceType
+                }
+            }
+        `;
+    
+        const variables = {
+            correspondenceID,
+            receivedID
+        }
+
+        const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
+  
+        const { body } = await request(app)
+          .post('/graphql')
+          .send({ query, variables })
+          .set('Accept', 'application/json')
+          .set('Cookie', [`jwt=${jwtToken}`])
+
+          expect(body.removeReceived).toBeUndefined();
       });
   });

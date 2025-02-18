@@ -64,6 +64,27 @@ describe(`Correspondence Query Tests`, () => {
         expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.SERVER_ERROR);
     });
 
+    it(`should return undefined if no correspondence was found`, async () => {
+        const correspondenceID: string = faker.database.mongodbObjectId();
+
+        const getCorrespondenceSpy = jest.spyOn(crudCorrespondence, "getCorrespondence");
+        getCorrespondenceSpy.mockResolvedValue(undefined);
+        
+        const query = `
+            query {
+                correspondence(correspondenceID: "${ correspondenceID }") {
+                    correspondenceID
+                }
+            }
+        `
+        const { body } = await request(app)
+            .post('/graphql')
+            .send({ query })
+            .set('Accept', 'application/json');
+        
+        expect(body.correspondence).toBeUndefined();
+    });
+
     it(`should retrieve a list of to persons`, async () => {
         const correspondenceID: string = faker.database.mongodbObjectId(),
             firstName = faker.person.firstName();
@@ -170,4 +191,6 @@ describe(`Correspondence Query Tests`, () => {
         
         expect(body.errors[0].message).toEqual(GraphQLErrors.SERVER_ERROR);
     });
+
+    
 });

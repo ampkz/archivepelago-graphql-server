@@ -125,4 +125,33 @@ describe(`Correspondence Mutation Tests`, () => {
     
         expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
     });
+
+    it(`should return undefined if no correspondence was deleted`, async () => {
+        const correspondenceID: string = faker.database.mongodbObjectId();
+        
+        const deleteCorrespondenceSpy = jest.spyOn(crudCorrespondence, "deleteCorrespondence");
+        deleteCorrespondenceSpy.mockResolvedValue(undefined);
+
+        const query = `
+            mutation DeleteCorrespondence($correspondenceID: ID!) {
+                deleteCorrespondence(correspondenceID: $correspondenceID) {
+                    correspondenceID
+                }
+            }
+        `
+
+        const variables = {
+            correspondenceID
+        }
+
+        const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
+
+        const { body } = await request(app)
+                .post('/graphql')
+                .send({ query, variables })
+                .set('Accept', 'application/json')
+                .set('Cookie', [`jwt=${jwtToken}`]);
+    
+        expect(body.deleteCorrespondence).toBeUndefined();
+    });
 });
