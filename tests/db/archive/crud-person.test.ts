@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import { destroyTestingDBs, initializeDBs } from '../../../src/db/utils/init-dbs';
 import { faker } from '@faker-js/faker';
 import { createPerson, deletePerson, getPerson, getPersons, updatePerson } from '../../../src/db/archive/crud-person';
-import { Person, UpdatedPersonI } from '../../../src/archive/person';
+import { Person, IUpdatedPerson } from '../../../src/archive/person';
 
 dotenv.config();
 
@@ -100,7 +100,7 @@ describe(`CRUD Person Tests`, () => {
         const person: Person = new Person({id: '', firstName, lastName, secondName, birthDate, deathDate});
 
         const createdPerson: Person = await createPerson(person);
-        const updatedPerson: UpdatedPersonI = {id: createdPerson.id, updatedFirstName, updatedBirthDate, updatedDeathDate, updatedLastName, updatedSecondName };
+        const updatedPerson: IUpdatedPerson = {id: createdPerson.id, updatedFirstName, updatedBirthDate, updatedDeathDate, updatedLastName, updatedSecondName };
 
         const matchedPerson: Person | undefined = await updatePerson(updatedPerson);
 
@@ -117,7 +117,7 @@ describe(`CRUD Person Tests`, () => {
         const person: Person = new Person({id: '', firstName, lastName, secondName, birthDate, deathDate});
 
         const createdPerson: Person = await createPerson(person);
-        const updatedPerson: UpdatedPersonI = {id: createdPerson.id, updatedFirstName: null, updatedBirthDate: null, updatedDeathDate: null, updatedLastName: null, updatedSecondName: null };
+        const updatedPerson: IUpdatedPerson = {id: createdPerson.id, updatedFirstName: null, updatedBirthDate: null, updatedDeathDate: null, updatedLastName: null, updatedSecondName: null };
 
         const matchedPerson: Person | undefined = await updatePerson(updatedPerson);
 

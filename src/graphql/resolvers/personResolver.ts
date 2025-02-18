@@ -1,4 +1,4 @@
-import { Person, PersonI } from "../../archive/person";
+import { Person, IPerson } from "../../archive/person";
 import { PersonLabel, RelationshipType } from "../../archive/relationship/relationship";
 import { Auth, isPermitted } from "../../auth/authorization";
 import { createPerson, deletePerson, getPerson, getPersons, updatePerson } from "../../db/archive/crud-person"
@@ -42,7 +42,7 @@ export default {
             let person: Person;
 
             try {
-                person = await createPerson( { firstName, lastName, secondName, birthDate, deathDate } as PersonI );
+                person = await createPerson( { firstName, lastName, secondName, birthDate, deathDate } as IPerson );
             }catch ( error: any ){
                 throw mutationFailed(error.message);
             }

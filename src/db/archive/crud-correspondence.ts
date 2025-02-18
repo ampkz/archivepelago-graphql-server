@@ -1,5 +1,5 @@
 import { NodeType } from "../../_helpers/nodes";
-import { Correspondence, CorrespondenceI, UpdatedCorrespondenceI } from "../../archive/correspondence";
+import { Correspondence, ICorrespondence, IUpdatedCorrespondence } from "../../archive/correspondence";
 import { createNode, deleteNode, getNode, getNodes, removeProperties, updateNode } from "../utils/crud";
 
 export async function getCorrespondence(correspondenceID: string): Promise<Correspondence | undefined> {
@@ -7,7 +7,7 @@ export async function getCorrespondence(correspondenceID: string): Promise<Corre
     return matchedNode;
 }
 
-export async function createCorrespondence(correspondence: CorrespondenceI): Promise<Correspondence | undefined> {
+export async function createCorrespondence(correspondence: ICorrespondence): Promise<Correspondence | undefined> {
     const createdCorrespondence = await createNode(NodeType.CORRESPONDENCE, prepCorrespondenceProps(correspondence), correspondence)
 
     return createdCorrespondence;
@@ -19,7 +19,7 @@ export async function deleteCorrespondence(correspondenceID: string): Promise<Co
     return deletedCorrespondence;
 }
 
-export async function updateCorrespondence(updatedCorrespondence: UpdatedCorrespondenceI): Promise<Correspondence | undefined> {
+export async function updateCorrespondence(updatedCorrespondence: IUpdatedCorrespondence): Promise<Correspondence | undefined> {
     const anythingToUpdate = updatedCorrespondenceToProps(updatedCorrespondence);
     let matchedCorrespondence;
 
@@ -47,7 +47,7 @@ export async function getCorrespondences(): Promise<Correspondence[]> {
     return correspondences;
 }
 
-function prepCorrespondenceProps(correspondence: CorrespondenceI): string[]{
+function prepCorrespondenceProps(correspondence: ICorrespondence): string[]{
     const props: string[] = [`correspondenceID:apoc.create.uuid()`];
 
     props.push('correspondenceType: $correspondenceType');
@@ -58,7 +58,7 @@ function prepCorrespondenceProps(correspondence: CorrespondenceI): string[]{
     return props;
 }
 
-function updatedCorrespondenceToProps(updatedCorrespondence: UpdatedCorrespondenceI): string[] {
+function updatedCorrespondenceToProps(updatedCorrespondence: IUpdatedCorrespondence): string[] {
     const props: string[] = [];
 
     if(updatedCorrespondence.updatedCorrespondenceDate !== undefined && updatedCorrespondence.updatedCorrespondenceDate !== null) props.push('c.correspondenceDate = $updatedCorrespondenceDate');
@@ -68,7 +68,7 @@ function updatedCorrespondenceToProps(updatedCorrespondence: UpdatedCorresponden
     return props;
 }
 
-function updatedCorrespondenceRemovedProps(updatedCorrespondence: UpdatedCorrespondenceI): string[] {
+function updatedCorrespondenceRemovedProps(updatedCorrespondence: IUpdatedCorrespondence): string[] {
     const removedProps: string[] = [];
 
     if(updatedCorrespondence.updatedCorrespondenceDate === null) removedProps.push('c.correspondenceDate');

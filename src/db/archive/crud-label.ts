@@ -1,5 +1,5 @@
 import { NodeType } from "../../_helpers/nodes";
-import { Label, LabelI, UpdatedLabelI } from "../../archive/label";
+import { Label, ILabel, IUpdatedLabel } from "../../archive/label";
 import { createNode, deleteNode, getNode, getNodes, updateNode } from "../utils/crud";
 
 export async function getLabel(name: string): Promise<Label | undefined> {
@@ -8,7 +8,7 @@ export async function getLabel(name: string): Promise<Label | undefined> {
     return matchedNode as Label;
 }
 
-export async function createLabel(label: LabelI): Promise<Label | undefined> {
+export async function createLabel(label: ILabel): Promise<Label | undefined> {
     const createdLabel: object | undefined = await createNode(NodeType.LABEL, ['name: $name', 'type: $type'], label);
 
     return createdLabel as Label;
@@ -20,7 +20,7 @@ export async function deleteLabel(name: string): Promise<Label | undefined> {
     return deletedLabel as Label;
 }
 
-export async function updateLabel(name: string, updatedLabel: UpdatedLabelI): Promise<Label | undefined> {
+export async function updateLabel(name: string, updatedLabel: IUpdatedLabel): Promise<Label | undefined> {
     const matchedLabel: object | undefined = await updateNode(NodeType.LABEL, 'l', 'name', updatedLabelToProps(updatedLabel), {name, ...updatedLabel});
 
     return matchedLabel as Label;
@@ -38,7 +38,7 @@ export async function getLabels(): Promise<Label[]>{
     return labels;
 }
 
-function updatedLabelToProps(updatedLabel: UpdatedLabelI): string[] {
+function updatedLabelToProps(updatedLabel: IUpdatedLabel): string[] {
     const props: string[] = [];
 
     if(updatedLabel.updatedName) props.push('l.name = $updatedName');

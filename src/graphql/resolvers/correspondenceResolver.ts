@@ -1,4 +1,4 @@
-import { Correspondence, CorrespondenceI } from "../../archive/correspondence"
+import { Correspondence, ICorrespondence } from "../../archive/correspondence"
 import { RelationshipType } from "../../archive/relationship/relationship";
 import { Auth, isPermitted } from "../../auth/authorization";
 import { createCorrespondence, deleteCorrespondence, getCorrespondence, getCorrespondences, updateCorrespondence } from "../../db/archive/crud-correspondence";
@@ -41,7 +41,7 @@ export default {
             let correspondence: Correspondence | undefined;
 
             try {
-                correspondence = await createCorrespondence({ correspondenceDate, correspondenceStartDate, correspondenceType } as CorrespondenceI)
+                correspondence = await createCorrespondence({ correspondenceDate, correspondenceStartDate, correspondenceType } as ICorrespondence)
             }catch( error: any ){
                 throw mutationFailed(error.message);
             }

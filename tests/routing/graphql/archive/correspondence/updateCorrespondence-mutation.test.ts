@@ -24,7 +24,7 @@ describe(`updateCorrespondence Mutation Tests`, () => {
 
     it(`should throw an unauthorized error without authorization`, async () => {
         const query = `
-            mutation UpdateCorrespondence($input: UpdateCorrespondenceInput!) {
+            mutation UpdateCorrespondence($input: UpdateICorrespondencenput!) {
                 updateCorrespondence(input: $input) {
                     correspondenceID
                 }
@@ -52,7 +52,7 @@ describe(`updateCorrespondence Mutation Tests`, () => {
         updateCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.LETTER }));
 
         const query = `
-            mutation UpdateCorrespondence($input: UpdateCorrespondenceInput!) {
+            mutation UpdateCorrespondence($input: UpdateICorrespondencenput!) {
                 updateCorrespondence(input: $input) {
                     correspondenceID
                 }
@@ -83,7 +83,7 @@ describe(`updateCorrespondence Mutation Tests`, () => {
         updateCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.LETTER }));
 
         const query = `
-            mutation UpdateCorrespondence($input: UpdateCorrespondenceInput!) {
+            mutation UpdateCorrespondence($input: UpdateICorrespondencenput!) {
                 updateCorrespondence(input: $input) {
                     correspondenceID
                 }
@@ -112,7 +112,7 @@ describe(`updateCorrespondence Mutation Tests`, () => {
         updateCorrespondenceSpy.mockRejectedValue(new InternalError(GraphQLErrors.MUTATION_FAILED));
 
         const query = `
-            mutation UpdateCorrespondence($input: UpdateCorrespondenceInput!) {
+            mutation UpdateCorrespondence($input: UpdateICorrespondencenput!) {
                 updateCorrespondence(input: $input) {
                     correspondenceID
                 }

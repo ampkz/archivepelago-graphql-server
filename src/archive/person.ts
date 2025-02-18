@@ -1,4 +1,4 @@
-export class Person implements PersonI {
+export class Person implements IPerson {
     public id: string;
     public firstName: string | undefined;
     public lastName: string | undefined;
@@ -6,7 +6,7 @@ export class Person implements PersonI {
     public birthDate: string | undefined;
     public deathDate: string | undefined;
     
-    constructor(person: PersonI){
+    constructor(person: IPerson){
         this.id = person.id;
         this.firstName = person.firstName;
         this.lastName = person.lastName;
@@ -16,7 +16,7 @@ export class Person implements PersonI {
     }
 }
 
-export interface PersonI {
+export interface IPerson {
     id: string;
     firstName?: string;
     lastName?: string;
@@ -25,7 +25,7 @@ export interface PersonI {
     deathDate?: string;
 }
 
-export interface UpdatedPersonI {
+export interface IUpdatedPerson {
     id: string;
     updatedFirstName?: string | null;
     updatedLastName?: string | null;

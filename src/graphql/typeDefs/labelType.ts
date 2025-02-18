@@ -11,17 +11,17 @@ type Query {
 }
 
 type Mutation {
-    createLabel(input: CreateLabelInput!): Label
-    updateLabel(input: UpdateLabelInput!): Label
+    createLabel(input: CreateILabelnput!): Label
+    updateLabel(input: UpdateILabelnput!): Label
     deleteLabel(name: ID!): Label
 }
 
-input CreateLabelInput {
+input CreateILabelnput {
     name: ID!
     type: LabelType!
 }
 
-input UpdateLabelInput {
+input UpdateILabelnput {
     name: ID!
     updatedName: ID
     updatedType: LabelType

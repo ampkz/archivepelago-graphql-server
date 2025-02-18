@@ -16,22 +16,22 @@ type Query {
 }
 
 type Mutation {
-    createCorrespondence(input: CreateCorrespondenceInput!): Correspondence
+    createCorrespondence(input: CreateICorrespondencenput!): Correspondence
     deleteCorrespondence(correspondenceID: ID!): Correspondence
-    updateCorrespondence(input: UpdateCorrespondenceInput!): Correspondence
+    updateCorrespondence(input: UpdateICorrespondencenput!): Correspondence
     addReceived(correspondenceID: ID!, receivedID: ID!): Correspondence
     removeReceived(correspondenceID: ID!, receivedID: ID!): Correspondence
     addSent(correspondenceID: ID!, sentID: ID!): Correspondence
     removeSent(correspondenceID: ID!, sentID: ID!): Correspondence
 }
 
-input CreateCorrespondenceInput {
+input CreateICorrespondencenput {
     correspondenceType: CorrespondenceType!
     correspondenceDate: String
     correspondenceStartDate: String
 }
 
-input UpdateCorrespondenceInput {
+input UpdateICorrespondencenput {
     correspondenceID: ID!
     updatedCorrespondenceDate: String
     updatedCorrespondenceStartDate: String

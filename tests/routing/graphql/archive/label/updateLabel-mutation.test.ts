@@ -20,7 +20,7 @@ describe(`updateLabel Mutation Tests`, () => {
 
     it(`should throw unauthorized error if trying to update label without authorized user`, async () => {
         const query = `
-            mutation UpdateLabel($input: UpdateLabelInput!) {
+            mutation UpdateLabel($input: UpdateILabelnput!) {
                 updateLabel(input: $input) {
                     name
                     type
@@ -52,7 +52,7 @@ describe(`updateLabel Mutation Tests`, () => {
         updateLabelSpy.mockResolvedValue(new Label({name: updatedName, type:LabelType.NATIONALITY}));
 
         const query = `
-            mutation UpdateLabel($input: UpdateLabelInput!) {
+            mutation UpdateLabel($input: UpdateILabelnput!) {
                 updateLabel(input: $input) {
                     name
                     type
@@ -88,7 +88,7 @@ describe(`updateLabel Mutation Tests`, () => {
         updateLabelSpy.mockResolvedValue(new Label({name: updatedName, type:LabelType.PROFESSION}));
 
         const query = `
-            mutation UpdateLabel($input: UpdateLabelInput!) {
+            mutation UpdateLabel($input: UpdateILabelnput!) {
                 updateLabel(input: $input) {
                     name
                 }
@@ -121,7 +121,7 @@ describe(`updateLabel Mutation Tests`, () => {
         updateLabelSpy.mockRejectedValue(new InternalError(''));
 
         const query = `
-            mutation UpdateLabel($input: UpdateLabelInput!) {
+            mutation UpdateLabel($input: UpdateILabelnput!) {
                 updateLabel(input: $input) {
                     name
                 }
