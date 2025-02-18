@@ -53,7 +53,7 @@ function prepCorrespondenceProps(correspondence: ICorrespondence): string[]{
     props.push('correspondenceType: $correspondenceType');
 
     if(correspondence.correspondenceDate) props.push('correspondenceDate: $correspondenceDate');
-    if(correspondence.correspondenceStartDate) props.push('correspondenceStartDate: $correspondenceStartDate')
+    if(correspondence.correspondenceEndDate) props.push('correspondenceEndDate: $correspondenceEndDate')
 
     return props;
 }
@@ -62,7 +62,7 @@ function updatedCorrespondenceToProps(updatedCorrespondence: IUpdatedCorresponde
     const props: string[] = [];
 
     if(updatedCorrespondence.updatedCorrespondenceDate !== undefined && updatedCorrespondence.updatedCorrespondenceDate !== null) props.push('c.correspondenceDate = $updatedCorrespondenceDate');
-    if(updatedCorrespondence.updatedCorrespondenceStartDate !== undefined && updatedCorrespondence.updatedCorrespondenceStartDate !== null) props.push('c.correspondenceStartDate = $updatedCorrespondenceStartDate');
+    if(updatedCorrespondence.updatedCorrespondenceEndDate !== undefined && updatedCorrespondence.updatedCorrespondenceEndDate !== null) props.push('c.correspondenceEndDate = $updatedCorrespondenceEndDate');
     if(updatedCorrespondence.updatedCorrespondenceType !== undefined) props.push('c.correspondenceType = $updatedCorrespondenceType');
 
     return props;
@@ -72,7 +72,7 @@ function updatedCorrespondenceRemovedProps(updatedCorrespondence: IUpdatedCorres
     const removedProps: string[] = [];
 
     if(updatedCorrespondence.updatedCorrespondenceDate === null) removedProps.push('c.correspondenceDate');
-    if(updatedCorrespondence.updatedCorrespondenceStartDate === null) removedProps.push('c.correspondenceStartDate');
+    if(updatedCorrespondence.updatedCorrespondenceEndDate === null) removedProps.push('c.correspondenceEndDate');
 
     return removedProps;
 }

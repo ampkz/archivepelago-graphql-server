@@ -33,7 +33,7 @@ export default {
     },
 
     Mutation: {
-        createCorrespondence: async (_root: any, { input: { correspondenceDate, correspondenceStartDate, correspondenceType } }: any, { authorizedUser }: any) => {
+        createCorrespondence: async (_root: any, { input: { correspondenceDate, correspondenceEndDate, correspondenceType } }: any, { authorizedUser }: any) => {
             if(!isPermitted(authorizedUser, Auth.ADMIN, Auth.CONTRIBUTOR)){
                 throw unauthorizedError(`You are not authorized to make this mutation.`);
             }
@@ -41,7 +41,7 @@ export default {
             let correspondence: Correspondence | undefined;
 
             try {
-                correspondence = await createCorrespondence({ correspondenceDate, correspondenceStartDate, correspondenceType } as ICorrespondence)
+                correspondence = await createCorrespondence({ correspondenceDate, correspondenceEndDate, correspondenceType } as ICorrespondence)
             }catch( error: any ){
                 throw mutationFailed(error.message);
             }
@@ -65,7 +65,7 @@ export default {
             return correspondence;
         },
 
-        updateCorrespondence: async (_root: any, { input: { correspondenceID, updatedCorrespondenceDate, updatedCorrespondenceStartDate, updatedCorrespondenceType }}: any, { authorizedUser }: any) => {
+        updateCorrespondence: async (_root: any, { input: { correspondenceID, updatedCorrespondenceDate, updatedCorrespondenceEndDate, updatedCorrespondenceType }}: any, { authorizedUser }: any) => {
             if(!isPermitted(authorizedUser, Auth.ADMIN, Auth.CONTRIBUTOR)){
                 throw unauthorizedError(`You are not authorized to make this mutation.`);
             }
@@ -73,7 +73,7 @@ export default {
             let correspondence: Correspondence | undefined;
 
             try {
-                correspondence = await updateCorrespondence({correspondenceID, updatedCorrespondenceDate, updatedCorrespondenceType, updatedCorrespondenceStartDate });
+                correspondence = await updateCorrespondence({correspondenceID, updatedCorrespondenceDate, updatedCorrespondenceType, updatedCorrespondenceEndDate });
             }catch( error: any ){
                 throw mutationFailed(error.message);
             }
