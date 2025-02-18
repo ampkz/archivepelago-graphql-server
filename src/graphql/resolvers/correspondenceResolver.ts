@@ -17,11 +17,16 @@ export default {
                 throw serverFailed(error.message);
             }
 
-            return correspondence;
+            if(correspondence !== undefined){
+                return {... correspondence, correspondenceDate: convertDateStringToArchiveDate(correspondence?.correspondenceDate), correspondenceEndDate: convertDateStringToArchiveDate(correspondence.correspondenceEndDate)}
+            }
+
+            return undefined;
         },
 
         correspondences: async () => {
             let correspondences: Correspondence[] = [];
+            const convertedCorrespondences: any[] = [];
 
             try{
                 correspondences = await getCorrespondences();
@@ -29,7 +34,11 @@ export default {
                 throw serverFailed(error.message);
             }
 
-            return correspondences;
+            correspondences.map((correspondence) => {
+                convertedCorrespondences.push({... correspondence, correspondenceDate: convertDateStringToArchiveDate(correspondence?.correspondenceDate), correspondenceEndDate: convertDateStringToArchiveDate(correspondence.correspondenceEndDate)}); 
+            })
+
+            return convertedCorrespondences;
         }
     },
 
@@ -103,7 +112,11 @@ export default {
                 throw mutationFailed(error.message);
             }
 
-            return correspondence;
+            if(correspondence !== undefined){
+                return {... correspondence, correspondenceDate: convertDateStringToArchiveDate(correspondence?.correspondenceDate), correspondenceEndDate: convertDateStringToArchiveDate(correspondence.correspondenceEndDate)}
+            }
+
+            return undefined;
         },
 
         removeReceived: async (_root: any, { correspondenceID, receivedID }: any, { authorizedUser }: any) => {
@@ -119,7 +132,11 @@ export default {
                 throw mutationFailed(error.message);
             }
 
-            return correspondence;
+            if(correspondence !== undefined){
+                return {... correspondence, correspondenceDate: convertDateStringToArchiveDate(correspondence?.correspondenceDate), correspondenceEndDate: convertDateStringToArchiveDate(correspondence.correspondenceEndDate)}
+            }
+
+            return undefined;
         },
 
         addSent: async (_root: any, { correspondenceID, sentID }: any, { authorizedUser }: any) => {
@@ -135,7 +152,11 @@ export default {
                 throw mutationFailed(error.message);
             }
 
-            return correspondence;
+            if(correspondence !== undefined){
+                return {... correspondence, correspondenceDate: convertDateStringToArchiveDate(correspondence?.correspondenceDate), correspondenceEndDate: convertDateStringToArchiveDate(correspondence.correspondenceEndDate)}
+            }
+
+            return undefined;
         },
 
         removeSent: async (_root: any, { correspondenceID, sentID }: any, { authorizedUser }: any) => {
@@ -151,7 +172,11 @@ export default {
                 throw mutationFailed(error.message);
             }
 
-            return correspondence;
+            if(correspondence !== undefined){
+                return {... correspondence, correspondenceDate: convertDateStringToArchiveDate(correspondence?.correspondenceDate), correspondenceEndDate: convertDateStringToArchiveDate(correspondence.correspondenceEndDate)}
+            }
+
+            return undefined;
         },
     },
 
