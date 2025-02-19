@@ -12,118 +12,114 @@ import { Label, LabelType } from '../../../../../src/archive/label';
 dotenv.config();
 
 describe(`deleteLabel Mutation Tests`, () => {
-    let app: any;
+	let app: any;
 
-    beforeAll(async() => {
-        app = await startServer();
-    })
+	beforeAll(async () => {
+		app = await startServer();
+	});
 
-    it(`should throw unauthorized error if trying to delete label without authorized user`, async () => {
-        const query = `
+	it(`should throw unauthorized error if trying to delete label without authorized user`, async () => {
+		const query = `
             mutation DeleteLabel($name: ID!) {
                 deleteLabel(name: $name) {
                     name
                 }
             }
-        `
+        `;
 
-        const variables = {
-            name: faker.word.adjective()
-        }
+		const variables = {
+			name: faker.word.adjective(),
+		};
 
-        const { body } = await request(app)
-            .post('/graphql')
-            .send({ query, variables })
-            .set('Accept', 'application/json');
+		const { body } = await request(app).post('/graphql').send({ query, variables }).set('Accept', 'application/json');
 
-        expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.UNAUTHORIZED);
-    });
+		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.UNAUTHORIZED);
+	});
 
-    it(`should delete a label as an admin`, async () => {
-        const name: string = faker.word.adjective();
-        
-        const deleteLabelSpy = jest.spyOn(crudLabel, "deleteLabel");
-        deleteLabelSpy.mockResolvedValue(new Label({name, type: LabelType.PROFESSION}));
+	it(`should delete a label as an admin`, async () => {
+		const name: string = faker.word.adjective();
 
-        const query = `
+		const deleteLabelSpy = jest.spyOn(crudLabel, 'deleteLabel');
+		deleteLabelSpy.mockResolvedValue(new Label({ name, type: LabelType.PROFESSION }));
+
+		const query = `
             mutation DeleteLabel($name: ID!) {
                 deleteLabel(name: $name) {
                     name
                 }
             }
-        `
+        `;
 
-        const variables = {
-            name
-        }
+		const variables = {
+			name,
+		};
 
-        const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
+		const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
 
-        const { body } = await request(app)
-            .post('/graphql')
-            .send({ query, variables })
-            .set('Accept', 'application/json')
-            .set('Cookie', [`jwt=${jwtToken}`]);
+		const { body } = await request(app)
+			.post('/graphql')
+			.send({ query, variables })
+			.set('Accept', 'application/json')
+			.set('Cookie', [`jwt=${jwtToken}`]);
 
-        expect(body.data.deleteLabel.name).toEqual(name);
-    });
+		expect(body.data.deleteLabel.name).toEqual(name);
+	});
 
-    it(`should delete a label as a contributor`, async () => {
-        const name: string = faker.word.adjective();
-        
-        const deleteLabelSpy = jest.spyOn(crudLabel, "deleteLabel");
-        deleteLabelSpy.mockResolvedValue(new Label({name, type: LabelType.PROFESSION}));
+	it(`should delete a label as a contributor`, async () => {
+		const name: string = faker.word.adjective();
 
-        const query = `
+		const deleteLabelSpy = jest.spyOn(crudLabel, 'deleteLabel');
+		deleteLabelSpy.mockResolvedValue(new Label({ name, type: LabelType.PROFESSION }));
+
+		const query = `
             mutation DeleteLabel($name: ID!) {
                 deleteLabel(name: $name) {
                     name
                 }
             }
-        `
+        `;
 
-        const variables = {
-            name
-        }
+		const variables = {
+			name,
+		};
 
-        const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
+		const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
 
-        const { body } = await request(app)
-            .post('/graphql')
-            .send({ query, variables })
-            .set('Accept', 'application/json')
-            .set('Cookie', [`jwt=${jwtToken}`]);
+		const { body } = await request(app)
+			.post('/graphql')
+			.send({ query, variables })
+			.set('Accept', 'application/json')
+			.set('Cookie', [`jwt=${jwtToken}`]);
 
-        expect(body.data.deleteLabel.name).toEqual(name);
-    });
+		expect(body.data.deleteLabel.name).toEqual(name);
+	});
 
-    it(`should throw an error if there was an issue with the server`, async () => {
-        const name: string = faker.word.adjective();
-        
-        
-        const deleteLabelSpy = jest.spyOn(crudLabel, "deleteLabel");
-        deleteLabelSpy.mockRejectedValue(new InternalError(''));
+	it(`should throw an error if there was an issue with the server`, async () => {
+		const name: string = faker.word.adjective();
 
-        const query = `
+		const deleteLabelSpy = jest.spyOn(crudLabel, 'deleteLabel');
+		deleteLabelSpy.mockRejectedValue(new InternalError(''));
+
+		const query = `
             mutation DeleteLabel($name: ID!) {
                 deleteLabel(name: $name) {
                     name
                 }
             }
-        `
+        `;
 
-        const variables = {
-            name
-        }
+		const variables = {
+			name,
+		};
 
-        const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
+		const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
 
-        const { body } = await request(app)
-            .post('/graphql')
-            .send({ query, variables })
-            .set('Accept', 'application/json')
-            .set('Cookie', [`jwt=${jwtToken}`]);
+		const { body } = await request(app)
+			.post('/graphql')
+			.send({ query, variables })
+			.set('Accept', 'application/json')
+			.set('Cookie', [`jwt=${jwtToken}`]);
 
-        expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
-    });
+		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
+	});
 });

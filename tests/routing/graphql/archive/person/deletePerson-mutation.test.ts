@@ -12,119 +12,116 @@ import { InternalError } from '../../../../../src/_helpers/errors-helper';
 dotenv.config();
 
 describe(`deletePerson Mutation Tests`, () => {
-    let app: any;
+	let app: any;
 
-    beforeAll(async() => {
-        app = await startServer();
-    })
+	beforeAll(async () => {
+		app = await startServer();
+	});
 
-    it(`should throw unauthorized error if trying to delete person without authorized user`, async () => {
-        const id: string = faker.database.mongodbObjectId();
+	it(`should throw unauthorized error if trying to delete person without authorized user`, async () => {
+		const id: string = faker.database.mongodbObjectId();
 
-        const query = `
+		const query = `
             mutation DeletePerson($id: ID!) {
                 deletePerson(id: $id) {
                     id
                 }
             }
-        `
+        `;
 
-        const variables = {
-            id
-        }
+		const variables = {
+			id,
+		};
 
-        const { body } = await request(app)
-            .post('/graphql')
-            .send({ query, variables })
-            .set('Accept', 'application/json');
+		const { body } = await request(app).post('/graphql').send({ query, variables }).set('Accept', 'application/json');
 
-        expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.UNAUTHORIZED);
-    });
+		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.UNAUTHORIZED);
+	});
 
-    it(`should delete a person as an admin`, async () => {
-        const id: string = faker.database.mongodbObjectId();
-        
-        const deletePersonSpy = jest.spyOn(crudPerson, "deletePerson");
-        deletePersonSpy.mockResolvedValue(new Person({ id }));
+	it(`should delete a person as an admin`, async () => {
+		const id: string = faker.database.mongodbObjectId();
 
-        const query = `
+		const deletePersonSpy = jest.spyOn(crudPerson, 'deletePerson');
+		deletePersonSpy.mockResolvedValue(new Person({ id }));
+
+		const query = `
             mutation DeletePerson($id: ID!) {
                 deletePerson(id: $id) {
                     id
                 }
             }
-        `
+        `;
 
-        const variables = {
-            id
-        }
+		const variables = {
+			id,
+		};
 
-        const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
+		const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
 
-        const { body } = await request(app)
-            .post('/graphql')
-            .send({ query, variables })
-            .set('Accept', 'application/json')
-            .set('Cookie', [`jwt=${jwtToken}`]);
+		const { body } = await request(app)
+			.post('/graphql')
+			.send({ query, variables })
+			.set('Accept', 'application/json')
+			.set('Cookie', [`jwt=${jwtToken}`]);
 
-        expect(body.data.deletePerson.id).toEqual(id);
-    });
+		expect(body.data.deletePerson.id).toEqual(id);
+	});
 
-    it(`should delete a person as a contributor`, async () => {
-        const id: string = faker.database.mongodbObjectId();
-        
-        const deletePersonSpy = jest.spyOn(crudPerson, "deletePerson");
-        deletePersonSpy.mockResolvedValue(new Person({ id }));
+	it(`should delete a person as a contributor`, async () => {
+		const id: string = faker.database.mongodbObjectId();
 
-        const query = `
+		const deletePersonSpy = jest.spyOn(crudPerson, 'deletePerson');
+		deletePersonSpy.mockResolvedValue(new Person({ id }));
+
+		const query = `
             mutation DeletePerson($id: ID!) {
                 deletePerson(id: $id) {
                     id
                 }
             }
-        `
+        `;
 
-        const variables = {
-            id
-        }
+		const variables = {
+			id,
+		};
 
-        const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
+		const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
 
-        const { body } = await request(app)
-            .post('/graphql')
-            .send({ query, variables })
-            .set('Accept', 'application/json')
-            .set('Cookie', [`jwt=${jwtToken}`]);
+		const { body } = await request(app)
+			.post('/graphql')
+			.send({ query, variables })
+			.set('Accept', 'application/json')
+			.set('Cookie', [`jwt=${jwtToken}`]);
 
-        expect(body.data.deletePerson.id).toEqual(id);
-    });
+		expect(body.data.deletePerson.id).toEqual(id);
+	});
 
-    it(`should throw an error if there was an issue with the server`, async () => {
-        const id: string = faker.database.mongodbObjectId();
-        
-        const deletePersonSpy = jest.spyOn(crudPerson, "deletePerson");
-        deletePersonSpy.mockRejectedValue(new InternalError(''));
+	it(`should throw an error if there was an issue with the server`, async () => {
+		const id: string = faker.database.mongodbObjectId();
 
-        const query = `
+		const deletePersonSpy = jest.spyOn(crudPerson, 'deletePerson');
+		deletePersonSpy.mockRejectedValue(new InternalError(''));
+
+		const query = `
             mutation DeletePerson($id: ID!) {
                 deletePerson(id: $id) {
                     id
                 }
             }
-        `
+        `;
 
-        const variables = {
-            id
-        }
+		const variables = {
+			id,
+		};
 
-        const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
+		const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
 
-        const { body } = await request(app)
-            .post('/graphql')
-            .send({ query, variables })
-            .set('Accept', 'application/json')
-            .set('Cookie', [`jwt=${jwtToken}`]);
+		const { body } = await request(app)
+			.post('/graphql')
+			.send({ query, variables })
+			.set('Accept', 'application/json')
+			.set('Cookie', [`jwt=${jwtToken}`]);
 
-        expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
-    });
+		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
+	});
 });

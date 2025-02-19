@@ -19,41 +19,40 @@ import labelResolver from '../graphql/resolvers/labelResolver';
 import correspondenceType from '../graphql/typeDefs/correspondenceType';
 import correspondenceResolver from '../graphql/resolvers/correspondenceResolver';
 
-
 interface MyContext {
-    authorizedUser?: AuthorizedUser | undefined;
+	authorizedUser?: AuthorizedUser | undefined;
 }
 
 async function startServer() {
-    const app: Express = express();
-    
-    const httpServer = http.createServer(app);
-    
-    const typeDefs = mergeTypeDefs([userType, personType, labelType, correspondenceType]);
-    const resolvers = mergeResolvers([userResolver, personResolver, labelResolver, correspondenceResolver]);
+	const app: Express = express();
 
-    const server = new ApolloServer<MyContext>({
-        typeDefs,
-        resolvers,
-        includeStacktraceInErrorResponses: false,
-        plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-    });
+	const httpServer = http.createServer(app);
 
-    await server.start();
-    app.use(cors<cors.CorsRequest>());
-    app.use(cookieParser());
-    app.use(express.json());
-    app.use(express.urlencoded({ extended: true }));
+	const typeDefs = mergeTypeDefs([userType, personType, labelType, correspondenceType]);
+	const resolvers = mergeResolvers([userResolver, personResolver, labelResolver, correspondenceResolver]);
 
-    app.use('/graphql', expressMiddleware(server, {context: async ({ req }) => ({ authorizedUser: verifyToken(req.cookies.jwt) })}));
+	const server = new ApolloServer<MyContext>({
+		typeDefs,
+		resolvers,
+		includeStacktraceInErrorResponses: false,
+		plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+	});
 
-    app.use(authenticateRouter);
+	await server.start();
+	app.use(cors<cors.CorsRequest>());
+	app.use(cookieParser());
+	app.use(express.json());
+	app.use(express.urlencoded({ extended: true }));
 
-    app.use(error404);
-    
-    app.use(errorHandler);
+	app.use('/graphql', expressMiddleware(server, { context: async ({ req }) => ({ authorizedUser: verifyToken(req.cookies.jwt) }) }));
 
-    return app;
+	app.use(authenticateRouter);
+
+	app.use(error404);
+
+	app.use(errorHandler);
+
+	return app;
 }
 
 export default startServer;

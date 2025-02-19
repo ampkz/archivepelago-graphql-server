@@ -12,92 +12,83 @@ import * as personLabelRelationship from '../../../../../src/db/archive/relation
 dotenv.config();
 
 describe(`Label Query Tests`, () => {
-    let app: any;
+	let app: any;
 
-    beforeAll(async() => {
-        app = await startServer();
-    })
+	beforeAll(async () => {
+		app = await startServer();
+	});
 
-    it(`should return a created label`, async () => {
-        const name: string = faker.word.adjective();
+	it(`should return a created label`, async () => {
+		const name: string = faker.word.adjective();
 
-        const getLabelSpy = jest.spyOn(crudLabel, "getLabel");
-        getLabelSpy.mockResolvedValue(new Label({name, type: LabelType.PROFESSION}));
-        
-        const query = `
+		const getLabelSpy = jest.spyOn(crudLabel, 'getLabel');
+		getLabelSpy.mockResolvedValue(new Label({ name, type: LabelType.PROFESSION }));
+
+		const query = `
             query {
-                label(name: "${ name }") {
+                label(name: "${name}") {
                     name
                 }
             }
-        `
-        const { body } = await request(app)
-            .post('/graphql')
-            .send({ query })
-            .set('Accept', 'application/json');
+        `;
+		const { body } = await request(app).post('/graphql').send({ query }).set('Accept', 'application/json');
 
-        expect(body.data.label.name).toEqual(name);
-    });
+		expect(body.data.label.name).toEqual(name);
+	});
 
-    it(`should return undefined if no label exists`, async () => {
-        const name: string = faker.word.adjective();
+	it(`should return undefined if no label exists`, async () => {
+		const name: string = faker.word.adjective();
 
-        const getLabelSpy = jest.spyOn(crudLabel, "getLabel");
-        getLabelSpy.mockResolvedValue(undefined);
-        
-        const query = `
+		const getLabelSpy = jest.spyOn(crudLabel, 'getLabel');
+		getLabelSpy.mockResolvedValue(undefined);
+
+		const query = `
             query {
-                label(name: "${ name }") {
+                label(name: "${name}") {
                     name
                 }
             }
-        `
+        `;
 
-        const { body } = await request(app)
-            .post('/graphql')
-            .send({ query })
-            .set('Accept', 'application/json');
+		const { body } = await request(app).post('/graphql').send({ query }).set('Accept', 'application/json');
 
-        expect(body.data.label).toBeNull();
-    });
+		expect(body.data.label).toBeNull();
+	});
 
-    it(`should throw an error if there was an issue with the server`, async () => {
-        const name: string = faker.word.adjective();
+	it(`should throw an error if there was an issue with the server`, async () => {
+		const name: string = faker.word.adjective();
 
-        const getLabelSpy = jest.spyOn(crudLabel, "getLabel");
-        getLabelSpy.mockRejectedValue(new InternalError(GraphQLErrors.SERVER_ERROR));
-        
-        const query = `
+		const getLabelSpy = jest.spyOn(crudLabel, 'getLabel');
+		getLabelSpy.mockRejectedValue(new InternalError(GraphQLErrors.SERVER_ERROR));
+
+		const query = `
             query {
-                label(name: "${ name }") {
+                label(name: "${name}") {
                     name
                 }
             }
-        `
+        `;
 
-        const { body } = await request(app)
-            .post('/graphql')
-            .send({ query })
-            .set('Accept', 'application/json');
+		const { body } = await request(app).post('/graphql').send({ query }).set('Accept', 'application/json');
 
-        expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.SERVER_ERROR);
-    });
+		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.SERVER_ERROR);
+	});
 
-    it(`should return a list of associated persons of label`, async () => {
-        const name: string = faker.word.adjective();
+	it(`should return a list of associated persons of label`, async () => {
+		const name: string = faker.word.adjective();
 
-        const person: Person = new Person({ id: faker.database.mongodbObjectId(), firstName: faker.person.firstName()});
-        const person2: Person = new Person({ id: faker.database.mongodbObjectId(), firstName: faker.person.firstName()});
+		const person: Person = new Person({ id: faker.database.mongodbObjectId(), firstName: faker.person.firstName() });
+		const person2: Person = new Person({ id: faker.database.mongodbObjectId(), firstName: faker.person.firstName() });
 
-        const getLabelSpy = jest.spyOn(crudLabel, "getLabel");
-        getLabelSpy.mockResolvedValue({name, type: LabelType.PROFESSION});
-        
-        const getPersonsByLabelSpy = jest.spyOn(personLabelRelationship, "getPersonsByLabel");
-        getPersonsByLabelSpy.mockResolvedValue([person, person2])
+		const getLabelSpy = jest.spyOn(crudLabel, 'getLabel');
+		getLabelSpy.mockResolvedValue({ name, type: LabelType.PROFESSION });
 
-        const query = `
+		const getPersonsByLabelSpy = jest.spyOn(personLabelRelationship, 'getPersonsByLabel');
+		getPersonsByLabelSpy.mockResolvedValue([person, person2]);
+
+		const query = `
             query {
-                label(name: "${ name }") {
+                label(name: "${name}") {
                     name
                     persons {
                         id
@@ -105,60 +96,51 @@ describe(`Label Query Tests`, () => {
                     }
                 }
             }
-        `
-        const { body } = await request(app)
-            .post('/graphql')
-            .send({ query })
-            .set('Accept', 'application/json');
-        
-        expect(body.data.label.persons).toContainEqual(person);
-        expect(body.data.label.persons).toContainEqual(person2);
-    });
+        `;
+		const { body } = await request(app).post('/graphql').send({ query }).set('Accept', 'application/json');
 
-    it(`should return a list of created labels`, async () => {
-        const label:Label = new Label({name: faker.word.adjective(), type: LabelType.PROFESSION});
-        const label2:Label = new Label({name: faker.word.adjective(), type: LabelType.PROFESSION});
-        const label3:Label = new Label({name: faker.word.adjective(), type: LabelType.PROFESSION});
+		expect(body.data.label.persons).toContainEqual(person);
+		expect(body.data.label.persons).toContainEqual(person2);
+	});
 
-        const getLabelsSpy = jest.spyOn(crudLabel, "getLabels");
-        getLabelsSpy.mockResolvedValue([label, label2, label3]);
-        
-        const query = `
+	it(`should return a list of created labels`, async () => {
+		const label: Label = new Label({ name: faker.word.adjective(), type: LabelType.PROFESSION });
+		const label2: Label = new Label({ name: faker.word.adjective(), type: LabelType.PROFESSION });
+		const label3: Label = new Label({ name: faker.word.adjective(), type: LabelType.PROFESSION });
+
+		const getLabelsSpy = jest.spyOn(crudLabel, 'getLabels');
+		getLabelsSpy.mockResolvedValue([label, label2, label3]);
+
+		const query = `
             query {
                 labels {
                     name
                     type
                 }
             }
-        `
-        const { body } = await request(app)
-            .post('/graphql')
-            .send({ query })
-            .set('Accept', 'application/json');
+        `;
+		const { body } = await request(app).post('/graphql').send({ query }).set('Accept', 'application/json');
 
-        expect(body.data.labels).toContainEqual(label);
-        expect(body.data.labels).toContainEqual(label2);
-        expect(body.data.labels).toContainEqual(label3);
-    });
+		expect(body.data.labels).toContainEqual(label);
+		expect(body.data.labels).toContainEqual(label2);
+		expect(body.data.labels).toContainEqual(label3);
+	});
 
-    test(`getLabels should throw an error if there was an issue with the server`, async () => {
-        const getLabelSpy = jest.spyOn(crudLabel, "getLabels");
-        getLabelSpy.mockRejectedValue(new InternalError(GraphQLErrors.SERVER_ERROR));
-        
-        const query = `
+	test(`getLabels should throw an error if there was an issue with the server`, async () => {
+		const getLabelSpy = jest.spyOn(crudLabel, 'getLabels');
+		getLabelSpy.mockRejectedValue(new InternalError(GraphQLErrors.SERVER_ERROR));
+
+		const query = `
             query {
                 labels {
                     name
                     type
                 }
             }
-        `
+        `;
 
-        const { body } = await request(app)
-            .post('/graphql')
-            .send({ query })
-            .set('Accept', 'application/json');
+		const { body } = await request(app).post('/graphql').send({ query }).set('Accept', 'application/json');
 
-        expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.SERVER_ERROR);
-    });
+		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.SERVER_ERROR);
+	});
 });

@@ -13,188 +13,201 @@ import neo4j, { Driver, Session } from 'neo4j-driver';
 dotenv.config();
 
 describe(`Relationship CRUD Tests`, () => {
-    beforeAll(async () => {
-        await initializeDBs();
-    });
+	beforeAll(async () => {
+		await initializeDBs();
+	});
 
-    afterAll(async () => {
-        await destroyTestingDBs();
-    });
-    
-    it(`should create a relationship`, async () => {
-        const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
-        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
+	afterAll(async () => {
+		await destroyTestingDBs();
+	});
 
-        const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id, true);
-        const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name, true);
-        const relationship: Relationship = new Relationship(person, label, RelationshipType.IS);
+	it(`should create a relationship`, async () => {
+		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
+		const createdLabel: Label = (await createLabel({ name: faker.word.adjective(), type: LabelType.PROFESSION })) as Label;
 
-        const createdRelationship = await createRelationship(relationship);
+		const person: Node = new Node(NodeType.PERSON, 'id', createdPerson.id, true);
+		const label: Node = new Node(NodeType.LABEL, 'name', createdLabel.name, true);
+		const relationship: Relationship = new Relationship(person, label, RelationshipType.IS);
 
-        expect(createdRelationship).toEqual([createdPerson, createdLabel]);
-    });
+		const createdRelationship = await createRelationship(relationship);
 
-    it(`should create a COMING relationship`, async () => {
-        const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
-        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
+		expect(createdRelationship).toEqual([createdPerson, createdLabel]);
+	});
 
-        const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id, true);
-        const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name, true);
-        const relationship: Relationship = new Relationship(person, label, RelationshipType.IS, RelationshipDirection.COMING);
+	it(`should create a COMING relationship`, async () => {
+		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
+		const createdLabel: Label = (await createLabel({ name: faker.word.adjective(), type: LabelType.PROFESSION })) as Label;
 
-        const createdRelationship = await createRelationship(relationship);
+		const person: Node = new Node(NodeType.PERSON, 'id', createdPerson.id, true);
+		const label: Node = new Node(NodeType.LABEL, 'name', createdLabel.name, true);
+		const relationship: Relationship = new Relationship(person, label, RelationshipType.IS, RelationshipDirection.COMING);
 
-        expect(createdRelationship).toEqual([createdPerson, createdLabel]);
-    });
+		const createdRelationship = await createRelationship(relationship);
 
-    it(`should throw an error if a relationship was not created`, async () => {
-        const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
-        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
+		expect(createdRelationship).toEqual([createdPerson, createdLabel]);
+	});
 
-        const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id);
-        const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name);
-        const relationship: Relationship = new Relationship(person, label, RelationshipType.IS);
+	it(`should throw an error if a relationship was not created`, async () => {
+		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
+		const createdLabel: Label = (await createLabel({ name: faker.word.adjective(), type: LabelType.PROFESSION })) as Label;
 
-        await createRelationship(relationship);
+		const person: Node = new Node(NodeType.PERSON, 'id', createdPerson.id);
+		const label: Node = new Node(NodeType.LABEL, 'name', createdLabel.name);
+		const relationship: Relationship = new Relationship(person, label, RelationshipType.IS);
 
-        const driverMock = {
-            session: jest.fn().mockReturnValue({
-                run: jest.fn().mockResolvedValueOnce({summary: {counters: { _stats: { relationshipsCreated: 0 }}}}),
-                close: jest.fn(),
-            } as unknown as Session),
-            close: jest.fn(),
-            getServerInfo: jest.fn()
-        } as unknown as Driver;
-        
-        const driverSpy = jest.spyOn(neo4j, "driver");
-        driverSpy.mockReturnValueOnce(driverMock);
+		await createRelationship(relationship);
 
-        await expect(createRelationship(relationship)).rejects.toThrow(Errors.COULD_NOT_CREATE_RELATIONSHIP);
-    });
+		const driverMock = {
+			session: jest.fn().mockReturnValue({
+				run: jest.fn().mockResolvedValueOnce({ summary: { counters: { _stats: { relationshipsCreated: 0 } } } }),
+				close: jest.fn(),
+			} as unknown as Session),
+			close: jest.fn(),
+			getServerInfo: jest.fn(),
+		} as unknown as Driver;
 
-    it(`should delete a relationship`, async () => {
-        const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
-        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
+		const driverSpy = jest.spyOn(neo4j, 'driver');
+		driverSpy.mockReturnValueOnce(driverMock);
 
-        const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id, true);
-        const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name, true);
-        const relationship: Relationship = new Relationship(person, label, RelationshipType.IS);
+		await expect(createRelationship(relationship)).rejects.toThrow(Errors.COULD_NOT_CREATE_RELATIONSHIP);
+	});
 
-        await createRelationship(relationship);
+	it(`should delete a relationship`, async () => {
+		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
+		const createdLabel: Label = (await createLabel({ name: faker.word.adjective(), type: LabelType.PROFESSION })) as Label;
 
-        const deletedRelationship = await deleteRelationship(relationship);
+		const person: Node = new Node(NodeType.PERSON, 'id', createdPerson.id, true);
+		const label: Node = new Node(NodeType.LABEL, 'name', createdLabel.name, true);
+		const relationship: Relationship = new Relationship(person, label, RelationshipType.IS);
 
-        expect(deletedRelationship).toEqual([createdPerson, createdLabel]);
-    });
+		await createRelationship(relationship);
 
-    it(`should delete a COMING relationship`, async () => {
-        const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
-        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
+		const deletedRelationship = await deleteRelationship(relationship);
 
-        const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id, true);
-        const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name, true);
-        const relationship: Relationship = new Relationship(person, label, RelationshipType.IS, RelationshipDirection.COMING);
+		expect(deletedRelationship).toEqual([createdPerson, createdLabel]);
+	});
 
-        await createRelationship(relationship);
+	it(`should delete a COMING relationship`, async () => {
+		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
+		const createdLabel: Label = (await createLabel({ name: faker.word.adjective(), type: LabelType.PROFESSION })) as Label;
 
-        const deletedRelationship = await deleteRelationship(relationship);
+		const person: Node = new Node(NodeType.PERSON, 'id', createdPerson.id, true);
+		const label: Node = new Node(NodeType.LABEL, 'name', createdLabel.name, true);
+		const relationship: Relationship = new Relationship(person, label, RelationshipType.IS, RelationshipDirection.COMING);
 
-        expect(deletedRelationship).toEqual([createdPerson, createdLabel]);
-    });
+		await createRelationship(relationship);
 
-    it(`should throw an error if a relationship was not deleted`, async () => {
-        const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
-        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
+		const deletedRelationship = await deleteRelationship(relationship);
 
-        const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id);
-        const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name);
-        const relationship: Relationship = new Relationship(person, label, RelationshipType.IS);
+		expect(deletedRelationship).toEqual([createdPerson, createdLabel]);
+	});
 
-        await createRelationship(relationship);
+	it(`should throw an error if a relationship was not deleted`, async () => {
+		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
+		const createdLabel: Label = (await createLabel({ name: faker.word.adjective(), type: LabelType.PROFESSION })) as Label;
 
-        const driverMock = {
-            session: jest.fn().mockReturnValue({
-                run: jest.fn().mockResolvedValueOnce({summary: {counters: { _stats: { relationshipsDeleted: 0 }}}}),
-                close: jest.fn(),
-            } as unknown as Session),
-            close: jest.fn(),
-            getServerInfo: jest.fn()
-        } as unknown as Driver;
-        
-        const driverSpy = jest.spyOn(neo4j, "driver");
-        driverSpy.mockReturnValueOnce(driverMock);
+		const person: Node = new Node(NodeType.PERSON, 'id', createdPerson.id);
+		const label: Node = new Node(NodeType.LABEL, 'name', createdLabel.name);
+		const relationship: Relationship = new Relationship(person, label, RelationshipType.IS);
 
-        await expect(deleteRelationship(relationship)).rejects.toThrow(Errors.COULD_NOT_DELETE_RELATIONSHIP);
-    });
+		await createRelationship(relationship);
 
-    it(`should delete a node with a relationship`, async () => {
-        const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
-        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
+		const driverMock = {
+			session: jest.fn().mockReturnValue({
+				run: jest.fn().mockResolvedValueOnce({ summary: { counters: { _stats: { relationshipsDeleted: 0 } } } }),
+				close: jest.fn(),
+			} as unknown as Session),
+			close: jest.fn(),
+			getServerInfo: jest.fn(),
+		} as unknown as Driver;
 
-        const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id);
-        const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name);
-        const relationship: Relationship = new Relationship(person, label, RelationshipType.IS);
+		const driverSpy = jest.spyOn(neo4j, 'driver');
+		driverSpy.mockReturnValueOnce(driverMock);
 
-        await createRelationship(relationship);
+		await expect(deleteRelationship(relationship)).rejects.toThrow(Errors.COULD_NOT_DELETE_RELATIONSHIP);
+	});
 
-        const deletedPerson = await deletePerson(createdPerson.id);
+	it(`should delete a node with a relationship`, async () => {
+		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
+		const createdLabel: Label = (await createLabel({ name: faker.word.adjective(), type: LabelType.PROFESSION })) as Label;
 
-        expect(deletedPerson).toEqual(createdPerson);
-    });
+		const person: Node = new Node(NodeType.PERSON, 'id', createdPerson.id);
+		const label: Node = new Node(NodeType.LABEL, 'name', createdLabel.name);
+		const relationship: Relationship = new Relationship(person, label, RelationshipType.IS);
 
-    it(`should retrieve a relationship`, async () => {
-        const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
-        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
+		await createRelationship(relationship);
 
-        const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id);
-        const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name);
-        const relationship: Relationship = new Relationship(person, label, RelationshipType.IS);
+		const deletedPerson = await deletePerson(createdPerson.id);
 
-        await createRelationship(relationship);
+		expect(deletedPerson).toEqual(createdPerson);
+	});
 
-        const matchedRelationships = await getRelationshipsToNode(new Node(NodeType.PERSON, 'id', createdPerson.id), NodeType.LABEL, RelationshipType.IS);
+	it(`should retrieve a relationship`, async () => {
+		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
+		const createdLabel: Label = (await createLabel({ name: faker.word.adjective(), type: LabelType.PROFESSION })) as Label;
 
-        expect(matchedRelationships).toEqual([createdLabel]);
-    });
+		const person: Node = new Node(NodeType.PERSON, 'id', createdPerson.id);
+		const label: Node = new Node(NodeType.LABEL, 'name', createdLabel.name);
+		const relationship: Relationship = new Relationship(person, label, RelationshipType.IS);
 
-    it(`should retrieve a COMING relationship`, async () => {
-        const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
-        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
+		await createRelationship(relationship);
 
-        const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id);
-        const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name);
-        const relationship: Relationship = new Relationship(person, label, RelationshipType.IS, RelationshipDirection.COMING);
+		const matchedRelationships = await getRelationshipsToNode(
+			new Node(NodeType.PERSON, 'id', createdPerson.id),
+			NodeType.LABEL,
+			RelationshipType.IS
+		);
 
-        await createRelationship(relationship);
+		expect(matchedRelationships).toEqual([createdLabel]);
+	});
 
-        const matchedRelationships = await getRelationshipsToNode(new Node(NodeType.PERSON, 'id', createdPerson.id), NodeType.LABEL, RelationshipType.IS, RelationshipDirection.COMING);
+	it(`should retrieve a COMING relationship`, async () => {
+		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
+		const createdLabel: Label = (await createLabel({ name: faker.word.adjective(), type: LabelType.PROFESSION })) as Label;
 
-        expect(matchedRelationships).toEqual([createdLabel]);
-    });
+		const person: Node = new Node(NodeType.PERSON, 'id', createdPerson.id);
+		const label: Node = new Node(NodeType.LABEL, 'name', createdLabel.name);
+		const relationship: Relationship = new Relationship(person, label, RelationshipType.IS, RelationshipDirection.COMING);
 
-    it(`should retrieve a list of relationships`, async () => {
-        const createdPerson: Person = await createPerson(new Person({ id: '', firstName: faker.person.firstName() })) as Person;
-        const createdLabel: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
-        const createdLabel2: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
-        const createdLabel3: Label = await createLabel({name: faker.word.adjective(), type: LabelType.PROFESSION}) as Label;
+		await createRelationship(relationship);
 
-        const person: Node = new Node(NodeType.PERSON, "id", createdPerson.id);
-        const label: Node = new Node(NodeType.LABEL, "name", createdLabel.name);
-        const label2: Node = new Node(NodeType.LABEL, "name", createdLabel2.name);
-        const label3: Node = new Node(NodeType.LABEL, "name", createdLabel3.name);
+		const matchedRelationships = await getRelationshipsToNode(
+			new Node(NodeType.PERSON, 'id', createdPerson.id),
+			NodeType.LABEL,
+			RelationshipType.IS,
+			RelationshipDirection.COMING
+		);
 
-        const relationship: Relationship = new Relationship(person, label, RelationshipType.IS);
-        const relationship2: Relationship = new Relationship(person, label2, RelationshipType.IS);
-        const relationship3: Relationship = new Relationship(person, label3, RelationshipType.IS);
+		expect(matchedRelationships).toEqual([createdLabel]);
+	});
 
-        await createRelationship(relationship);
-        await createRelationship(relationship2);
-        await createRelationship(relationship3);
+	it(`should retrieve a list of relationships`, async () => {
+		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
+		const createdLabel: Label = (await createLabel({ name: faker.word.adjective(), type: LabelType.PROFESSION })) as Label;
+		const createdLabel2: Label = (await createLabel({ name: faker.word.adjective(), type: LabelType.PROFESSION })) as Label;
+		const createdLabel3: Label = (await createLabel({ name: faker.word.adjective(), type: LabelType.PROFESSION })) as Label;
 
-        const matchedRelationships = await getRelationshipsToNode(new Node(NodeType.PERSON, 'id', createdPerson.id), NodeType.LABEL, RelationshipType.IS);
+		const person: Node = new Node(NodeType.PERSON, 'id', createdPerson.id);
+		const label: Node = new Node(NodeType.LABEL, 'name', createdLabel.name);
+		const label2: Node = new Node(NodeType.LABEL, 'name', createdLabel2.name);
+		const label3: Node = new Node(NodeType.LABEL, 'name', createdLabel3.name);
 
-        expect(matchedRelationships).toContainEqual(createdLabel);
-        expect(matchedRelationships).toContainEqual(createdLabel2);
-        expect(matchedRelationships).toContainEqual(createdLabel3);
-    });
-})
+		const relationship: Relationship = new Relationship(person, label, RelationshipType.IS);
+		const relationship2: Relationship = new Relationship(person, label2, RelationshipType.IS);
+		const relationship3: Relationship = new Relationship(person, label3, RelationshipType.IS);
+
+		await createRelationship(relationship);
+		await createRelationship(relationship2);
+		await createRelationship(relationship3);
+
+		const matchedRelationships = await getRelationshipsToNode(
+			new Node(NodeType.PERSON, 'id', createdPerson.id),
+			NodeType.LABEL,
+			RelationshipType.IS
+		);
+
+		expect(matchedRelationships).toContainEqual(createdLabel);
+		expect(matchedRelationships).toContainEqual(createdLabel2);
+		expect(matchedRelationships).toContainEqual(createdLabel3);
+	});
+});

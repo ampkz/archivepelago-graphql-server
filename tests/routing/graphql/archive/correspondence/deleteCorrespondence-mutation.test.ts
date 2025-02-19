@@ -12,146 +12,143 @@ import { Auth } from '../../../../../src/auth/authorization';
 dotenv.config();
 
 describe(`Correspondence Mutation Tests`, () => {
-    let app: any;
+	let app: any;
 
-    beforeAll(async() => {
-        app = await startServer();
-    })
+	beforeAll(async () => {
+		app = await startServer();
+	});
 
-    it(`should throw an unauthorized error without authorization`, async () => {
-        const query = `
+	it(`should throw an unauthorized error without authorization`, async () => {
+		const query = `
             mutation DeleteCorrespondence($correspondenceID: ID!) {
                 deleteCorrespondence(correspondenceID: $correspondenceID) {
                     correspondenceID
                 }
             }
-        `
+        `;
 
-        const variables = {
-            correspondenceID: faker.database.mongodbObjectId()
-        }
+		const variables = {
+			correspondenceID: faker.database.mongodbObjectId(),
+		};
 
-        const { body } = await request(app)
-            .post('/graphql')
-            .send({ query, variables })
-            .set('Accept', 'application/json');
+		const { body } = await request(app).post('/graphql').send({ query, variables }).set('Accept', 'application/json');
 
-        expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.UNAUTHORIZED);
-    });
+		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.UNAUTHORIZED);
+	});
 
-    it(`should delete a correspondence as admin`, async () => {
-        const correspondenceID: string = faker.database.mongodbObjectId();
-        
-        const deleteCorrespondenceSpy = jest.spyOn(crudCorrespondence, "deleteCorrespondence");
-        deleteCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.LETTER }));
+	it(`should delete a correspondence as admin`, async () => {
+		const correspondenceID: string = faker.database.mongodbObjectId();
 
-        const query = `
+		const deleteCorrespondenceSpy = jest.spyOn(crudCorrespondence, 'deleteCorrespondence');
+		deleteCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.LETTER }));
+
+		const query = `
             mutation DeleteCorrespondence($correspondenceID: ID!) {
                 deleteCorrespondence(correspondenceID: $correspondenceID) {
                     correspondenceID
                 }
             }
-        `
+        `;
 
-        const variables = {
-            correspondenceID
-        }
+		const variables = {
+			correspondenceID,
+		};
 
-        const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
+		const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
 
-        const { body } = await request(app)
-                .post('/graphql')
-                .send({ query, variables })
-                .set('Accept', 'application/json')
-                .set('Cookie', [`jwt=${jwtToken}`]);
-    
-        expect(body.data.deleteCorrespondence.correspondenceID).toEqual(correspondenceID);
-    });
+		const { body } = await request(app)
+			.post('/graphql')
+			.send({ query, variables })
+			.set('Accept', 'application/json')
+			.set('Cookie', [`jwt=${jwtToken}`]);
 
-    it(`should delete a correspondence as admin`, async () => {
-        const correspondenceID: string = faker.database.mongodbObjectId();
-        
-        const deleteCorrespondenceSpy = jest.spyOn(crudCorrespondence, "deleteCorrespondence");
-        deleteCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.LETTER }));
+		expect(body.data.deleteCorrespondence.correspondenceID).toEqual(correspondenceID);
+	});
 
-        const query = `
+	it(`should delete a correspondence as admin`, async () => {
+		const correspondenceID: string = faker.database.mongodbObjectId();
+
+		const deleteCorrespondenceSpy = jest.spyOn(crudCorrespondence, 'deleteCorrespondence');
+		deleteCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.LETTER }));
+
+		const query = `
             mutation DeleteCorrespondence($correspondenceID: ID!) {
                 deleteCorrespondence(correspondenceID: $correspondenceID) {
                     correspondenceID
                 }
             }
-        `
+        `;
 
-        const variables = {
-            correspondenceID
-        }
+		const variables = {
+			correspondenceID,
+		};
 
-        const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
+		const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
 
-        const { body } = await request(app)
-                .post('/graphql')
-                .send({ query, variables })
-                .set('Accept', 'application/json')
-                .set('Cookie', [`jwt=${jwtToken}`]);
-    
-        expect(body.data.deleteCorrespondence.correspondenceID).toEqual(correspondenceID);
-    });
+		const { body } = await request(app)
+			.post('/graphql')
+			.send({ query, variables })
+			.set('Accept', 'application/json')
+			.set('Cookie', [`jwt=${jwtToken}`]);
 
-    it(`should throw an error if there was an issue with the server`, async () => {
-        const correspondenceID: string = faker.database.mongodbObjectId();
-        
-        const deleteCorrespondenceSpy = jest.spyOn(crudCorrespondence, "deleteCorrespondence");
-        deleteCorrespondenceSpy.mockRejectedValue(new InternalError(GraphQLErrors.MUTATION_FAILED));
+		expect(body.data.deleteCorrespondence.correspondenceID).toEqual(correspondenceID);
+	});
 
-        const query = `
+	it(`should throw an error if there was an issue with the server`, async () => {
+		const correspondenceID: string = faker.database.mongodbObjectId();
+
+		const deleteCorrespondenceSpy = jest.spyOn(crudCorrespondence, 'deleteCorrespondence');
+		deleteCorrespondenceSpy.mockRejectedValue(new InternalError(GraphQLErrors.MUTATION_FAILED));
+
+		const query = `
             mutation DeleteCorrespondence($correspondenceID: ID!) {
                 deleteCorrespondence(correspondenceID: $correspondenceID) {
                     correspondenceID
                 }
             }
-        `
+        `;
 
-        const variables = {
-            correspondenceID
-        }
+		const variables = {
+			correspondenceID,
+		};
 
-        const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
+		const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
 
-        const { body } = await request(app)
-                .post('/graphql')
-                .send({ query, variables })
-                .set('Accept', 'application/json')
-                .set('Cookie', [`jwt=${jwtToken}`]);
-    
-        expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
-    });
+		const { body } = await request(app)
+			.post('/graphql')
+			.send({ query, variables })
+			.set('Accept', 'application/json')
+			.set('Cookie', [`jwt=${jwtToken}`]);
 
-    it(`should return undefined if no correspondence was deleted`, async () => {
-        const correspondenceID: string = faker.database.mongodbObjectId();
-        
-        const deleteCorrespondenceSpy = jest.spyOn(crudCorrespondence, "deleteCorrespondence");
-        deleteCorrespondenceSpy.mockResolvedValue(undefined);
+		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
+	});
 
-        const query = `
+	it(`should return undefined if no correspondence was deleted`, async () => {
+		const correspondenceID: string = faker.database.mongodbObjectId();
+
+		const deleteCorrespondenceSpy = jest.spyOn(crudCorrespondence, 'deleteCorrespondence');
+		deleteCorrespondenceSpy.mockResolvedValue(undefined);
+
+		const query = `
             mutation DeleteCorrespondence($correspondenceID: ID!) {
                 deleteCorrespondence(correspondenceID: $correspondenceID) {
                     correspondenceID
                 }
             }
-        `
+        `;
 
-        const variables = {
-            correspondenceID
-        }
+		const variables = {
+			correspondenceID,
+		};
 
-        const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
+		const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
 
-        const { body } = await request(app)
-                .post('/graphql')
-                .send({ query, variables })
-                .set('Accept', 'application/json')
-                .set('Cookie', [`jwt=${jwtToken}`]);
-    
-        expect(body.deleteCorrespondence).toBeUndefined();
-    });
+		const { body } = await request(app)
+			.post('/graphql')
+			.send({ query, variables })
+			.set('Accept', 'application/json')
+			.set('Cookie', [`jwt=${jwtToken}`]);
+
+		expect(body.deleteCorrespondence).toBeUndefined();
+	});
 });

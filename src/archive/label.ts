@@ -1,25 +1,25 @@
 export enum LabelType {
-    SEXUALITY = 'SEXUALITY',
-    NATIONALITY = 'NATIONALITY',
-    PROFESSION = 'PROFESSION'
+	SEXUALITY = 'SEXUALITY',
+	NATIONALITY = 'NATIONALITY',
+	PROFESSION = 'PROFESSION',
 }
 
 export class Label implements ILabel {
-    public name: string;
-    public type: LabelType;
+	public name: string;
+	public type: LabelType;
 
-    constructor(label: ILabel){
-        this.name = label.name;
-        this.type = label.type;
-    }
+	constructor(label: ILabel) {
+		this.name = label.name;
+		this.type = label.type;
+	}
 }
 
 export interface ILabel {
-    name: string
-    type: LabelType
+	name: string;
+	type: LabelType;
 }
 
 export interface IUpdatedLabel {
-    updatedName?: string,
-    updatedType?: LabelType
+	updatedName?: string;
+	updatedType?: LabelType;
 }

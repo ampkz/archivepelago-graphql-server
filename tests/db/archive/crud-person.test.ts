@@ -7,148 +7,174 @@ import { Person, IUpdatedPerson } from '../../../src/archive/person';
 dotenv.config();
 
 describe(`CRUD Person Tests`, () => {
-    beforeAll(async () => {
-        await initializeDBs();
-    });
+	beforeAll(async () => {
+		await initializeDBs();
+	});
 
-    afterAll(async () => {
-        await destroyTestingDBs();
-    });
-    
-    it(`should create a Person`, async () => {
-        const firstName: string = faker.person.firstName(),
-            lastName: string = faker.person.lastName(),
-            secondName: string = faker.person.middleName(),
-            birthDate: string = faker.date.birthdate().toDateString(),
-            deathDate: string = faker.date.birthdate().toDateString();
+	afterAll(async () => {
+		await destroyTestingDBs();
+	});
 
-        const person: Person = new Person({id: '', firstName, lastName, secondName, birthDate, deathDate});
+	it(`should create a Person`, async () => {
+		const firstName: string = faker.person.firstName(),
+			lastName: string = faker.person.lastName(),
+			secondName: string = faker.person.middleName(),
+			birthDate: string = faker.date.birthdate().toDateString(),
+			deathDate: string = faker.date.birthdate().toDateString();
 
-        const createdPerson: Person = await createPerson(person);
+		const person: Person = new Person({ id: '', firstName, lastName, secondName, birthDate, deathDate });
 
-        person.id = createdPerson.id;
+		const createdPerson: Person = await createPerson(person);
 
-        expect(createdPerson).toEqual(person);
-    });
+		person.id = createdPerson.id;
 
-    it(`should create a Person with undefined values`, async () => {
-        const person: Person = new Person({id: ''});
+		expect(createdPerson).toEqual(person);
+	});
 
-        const createdPerson: Person = await createPerson(person);
+	it(`should create a Person with undefined values`, async () => {
+		const person: Person = new Person({ id: '' });
 
-        person.id = createdPerson.id;
+		const createdPerson: Person = await createPerson(person);
 
-        expect(createdPerson).toEqual(person);
-        expect(createdPerson.firstName).toBeUndefined();
-        expect(createdPerson.lastName).toBeUndefined();
-        expect(createdPerson.secondName).toBeUndefined();
-        expect(createdPerson.birthDate).toBeUndefined();
-        expect(createdPerson.deathDate).toBeUndefined();
-    });
+		person.id = createdPerson.id;
 
-    it(`should get a created person`, async () => {
-        const firstName: string = faker.person.firstName(),
-            lastName: string = faker.person.lastName(),
-            secondName: string = faker.person.middleName(),
-            birthDate: string = faker.date.birthdate().toDateString(),
-            deathDate: string = faker.date.birthdate().toDateString();
+		expect(createdPerson).toEqual(person);
+		expect(createdPerson.firstName).toBeUndefined();
+		expect(createdPerson.lastName).toBeUndefined();
+		expect(createdPerson.secondName).toBeUndefined();
+		expect(createdPerson.birthDate).toBeUndefined();
+		expect(createdPerson.deathDate).toBeUndefined();
+	});
 
-        const person: Person = new Person({id: '', firstName, lastName, secondName, birthDate, deathDate});
+	it(`should get a created person`, async () => {
+		const firstName: string = faker.person.firstName(),
+			lastName: string = faker.person.lastName(),
+			secondName: string = faker.person.middleName(),
+			birthDate: string = faker.date.birthdate().toDateString(),
+			deathDate: string = faker.date.birthdate().toDateString();
 
-        const createdPerson: Person = await createPerson(person);
+		const person: Person = new Person({ id: '', firstName, lastName, secondName, birthDate, deathDate });
 
-        const matchedPerson: Person | undefined = await getPerson(createdPerson.id);
+		const createdPerson: Person = await createPerson(person);
 
-        expect(matchedPerson).toEqual(createdPerson);
-    });
+		const matchedPerson: Person | undefined = await getPerson(createdPerson.id);
 
-    it(`should delete a created person`, async () => {
-        const firstName: string = faker.person.firstName(),
-            lastName: string = faker.person.lastName(),
-            secondName: string = faker.person.middleName(),
-            birthDate: string = faker.date.birthdate().toDateString(),
-            deathDate: string = faker.date.birthdate().toDateString();
+		expect(matchedPerson).toEqual(createdPerson);
+	});
 
-        const person: Person = new Person({id: '', firstName, lastName, secondName, birthDate, deathDate});
+	it(`should delete a created person`, async () => {
+		const firstName: string = faker.person.firstName(),
+			lastName: string = faker.person.lastName(),
+			secondName: string = faker.person.middleName(),
+			birthDate: string = faker.date.birthdate().toDateString(),
+			deathDate: string = faker.date.birthdate().toDateString();
 
-        const createdPerson: Person = await createPerson(person);
+		const person: Person = new Person({ id: '', firstName, lastName, secondName, birthDate, deathDate });
 
-        const deletedPerson: Person | undefined = await deletePerson(createdPerson.id);
+		const createdPerson: Person = await createPerson(person);
 
-        expect(deletedPerson).toEqual(createdPerson);
-    });
+		const deletedPerson: Person | undefined = await deletePerson(createdPerson.id);
 
-    test(`deletePerson should return undefined if no person exists`, async () => {
-        const deletedPerson: Person | undefined = await deletePerson(faker.database.mongodbObjectId());
+		expect(deletedPerson).toEqual(createdPerson);
+	});
 
-        expect(deletedPerson).toBeUndefined();
-    });
+	test(`deletePerson should return undefined if no person exists`, async () => {
+		const deletedPerson: Person | undefined = await deletePerson(faker.database.mongodbObjectId());
 
-    it(`should update a created person`, async () => {
-        const firstName: string = faker.person.firstName(),
-            lastName: string = faker.person.lastName(),
-            secondName: string = faker.person.middleName(),
-            birthDate: string = faker.date.birthdate().toDateString(),
-            deathDate: string = faker.date.birthdate().toDateString();
+		expect(deletedPerson).toBeUndefined();
+	});
 
-        const updatedFirstName: string = faker.person.firstName(),
-            updatedLastName: string = faker.person.lastName(),
-            updatedSecondName: string = faker.person.middleName(),
-            updatedBirthDate: string = faker.date.birthdate().toDateString(),
-            updatedDeathDate: string = faker.date.birthdate().toDateString();
+	it(`should update a created person`, async () => {
+		const firstName: string = faker.person.firstName(),
+			lastName: string = faker.person.lastName(),
+			secondName: string = faker.person.middleName(),
+			birthDate: string = faker.date.birthdate().toDateString(),
+			deathDate: string = faker.date.birthdate().toDateString();
 
-        const person: Person = new Person({id: '', firstName, lastName, secondName, birthDate, deathDate});
+		const updatedFirstName: string = faker.person.firstName(),
+			updatedLastName: string = faker.person.lastName(),
+			updatedSecondName: string = faker.person.middleName(),
+			updatedBirthDate: string = faker.date.birthdate().toDateString(),
+			updatedDeathDate: string = faker.date.birthdate().toDateString();
 
-        const createdPerson: Person = await createPerson(person);
-        const updatedPerson: IUpdatedPerson = {id: createdPerson.id, updatedFirstName, updatedBirthDate, updatedDeathDate, updatedLastName, updatedSecondName };
+		const person: Person = new Person({ id: '', firstName, lastName, secondName, birthDate, deathDate });
 
-        const matchedPerson: Person | undefined = await updatePerson(updatedPerson);
+		const createdPerson: Person = await createPerson(person);
+		const updatedPerson: IUpdatedPerson = {
+			id: createdPerson.id,
+			updatedFirstName,
+			updatedBirthDate,
+			updatedDeathDate,
+			updatedLastName,
+			updatedSecondName,
+		};
 
-        expect(matchedPerson).toEqual(new Person({id: createdPerson.id, firstName: updatedFirstName, lastName: updatedLastName, secondName: updatedSecondName, birthDate: updatedBirthDate, deathDate: updatedDeathDate }));
-    });
+		const matchedPerson: Person | undefined = await updatePerson(updatedPerson);
 
-    it(`should update a created person and delete a property set to null`, async () => {
-        const firstName: string = faker.person.firstName(),
-            lastName: string = faker.person.lastName(),
-            secondName: string = faker.person.middleName(),
-            birthDate: string = faker.date.birthdate().toDateString(),
-            deathDate: string = faker.date.birthdate().toDateString();
+		expect(matchedPerson).toEqual(
+			new Person({
+				id: createdPerson.id,
+				firstName: updatedFirstName,
+				lastName: updatedLastName,
+				secondName: updatedSecondName,
+				birthDate: updatedBirthDate,
+				deathDate: updatedDeathDate,
+			})
+		);
+	});
 
-        const person: Person = new Person({id: '', firstName, lastName, secondName, birthDate, deathDate});
+	it(`should update a created person and delete a property set to null`, async () => {
+		const firstName: string = faker.person.firstName(),
+			lastName: string = faker.person.lastName(),
+			secondName: string = faker.person.middleName(),
+			birthDate: string = faker.date.birthdate().toDateString(),
+			deathDate: string = faker.date.birthdate().toDateString();
 
-        const createdPerson: Person = await createPerson(person);
-        const updatedPerson: IUpdatedPerson = {id: createdPerson.id, updatedFirstName: null, updatedBirthDate: null, updatedDeathDate: null, updatedLastName: null, updatedSecondName: null };
+		const person: Person = new Person({ id: '', firstName, lastName, secondName, birthDate, deathDate });
 
-        const matchedPerson: Person | undefined = await updatePerson(updatedPerson);
+		const createdPerson: Person = await createPerson(person);
+		const updatedPerson: IUpdatedPerson = {
+			id: createdPerson.id,
+			updatedFirstName: null,
+			updatedBirthDate: null,
+			updatedDeathDate: null,
+			updatedLastName: null,
+			updatedSecondName: null,
+		};
 
-        expect(matchedPerson).toEqual(new Person({id: createdPerson.id }));
-    });
+		const matchedPerson: Person | undefined = await updatePerson(updatedPerson);
 
-    test(`updatePerson should return undefined if no person exists`, async () => {
-        const updatedPerson: Person | undefined = await updatePerson({ id: faker.database.mongodbObjectId(), updatedFirstName: faker.person.firstName() });
+		expect(matchedPerson).toEqual(new Person({ id: createdPerson.id }));
+	});
 
-        expect(updatedPerson).toBeUndefined();
-    });
+	test(`updatePerson should return undefined if no person exists`, async () => {
+		const updatedPerson: Person | undefined = await updatePerson({
+			id: faker.database.mongodbObjectId(),
+			updatedFirstName: faker.person.firstName(),
+		});
 
-    test(`getPerson should return undefined if no person exists`, async () => {
-        const person: Person | undefined = await getPerson(faker.database.mongodbObjectId());
+		expect(updatedPerson).toBeUndefined();
+	});
 
-        expect(person).toBeUndefined();
-    });
+	test(`getPerson should return undefined if no person exists`, async () => {
+		const person: Person | undefined = await getPerson(faker.database.mongodbObjectId());
 
-    test(`getPersons should return a list of persons`, async () => {
-        const person: Person = new Person({id: faker.database.mongodbObjectId(), firstName: faker.person.firstName()});
-        const person2: Person = new Person({id: faker.database.mongodbObjectId(), firstName: faker.person.firstName()});
-        const person3: Person = new Person({id: faker.database.mongodbObjectId(), firstName: faker.person.firstName()});
+		expect(person).toBeUndefined();
+	});
 
-        const createdPerson: Person = await createPerson(person);
-        const createdPerson2: Person = await createPerson(person2);
-        const createdPerson3: Person = await createPerson(person3);
+	test(`getPersons should return a list of persons`, async () => {
+		const person: Person = new Person({ id: faker.database.mongodbObjectId(), firstName: faker.person.firstName() });
+		const person2: Person = new Person({ id: faker.database.mongodbObjectId(), firstName: faker.person.firstName() });
+		const person3: Person = new Person({ id: faker.database.mongodbObjectId(), firstName: faker.person.firstName() });
 
-        const matchedPersons: Person[] = await getPersons();
+		const createdPerson: Person = await createPerson(person);
+		const createdPerson2: Person = await createPerson(person2);
+		const createdPerson3: Person = await createPerson(person3);
 
-        expect(matchedPersons).toContainEqual(createdPerson);
-        expect(matchedPersons).toContainEqual(createdPerson2);
-        expect(matchedPersons).toContainEqual(createdPerson3);
-    });
+		const matchedPersons: Person[] = await getPersons();
+
+		expect(matchedPersons).toContainEqual(createdPerson);
+		expect(matchedPersons).toContainEqual(createdPerson2);
+		expect(matchedPersons).toContainEqual(createdPerson3);
+	});
 });

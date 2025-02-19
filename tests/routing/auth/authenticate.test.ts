@@ -11,87 +11,86 @@ import { Auth } from '../../../src/auth/authorization';
 dotenv.config();
 
 describe(`Authenticate Route Tests`, () => {
+	let app: any;
 
-    let app: any;
+	beforeAll(async () => {
+		app = await startServer();
+	});
 
-    beforeAll(async() => {
-        app = await startServer();
-    })
+	it(`should send 405 status on PUT with Allow header 'POST'`, async () => {
+		await request(app)
+			.put(authenticateUri)
+			.expect(405)
+			.then(response => {
+				expect(response.headers.allow).toBe('POST');
+			});
+	});
 
-    it(`should send 405 status on PUT with Allow header 'POST'`, async () => {
-        await request(app)
-            .put(authenticateUri)
-            .expect(405)
-            .then(response => {
-                expect(response.headers.allow).toBe('POST');
-            });
-    });
+	it(`should send 405 status on GET with Allow header 'POST'`, async () => {
+		await request(app)
+			.get(authenticateUri)
+			.expect(405)
+			.then(response => {
+				expect(response.headers.allow).toBe('POST');
+			});
+	});
 
-    it(`should send 405 status on GET with Allow header 'POST'`, async () => {
-        await request(app)
-            .get(authenticateUri)
-            .expect(405)
-            .then(response => {
-                expect(response.headers.allow).toBe('POST');
-            });
-    });
+	it(`should send 405 status on DELETE with Allow header 'POST'`, async () => {
+		await request(app)
+			.delete(authenticateUri)
+			.expect(405)
+			.then(response => {
+				expect(response.headers.allow).toBe('POST');
+			});
+	});
 
-    it(`should send 405 status on DELETE with Allow header 'POST'`, async () => {
-        await request(app)
-            .delete(authenticateUri)
-            .expect(405)
-            .then(response => {
-                expect(response.headers.allow).toBe('POST');
-            });
-    });
+	it(`should send 400 status on POST without password`, async () => {
+		await request(app)
+			.post(authenticateUri)
+			.send({ email: faker.internet.email() })
+			.expect(400)
+			.then(response => {
+				expect(response.body.message).toBe(RoutingErrors.INVALID_REQUEST);
+				expect(response.body.data.fields).toContainEqual({ field: 'password', message: FieldError.REQUIRED });
+			});
+	});
 
-    it(`should send 400 status on POST without password`, async () => {
-        await request(app)
-            .post(authenticateUri)
-            .send({email: faker.internet.email()})
-            .expect(400)
-            .then(response => {
-                expect(response.body.message).toBe(RoutingErrors.INVALID_REQUEST);
-                expect(response.body.data.fields).toContainEqual({field: 'password', message: FieldError.REQUIRED});
-            });
-    });
+	it(`should send 400 status on POST without email`, async () => {
+		await request(app)
+			.post(authenticateUri)
+			.send({ password: faker.internet.password() })
+			.expect(400)
+			.then(response => {
+				expect(response.body.message).toBe(RoutingErrors.INVALID_REQUEST);
+				expect(response.body.data.fields).toContainEqual({ field: 'email', message: FieldError.REQUIRED });
+			});
+	});
 
-    it(`should send 400 status on POST without email`, async () => {
-        await request(app)
-            .post(authenticateUri)
-            .send({password: faker.internet.password()})
-            .expect(400)
-            .then(response => {
-                expect(response.body.message).toBe(RoutingErrors.INVALID_REQUEST);
-                expect(response.body.data.fields).toContainEqual({field: 'email', message: FieldError.REQUIRED});
-            });
-    });
+	it(`should send 401 status with incorrect password`, async () => {
+		const checkPasswordSpy = jest.spyOn(authenticateUser, 'checkPassword');
+		checkPasswordSpy.mockResolvedValueOnce(undefined);
 
-    it(`should send 401 status with incorrect password`, async () => {
-        const checkPasswordSpy = jest.spyOn(authenticateUser, "checkPassword");
-        checkPasswordSpy.mockResolvedValueOnce(undefined);
+		await request(app)
+			.post(authenticateUri)
+			.send({ email: faker.internet.email(), password: faker.internet.password() })
+			.expect(401)
+			.then(response => {
+				expect(response.headers['www-authenticate']).toBe(`xBasic realm="${process.env.AUTH_REALM}"`);
+			});
+	});
 
-        await request(app)
-            .post(authenticateUri)
-            .send({email: faker.internet.email(), password: faker.internet.password()})
-            .expect(401)
-            .then(response => {
-                expect(response.headers['www-authenticate']).toBe(`xBasic realm="${process.env.AUTH_REALM}"`)
-            })
-    });
+	it(`should send 204 status with jwt cookie using correct password`, async () => {
+		const checkPasswordSpy = jest.spyOn(authenticateUser, 'checkPassword');
+		checkPasswordSpy.mockResolvedValueOnce(new User(faker.internet.email(), Auth.ADMIN, faker.person.firstName(), faker.person.lastName()));
 
-    it(`should send 204 status with jwt cookie using correct password`, async () => {
-        const checkPasswordSpy = jest.spyOn(authenticateUser, "checkPassword");
-        checkPasswordSpy.mockResolvedValueOnce(new User(faker.internet.email(), Auth.ADMIN, faker.person.firstName(), faker.person.lastName()));
-        
-        await request(app)
-            .post(authenticateUri)
-            .send({email: faker.internet.email(), password: faker.internet.password()})
-            .expect(204)
-            .then(response => {
-                expect(response.body).toEqual({});
-                expect(response.header['set-cookie']).toBeDefined();
-                expect(response.header['set-cookie'][0]).toContain('jwt');
-            })
-    })
+		await request(app)
+			.post(authenticateUri)
+			.send({ email: faker.internet.email(), password: faker.internet.password() })
+			.expect(204)
+			.then(response => {
+				expect(response.body).toEqual({});
+				expect(response.header['set-cookie']).toBeDefined();
+				expect(response.header['set-cookie'][0]).toContain('jwt');
+			});
+	});
 });

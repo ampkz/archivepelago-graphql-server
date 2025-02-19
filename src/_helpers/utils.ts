@@ -1,19 +1,19 @@
-export function removedValues(original: string[], updated: string[]): string[]{
-    const removedValues: string[] = [];
+export function removedValues(original: string[], updated: string[]): string[] {
+	const removedValues: string[] = [];
 
-    original.map((value: string) => {
-        if(!updated.includes(value)) removedValues.push(value);
-    });
+	original.map((value: string) => {
+		if (!updated.includes(value)) removedValues.push(value);
+	});
 
-    return removedValues;
+	return removedValues;
 }
 
-export function addedValues(original: string[], updated: string[]): string[]{
-    const addedValues: string[] = [];
+export function addedValues(original: string[], updated: string[]): string[] {
+	const addedValues: string[] = [];
 
-    updated.map((value: string) => {
-        if(!original.includes(value)) addedValues.push(value);
-    });
+	updated.map((value: string) => {
+		if (!original.includes(value)) addedValues.push(value);
+	});
 
-    return addedValues;
+	return addedValues;
 }

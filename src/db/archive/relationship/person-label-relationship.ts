@@ -1,41 +1,46 @@
-import { Label } from "../../../archive/label";
-import { Person } from "../../../archive/person";
-import { PersonLabel, RelationshipDirection, RelationshipType } from "../../../archive/relationship/relationship";
-import { Node, NodeType } from "../../../_helpers/nodes";
-import { createRelationship, deleteRelationship, getRelationshipsToNode } from "../../utils/relationship/crud-relationship";
+import { Label } from '../../../archive/label';
+import { Person } from '../../../archive/person';
+import { PersonLabel, RelationshipDirection, RelationshipType } from '../../../archive/relationship/relationship';
+import { Node, NodeType } from '../../../_helpers/nodes';
+import { createRelationship, deleteRelationship, getRelationshipsToNode } from '../../utils/relationship/crud-relationship';
 
-export async function createPersonLabel(personLabel: PersonLabel): Promise<Person | undefined>{
-    const [f] = await createRelationship(personLabel.getRelationship());
+export async function createPersonLabel(personLabel: PersonLabel): Promise<Person | undefined> {
+	const [f] = await createRelationship(personLabel.getRelationship());
 
-    return f as Person;
+	return f as Person;
 }
 
-export async function deletePersonLabel(personLabel: PersonLabel): Promise<Person | undefined>{
-    const [f] = await deleteRelationship(personLabel.getRelationship());
+export async function deletePersonLabel(personLabel: PersonLabel): Promise<Person | undefined> {
+	const [f] = await deleteRelationship(personLabel.getRelationship());
 
-    return f as Person;
+	return f as Person;
 }
 
 export async function getLabelsByPerson(person: Person): Promise<Label[]> {
-    const labels: Label[] = [];
-    
-    const match = await getRelationshipsToNode(new Node(NodeType.PERSON, 'id', person.id), NodeType.LABEL, RelationshipType.IS);
+	const labels: Label[] = [];
 
-    match.map((rawLabel: any) => {
-        labels.push(new Label(rawLabel));
-    })
+	const match = await getRelationshipsToNode(new Node(NodeType.PERSON, 'id', person.id), NodeType.LABEL, RelationshipType.IS);
 
-    return labels;
+	match.map((rawLabel: any) => {
+		labels.push(new Label(rawLabel));
+	});
+
+	return labels;
 }
 
-export async function getPersonsByLabel(label: Label): Promise<Person[]>{
-    const persons: Person[] = [];
+export async function getPersonsByLabel(label: Label): Promise<Person[]> {
+	const persons: Person[] = [];
 
-    const match = await getRelationshipsToNode(new Node(NodeType.LABEL, 'name', label.name), NodeType.PERSON, RelationshipType.IS, RelationshipDirection.COMING);
+	const match = await getRelationshipsToNode(
+		new Node(NodeType.LABEL, 'name', label.name),
+		NodeType.PERSON,
+		RelationshipType.IS,
+		RelationshipDirection.COMING
+	);
 
-    match.map((rawPerson: any) => {
-        persons.push(new Person(rawPerson));
-    })
+	match.map((rawPerson: any) => {
+		persons.push(new Person(rawPerson));
+	});
 
-    return persons;
+	return persons;
 }

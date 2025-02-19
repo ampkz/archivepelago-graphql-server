@@ -10,287 +10,314 @@ import { NodeType } from '../../../src/_helpers/nodes';
 dotenv.config();
 
 describe(`CRUD Tests`, () => {
-    beforeAll(async () => {
-        await initializeDBs();
-    });
+	beforeAll(async () => {
+		await initializeDBs();
+	});
 
-    afterAll(async () => {
-        await destroyTestingDBs();
-    });
+	afterAll(async () => {
+		await destroyTestingDBs();
+	});
 
-    beforeEach(() => {
-        jest.restoreAllMocks();
-    })
-    
-    it(`should create a new node`, async () => {
-        const email: string = faker.internet.email();
-        const node: object | undefined = await createNode(NodeType.USER, ['email: $email'], { email }, (process.env.USERS_DB as string));
-        expect(node).toEqual({ email });
-    });
+	beforeEach(() => {
+		jest.restoreAllMocks();
+	});
 
-    it(`should create a new node in the default database`, async () => {
-        const email: string = faker.internet.email();
-        const node: object | undefined = await createNode(NodeType.USER, ['email: $email'], { email });
-        expect(node).toEqual({ email });
-    });
+	it(`should create a new node`, async () => {
+		const email: string = faker.internet.email();
+		const node: object | undefined = await createNode(NodeType.USER, ['email: $email'], { email }, process.env.USERS_DB as string);
+		expect(node).toEqual({ email });
+	});
 
-    it(`should get a node in the default database`, async () => {
-        const email: string = faker.internet.email();
-        const node: object | undefined = await createNode(NodeType.USER, ['email: $email'], { email });
-        const matchedNode: any | undefined = await getNode(NodeType.USER, 'email: $email', { email });
-        expect(matchedNode).toEqual(node);
-    });
+	it(`should create a new node in the default database`, async () => {
+		const email: string = faker.internet.email();
+		const node: object | undefined = await createNode(NodeType.USER, ['email: $email'], { email });
+		expect(node).toEqual({ email });
+	});
 
-    it(`should delete a node in the default database`, async () => {
-        const email: string = faker.internet.email();
-        const node: object | undefined = await createNode(NodeType.USER, ['email: $email'], { email });
-        const matchedNode: any | undefined = await deleteNode(NodeType.USER, 'email: $email', { email });
-        expect(matchedNode).toEqual(node);
-    });
+	it(`should get a node in the default database`, async () => {
+		const email: string = faker.internet.email();
+		const node: object | undefined = await createNode(NodeType.USER, ['email: $email'], { email });
+		const matchedNode: any | undefined = await getNode(NodeType.USER, 'email: $email', { email });
+		expect(matchedNode).toEqual(node);
+	});
 
-    it(`should throw an error if trying to create a user with an existing email`, async () => {
-        const email: string = faker.internet.email();
-    
-        await createNode(NodeType.USER, ['email: $email'], { email }, (process.env.USERS_DB as string));
+	it(`should delete a node in the default database`, async () => {
+		const email: string = faker.internet.email();
+		const node: object | undefined = await createNode(NodeType.USER, ['email: $email'], { email });
+		const matchedNode: any | undefined = await deleteNode(NodeType.USER, 'email: $email', { email });
+		expect(matchedNode).toEqual(node);
+	});
 
-        await expect(createNode(NodeType.USER, ['email: $email'], { email }, (process.env.USERS_DB as string))).rejects.toThrow(CRUDErrors.CANNOT_CREATE_NODE);
+	it(`should throw an error if trying to create a user with an existing email`, async () => {
+		const email: string = faker.internet.email();
 
-    });
+		await createNode(NodeType.USER, ['email: $email'], { email }, process.env.USERS_DB as string);
 
-    it(`should throw an error if the query was successful but still didn't create a node`, async () => {
-        const driverMock = {
-            session: jest.fn().mockReturnValue({
-                run: jest.fn().mockResolvedValueOnce({summary: {counters: { _stats: { nodesCreated: 0 }}}}),
-                close: jest.fn(),
-            } as unknown as Session),
-            close: jest.fn(),
-            getServerInfo: jest.fn()
-        } as unknown as Driver;
-        
-        const driverSpy = jest.spyOn(neo4j, "driver");
-        driverSpy.mockReturnValueOnce(driverMock);
+		await expect(createNode(NodeType.USER, ['email: $email'], { email }, process.env.USERS_DB as string)).rejects.toThrow(
+			CRUDErrors.CANNOT_CREATE_NODE
+		);
+	});
 
-        await expect(createNode(NodeType.USER, ['email: $email'], { email: faker.internet.email() }, (process.env.USERS_DB as string))).rejects.toThrow(CRUDErrors.CANNOT_CREATE_NODE);
-    });
+	it(`should throw an error if the query was successful but still didn't create a node`, async () => {
+		const driverMock = {
+			session: jest.fn().mockReturnValue({
+				run: jest.fn().mockResolvedValueOnce({ summary: { counters: { _stats: { nodesCreated: 0 } } } }),
+				close: jest.fn(),
+			} as unknown as Session),
+			close: jest.fn(),
+			getServerInfo: jest.fn(),
+		} as unknown as Driver;
 
-    it(`should return a created node`, async () => {
-        const email: string = faker.internet.email();
-        const node: object | undefined = await createNode(NodeType.USER, ['email: $email'], { email }, (process.env.USERS_DB as string));
-        
-        const matchedNode: any | undefined = await getNode(NodeType.USER, 'email: $email', { email }, (process.env.USERS_DB as string));
-        
-        expect(matchedNode).toEqual(node);
-    });
+		const driverSpy = jest.spyOn(neo4j, 'driver');
+		driverSpy.mockReturnValueOnce(driverMock);
 
-    it(`should throw an error if there was an issue with the query`, async () => {
-        const driverMock = {
-            session: jest.fn().mockReturnValue({
-                run: jest.fn().mockRejectedValue(new Neo4jError('','','','')),
-                close: jest.fn(),
-            } as unknown as Session),
-            close: jest.fn(),
-            getServerInfo: jest.fn()
-        } as unknown as Driver;
+		await expect(createNode(NodeType.USER, ['email: $email'], { email: faker.internet.email() }, process.env.USERS_DB as string)).rejects.toThrow(
+			CRUDErrors.CANNOT_CREATE_NODE
+		);
+	});
 
-        const driverSpy = jest.spyOn(neo4j, "driver");
-        driverSpy.mockReturnValueOnce(driverMock);
+	it(`should return a created node`, async () => {
+		const email: string = faker.internet.email();
+		const node: object | undefined = await createNode(NodeType.USER, ['email: $email'], { email }, process.env.USERS_DB as string);
 
-        await expect(getNode(NodeType.USER, 'email: $email', { email: faker.internet.email() }, (process.env.USERS_DB as string))).rejects.toThrow(CRUDErrors.CANNOT_MATCH_NODE);
-    });
+		const matchedNode: any | undefined = await getNode(NodeType.USER, 'email: $email', { email }, process.env.USERS_DB as string);
 
-    it(`should delete an existing node`, async () => {
-        const email: string = faker.internet.email();
-        const node: object | undefined = await createNode(NodeType.USER, ['email: $email'], { email }, (process.env.USERS_DB as string));
-        
-        const deletedNode: any | undefined = await deleteNode(NodeType.USER, 'email: $email', { email }, (process.env.USERS_DB as string));
+		expect(matchedNode).toEqual(node);
+	});
 
-        expect(deletedNode).toEqual(node);
-    });
+	it(`should throw an error if there was an issue with the query`, async () => {
+		const driverMock = {
+			session: jest.fn().mockReturnValue({
+				run: jest.fn().mockRejectedValue(new Neo4jError('', '', '', '')),
+				close: jest.fn(),
+			} as unknown as Session),
+			close: jest.fn(),
+			getServerInfo: jest.fn(),
+		} as unknown as Driver;
 
-    it(`should throw an error if there was an issue deleting the node`, async () => {
-        const mockRecord = {
-            get: (key: any) => {
-              if (key === 'id') {
-                return { low: 1, high: 0 }; // Neo4j integer
-              }
-              if (key === 'name') {
-                return 'Test Node';
-              }
-              if (key === 'properties') {
-                return { name: 'Test Node' };
-              }
-              return {properties: {}};
-            },
-            toObject: () => ({
-              id: { low: 1, high: 0 },
-              name: 'Test Node',
-            }),
-          } as unknown as Record;
+		const driverSpy = jest.spyOn(neo4j, 'driver');
+		driverSpy.mockReturnValueOnce(driverMock);
 
-          const mockResult = {
-            records: [mockRecord]
-          }
-        
-        const driverMock = {
-            session: jest.fn().mockReturnValue({
-                run: jest.fn().mockResolvedValueOnce(mockResult)
-                    .mockResolvedValueOnce({summary: { counters: { _stats: { nodesDeleted: 0 }}}}),
-                close: jest.fn(),
-            } as unknown as Session),
-            close: jest.fn(),
-            getServerInfo: jest.fn()
-        } as unknown as Driver;
+		await expect(getNode(NodeType.USER, 'email: $email', { email: faker.internet.email() }, process.env.USERS_DB as string)).rejects.toThrow(
+			CRUDErrors.CANNOT_MATCH_NODE
+		);
+	});
 
-        const driverSpy = jest.spyOn(neo4j, "driver");
-        driverSpy.mockReturnValueOnce(driverMock);
+	it(`should delete an existing node`, async () => {
+		const email: string = faker.internet.email();
+		const node: object | undefined = await createNode(NodeType.USER, ['email: $email'], { email }, process.env.USERS_DB as string);
 
-        await expect(deleteNode(NodeType.USER, 'email: $email', { email: faker.internet.email() }, (process.env.USERS_DB as string))).rejects.toThrow(CRUDErrors.CANNOT_DELETE_NODE);
-    });
+		const deletedNode: any | undefined = await deleteNode(NodeType.USER, 'email: $email', { email }, process.env.USERS_DB as string);
 
-    it(`should throw an error if there was an issue with the database in deleting the node`, async () => {
-        const mockRecord = {
-            get: (key: any) => {
-              if (key === 'id') {
-                return { low: 1, high: 0 }; // Neo4j integer
-              }
-              if (key === 'name') {
-                return 'Test Node';
-              }
-              if (key === 'properties') {
-                return { name: 'Test Node' };
-              }
-              return {properties: {}};
-            },
-            toObject: () => ({
-              id: { low: 1, high: 0 },
-              name: 'Test Node',
-            }),
-          } as unknown as Record;
+		expect(deletedNode).toEqual(node);
+	});
 
-          const mockResult = {
-            records: [mockRecord]
-          }
-        
-        const driverMock = {
-            session: jest.fn().mockReturnValue({
-                run: jest.fn().mockResolvedValueOnce(mockResult)
-                    .mockRejectedValueOnce(new Neo4jError('','','','')),
-                close: jest.fn(),
-            } as unknown as Session),
-            close: jest.fn(),
-            getServerInfo: jest.fn()
-        } as unknown as Driver;
+	it(`should throw an error if there was an issue deleting the node`, async () => {
+		const mockRecord = {
+			get: (key: any) => {
+				if (key === 'id') {
+					return { low: 1, high: 0 }; // Neo4j integer
+				}
+				if (key === 'name') {
+					return 'Test Node';
+				}
+				if (key === 'properties') {
+					return { name: 'Test Node' };
+				}
+				return { properties: {} };
+			},
+			toObject: () => ({
+				id: { low: 1, high: 0 },
+				name: 'Test Node',
+			}),
+		} as unknown as Record;
 
-        const driverSpy = jest.spyOn(neo4j, "driver");
-        driverSpy.mockReturnValueOnce(driverMock);
+		const mockResult = {
+			records: [mockRecord],
+		};
 
-        await expect(deleteNode(NodeType.USER, 'email: $email', { email: faker.internet.email() }, (process.env.USERS_DB as string))).rejects.toThrow(CRUDErrors.CANNOT_DELETE_NODE);
-    });
+		const driverMock = {
+			session: jest.fn().mockReturnValue({
+				run: jest
+					.fn()
+					.mockResolvedValueOnce(mockResult)
+					.mockResolvedValueOnce({ summary: { counters: { _stats: { nodesDeleted: 0 } } } }),
+				close: jest.fn(),
+			} as unknown as Session),
+			close: jest.fn(),
+			getServerInfo: jest.fn(),
+		} as unknown as Driver;
 
-    it(`should update a created node`, async () => {
-        const email: string = faker.internet.email(),
-            firstName: string = faker.person.firstName(),
-            updatedFirstName: string = faker.person.firstName();
+		const driverSpy = jest.spyOn(neo4j, 'driver');
+		driverSpy.mockReturnValueOnce(driverMock);
 
-        await createNode(NodeType.USER, ['email: $email', 'firstName: $firstName'], { email, firstName }, (process.env.USERS_DB as string));
-        
-        const updatedNode: any | undefined = await updateNode(NodeType.USER, 'u', 'email', ['u.firstName = $firstName'], { email, firstName: updatedFirstName}, (process.env.USERS_DB as string));
-        
-        expect(updatedNode).toEqual({ email, firstName: updatedFirstName });
-    });
+		await expect(deleteNode(NodeType.USER, 'email: $email', { email: faker.internet.email() }, process.env.USERS_DB as string)).rejects.toThrow(
+			CRUDErrors.CANNOT_DELETE_NODE
+		);
+	});
 
-    it(`should update a created node on default database`, async () => {
-        const email: string = faker.internet.email(),
-            firstName: string = faker.person.firstName(),
-            updatedFirstName: string = faker.person.firstName();
+	it(`should throw an error if there was an issue with the database in deleting the node`, async () => {
+		const mockRecord = {
+			get: (key: any) => {
+				if (key === 'id') {
+					return { low: 1, high: 0 }; // Neo4j integer
+				}
+				if (key === 'name') {
+					return 'Test Node';
+				}
+				if (key === 'properties') {
+					return { name: 'Test Node' };
+				}
+				return { properties: {} };
+			},
+			toObject: () => ({
+				id: { low: 1, high: 0 },
+				name: 'Test Node',
+			}),
+		} as unknown as Record;
 
-        await createNode(NodeType.USER, ['email: $email', 'firstName: $firstName'], { email, firstName });
-        
-        const updatedNode: any | undefined = await updateNode(NodeType.USER, 'u', 'email', ['u.firstName = $firstName'], { email, firstName: updatedFirstName});
-        
-        expect(updatedNode).toEqual({ email, firstName: updatedFirstName });
-    });
+		const mockResult = {
+			records: [mockRecord],
+		};
 
-    it(`should return undefined if no node was updated`, async () => {
-        const email: string = faker.internet.email(),
-            updatedFirstName: string = faker.person.firstName();
+		const driverMock = {
+			session: jest.fn().mockReturnValue({
+				run: jest
+					.fn()
+					.mockResolvedValueOnce(mockResult)
+					.mockRejectedValueOnce(new Neo4jError('', '', '', '')),
+				close: jest.fn(),
+			} as unknown as Session),
+			close: jest.fn(),
+			getServerInfo: jest.fn(),
+		} as unknown as Driver;
 
-        const updatedNode: any | undefined = await updateNode(NodeType.USER, 'u', 'email', ['u.firstName = $firstName'], { email, firstName: updatedFirstName});
-        
-        expect(updatedNode).toBeUndefined();
-    });
+		const driverSpy = jest.spyOn(neo4j, 'driver');
+		driverSpy.mockReturnValueOnce(driverMock);
 
-    it(`should throw an error if there was an issue with the database in updating the node`, async () => {
-        const driverMock = {
-            session: jest.fn().mockReturnValue({
-                run: jest.fn().mockRejectedValueOnce(new Neo4jError('','','','')),
-                close: jest.fn(),
-            } as unknown as Session),
-            close: jest.fn(),
-            getServerInfo: jest.fn()
-        } as unknown as Driver;
+		await expect(deleteNode(NodeType.USER, 'email: $email', { email: faker.internet.email() }, process.env.USERS_DB as string)).rejects.toThrow(
+			CRUDErrors.CANNOT_DELETE_NODE
+		);
+	});
 
-        const driverSpy = jest.spyOn(neo4j, "driver");
-        driverSpy.mockReturnValueOnce(driverMock);
+	it(`should update a created node`, async () => {
+		const email: string = faker.internet.email(),
+			firstName: string = faker.person.firstName(),
+			updatedFirstName: string = faker.person.firstName();
 
-        const email: string = faker.internet.email(),
-        updatedFirstName: string = faker.person.firstName();
+		await createNode(NodeType.USER, ['email: $email', 'firstName: $firstName'], { email, firstName }, process.env.USERS_DB as string);
 
-        await expect(updateNode(NodeType.USER, 'u', 'email', ['u.firstName = $firstName'], { email, firstName: updatedFirstName})).rejects.toThrow(CRUDErrors.CANNOT_UPDATE_NODE);
-    });
+		const updatedNode: any | undefined = await updateNode(
+			NodeType.USER,
+			'u',
+			'email',
+			['u.firstName = $firstName'],
+			{ email, firstName: updatedFirstName },
+			process.env.USERS_DB as string
+		);
 
-    it(`should get a list of created nodes`, async () => {
-        const label:Label = new Label({name: faker.word.adjective(), type: LabelType.PROFESSION});
-        const label2:Label = new Label({name: faker.word.adjective(), type: LabelType.PROFESSION});
-        const label3:Label = new Label({name: faker.word.adjective(), type: LabelType.PROFESSION});
+		expect(updatedNode).toEqual({ email, firstName: updatedFirstName });
+	});
 
-        await createNode(NodeType.LABEL, ['name: $name', 'type: $type'], label);
-        await createNode(NodeType.LABEL, ['name: $name', 'type: $type'], label2);
-        await createNode(NodeType.LABEL, ['name: $name', 'type: $type'], label3);
+	it(`should update a created node on default database`, async () => {
+		const email: string = faker.internet.email(),
+			firstName: string = faker.person.firstName(),
+			updatedFirstName: string = faker.person.firstName();
 
-        const labels: any[] = await getNodes('Label');
+		await createNode(NodeType.USER, ['email: $email', 'firstName: $firstName'], { email, firstName });
 
-        expect(labels).toContainEqual(label);
-        expect(labels).toContainEqual(label2);
-        expect(labels).toContainEqual(label3);
-    });
+		const updatedNode: any | undefined = await updateNode(NodeType.USER, 'u', 'email', ['u.firstName = $firstName'], {
+			email,
+			firstName: updatedFirstName,
+		});
 
-    it(`should delete a property on a created node`, async () => {
-        const email: string = faker.internet.email(),
-            firstName: string = faker.person.firstName();
+		expect(updatedNode).toEqual({ email, firstName: updatedFirstName });
+	});
 
-        await createNode(NodeType.USER, ['email: $email', 'firstName: $firstName'], { email, firstName });
-        
-        const updatedNode: any | undefined = await removeProperties(NodeType.USER, 'u', 'email', ['u.firstName'], { email });
-        
-        expect(updatedNode).toEqual({ email });
-        expect(updatedNode.firstName).toBeUndefined();
-    });
+	it(`should return undefined if no node was updated`, async () => {
+		const email: string = faker.internet.email(),
+			updatedFirstName: string = faker.person.firstName();
 
-    it(`should throw an error if there was an issue with the database in removing properties from a node`, async () => {
-        const driverMock = {
-            session: jest.fn().mockReturnValue({
-                run: jest.fn().mockRejectedValueOnce(new Neo4jError('','','','')),
-                close: jest.fn(),
-            } as unknown as Session),
-            close: jest.fn(),
-            getServerInfo: jest.fn()
-        } as unknown as Driver;
+		const updatedNode: any | undefined = await updateNode(NodeType.USER, 'u', 'email', ['u.firstName = $firstName'], {
+			email,
+			firstName: updatedFirstName,
+		});
 
-        const driverSpy = jest.spyOn(neo4j, "driver");
-        driverSpy.mockReturnValueOnce(driverMock);
+		expect(updatedNode).toBeUndefined();
+	});
 
-        const email: string = faker.internet.email();
+	it(`should throw an error if there was an issue with the database in updating the node`, async () => {
+		const driverMock = {
+			session: jest.fn().mockReturnValue({
+				run: jest.fn().mockRejectedValueOnce(new Neo4jError('', '', '', '')),
+				close: jest.fn(),
+			} as unknown as Session),
+			close: jest.fn(),
+			getServerInfo: jest.fn(),
+		} as unknown as Driver;
 
-        await expect(removeProperties(NodeType.USER, 'u', 'email', ['u.firstName'], { email })).rejects.toThrow(CRUDErrors.CANNOT_UPDATE_NODE);
-    });
+		const driverSpy = jest.spyOn(neo4j, 'driver');
+		driverSpy.mockReturnValueOnce(driverMock);
 
-    it(`should return undefined if no node exists to remove properties`, async () => {
-        const email: string = faker.internet.email();
+		const email: string = faker.internet.email(),
+			updatedFirstName: string = faker.person.firstName();
 
-        const updatedNode: any | undefined = await removeProperties(NodeType.USER, 'u', 'email', ['u.firstName'], { email });
-        
-        expect(updatedNode).toBeUndefined();
-    });
-    
+		await expect(updateNode(NodeType.USER, 'u', 'email', ['u.firstName = $firstName'], { email, firstName: updatedFirstName })).rejects.toThrow(
+			CRUDErrors.CANNOT_UPDATE_NODE
+		);
+	});
+
+	it(`should get a list of created nodes`, async () => {
+		const label: Label = new Label({ name: faker.word.adjective(), type: LabelType.PROFESSION });
+		const label2: Label = new Label({ name: faker.word.adjective(), type: LabelType.PROFESSION });
+		const label3: Label = new Label({ name: faker.word.adjective(), type: LabelType.PROFESSION });
+
+		await createNode(NodeType.LABEL, ['name: $name', 'type: $type'], label);
+		await createNode(NodeType.LABEL, ['name: $name', 'type: $type'], label2);
+		await createNode(NodeType.LABEL, ['name: $name', 'type: $type'], label3);
+
+		const labels: any[] = await getNodes('Label');
+
+		expect(labels).toContainEqual(label);
+		expect(labels).toContainEqual(label2);
+		expect(labels).toContainEqual(label3);
+	});
+
+	it(`should delete a property on a created node`, async () => {
+		const email: string = faker.internet.email(),
+			firstName: string = faker.person.firstName();
+
+		await createNode(NodeType.USER, ['email: $email', 'firstName: $firstName'], { email, firstName });
+
+		const updatedNode: any | undefined = await removeProperties(NodeType.USER, 'u', 'email', ['u.firstName'], { email });
+
+		expect(updatedNode).toEqual({ email });
+		expect(updatedNode.firstName).toBeUndefined();
+	});
+
+	it(`should throw an error if there was an issue with the database in removing properties from a node`, async () => {
+		const driverMock = {
+			session: jest.fn().mockReturnValue({
+				run: jest.fn().mockRejectedValueOnce(new Neo4jError('', '', '', '')),
+				close: jest.fn(),
+			} as unknown as Session),
+			close: jest.fn(),
+			getServerInfo: jest.fn(),
+		} as unknown as Driver;
+
+		const driverSpy = jest.spyOn(neo4j, 'driver');
+		driverSpy.mockReturnValueOnce(driverMock);
+
+		const email: string = faker.internet.email();
+
+		await expect(removeProperties(NodeType.USER, 'u', 'email', ['u.firstName'], { email })).rejects.toThrow(CRUDErrors.CANNOT_UPDATE_NODE);
+	});
+
+	it(`should return undefined if no node exists to remove properties`, async () => {
+		const email: string = faker.internet.email();
+
+		const updatedNode: any | undefined = await removeProperties(NodeType.USER, 'u', 'email', ['u.firstName'], { email });
+
+		expect(updatedNode).toBeUndefined();
+	});
 });
