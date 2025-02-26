@@ -12,7 +12,7 @@
 		"init": "tsc && node ./build/server/utils/init-server.js",
 		"start": "tsc && NODE_ENV=production node ./build",
 		"dev": "tsc && NODE_ENV=development node ./build",
-		"test": "jest --runInBand --coverage"
+		"test": "jest --coverage"
 	},
 	"keywords": [],
 	"author": "Andrew M. Pankratz",
