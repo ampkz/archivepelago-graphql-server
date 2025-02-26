@@ -14,7 +14,7 @@ describe(`CRUD Label Tests`, () => {
 	// });
 
 	it(`should create a Label`, async () => {
-		const name: string = faker.word.adjective();
+		const name: string = (global as any).UniqueAdjIterator.next().value;
 
 		const label: Label = new Label({ name, type: LabelType.PROFESSION });
 
@@ -24,7 +24,7 @@ describe(`CRUD Label Tests`, () => {
 	});
 
 	it(`should get a created Label`, async () => {
-		const name: string = faker.word.adjective();
+		const name: string = (global as any).UniqueAdjIterator.next().value;
 
 		const label: Label = new Label({ name, type: LabelType.PROFESSION });
 
@@ -36,7 +36,7 @@ describe(`CRUD Label Tests`, () => {
 	});
 
 	it(`should throw an error if trying to create an existing label`, async () => {
-		const name: string = faker.word.adjective();
+		const name: string = (global as any).UniqueAdjIterator.next().value;
 
 		await createLabel({ name, type: LabelType.PROFESSION });
 
@@ -44,7 +44,7 @@ describe(`CRUD Label Tests`, () => {
 	});
 
 	it(`should delete a created Label`, async () => {
-		const name: string = faker.word.adjective();
+		const name: string = (global as any).UniqueAdjIterator.next().value;
 
 		const label: Label = new Label({ name, type: LabelType.PROFESSION });
 
@@ -56,19 +56,19 @@ describe(`CRUD Label Tests`, () => {
 	});
 
 	test(`getLabel should return undefined if no Label exists`, async () => {
-		const matchedLabel: Label | undefined = await getLabel(faker.word.adjective());
+		const matchedLabel: Label | undefined = await getLabel((global as any).UniqueAdjIterator.next().value);
 		expect(matchedLabel).toBeUndefined();
 	});
 
 	test(`deleteLabel should return undefined if no Label exists`, async () => {
-		const deletedLabel: Label | undefined = await deleteLabel(faker.word.adjective());
+		const deletedLabel: Label | undefined = await deleteLabel((global as any).UniqueAdjIterator.next().value);
 
 		expect(deletedLabel).toBeUndefined();
 	});
 
 	it(`should update a created label`, async () => {
-		const name: string = faker.word.adjective();
-		const updatedName: string = faker.word.adjective();
+		const name: string = (global as any).UniqueAdjIterator.next().value;
+		const updatedName: string = (global as any).UniqueAdjIterator.next().value;
 
 		await createLabel({ name, type: LabelType.PROFESSION });
 		const updatedLabel: Label | undefined = await updateLabel(name, { updatedName, updatedType: LabelType.SEXUALITY });
@@ -77,15 +77,17 @@ describe(`CRUD Label Tests`, () => {
 	});
 
 	test(`updateLabel should return undefined if no Label exists`, async () => {
-		const updatedLabel: Label | undefined = await updateLabel(faker.word.adjective(), { updatedName: faker.word.adjective() });
+		const updatedLabel: Label | undefined = await updateLabel((global as any).UniqueAdjIterator.next().value, {
+			updatedName: (global as any).UniqueAdjIterator.next().value,
+		});
 
 		expect(updatedLabel).toBeUndefined();
 	});
 
 	test(`getLabels should return a list of created labels`, async () => {
-		const label: Label = new Label({ name: faker.word.adjective(), type: LabelType.PROFESSION });
-		const label2: Label = new Label({ name: faker.word.adjective(), type: LabelType.PROFESSION });
-		const label3: Label = new Label({ name: faker.word.adjective(), type: LabelType.PROFESSION });
+		const label: Label = new Label({ name: (global as any).UniqueAdjIterator.next().value, type: LabelType.PROFESSION });
+		const label2: Label = new Label({ name: (global as any).UniqueAdjIterator.next().value, type: LabelType.PROFESSION });
+		const label3: Label = new Label({ name: (global as any).UniqueAdjIterator.next().value, type: LabelType.PROFESSION });
 
 		const createdLabel: Label | undefined = await createLabel(label);
 		const createdLabel2: Label | undefined = await createLabel(label2);

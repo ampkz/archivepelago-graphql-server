@@ -19,8 +19,8 @@ describe(`Person Labels Query Tests`, () => {
 		const getPersonSpy = jest.spyOn(crudPerson, 'getPerson');
 		getPersonSpy.mockResolvedValue(new Person({ id }));
 
-		const label: Label = new Label({ name: faker.word.adjective(), type: LabelType.PROFESSION });
-		const label2: Label = new Label({ name: faker.word.adjective(), type: LabelType.PROFESSION });
+		const label: Label = new Label({ name: (global as any).UniqueAdjIterator.next().value, type: LabelType.PROFESSION });
+		const label2: Label = new Label({ name: (global as any).UniqueAdjIterator.next().value, type: LabelType.PROFESSION });
 
 		const getLabelsByPersonSpy = jest.spyOn(personLabelRelationship, 'getLabelsByPerson');
 		getLabelsByPersonSpy.mockResolvedValue([label, label2]);

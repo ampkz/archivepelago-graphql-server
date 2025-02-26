@@ -26,7 +26,7 @@ describe(`createLabel Mutation Tests`, () => {
 
 		const variables = {
 			input: {
-				name: faker.word.adjective(),
+				name: (global as any).UniqueAdjIterator.next().value,
 				type: LabelType.PROFESSION,
 			},
 		};
@@ -37,7 +37,7 @@ describe(`createLabel Mutation Tests`, () => {
 	});
 
 	it(`should create a label as an admin`, async () => {
-		const name: string = faker.word.adjective();
+		const name: string = (global as any).UniqueAdjIterator.next().value;
 
 		const createLabelSpy = jest.spyOn(crudLabel, 'createLabel');
 		createLabelSpy.mockResolvedValue(new Label({ name, type: LabelType.PROFESSION }));
@@ -68,7 +68,7 @@ describe(`createLabel Mutation Tests`, () => {
 	});
 
 	it(`should create a label as a contributor`, async () => {
-		const name: string = faker.word.adjective();
+		const name: string = (global as any).UniqueAdjIterator.next().value;
 
 		const createLabelSpy = jest.spyOn(crudLabel, 'createLabel');
 		createLabelSpy.mockResolvedValue(new Label({ name, type: LabelType.PROFESSION }));
@@ -99,7 +99,7 @@ describe(`createLabel Mutation Tests`, () => {
 	});
 
 	it(`should throw an error if there was an issue with the server`, async () => {
-		const name: string = faker.word.adjective();
+		const name: string = (global as any).UniqueAdjIterator.next().value;
 
 		const createLabelSpy = jest.spyOn(crudLabel, 'createLabel');
 		createLabelSpy.mockRejectedValue(new InternalError(''));

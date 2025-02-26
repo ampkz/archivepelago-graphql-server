@@ -265,9 +265,9 @@ describe(`CRUD Tests`, () => {
 	});
 
 	it(`should get a list of created nodes`, async () => {
-		const label: Label = new Label({ name: faker.word.adjective(), type: LabelType.PROFESSION });
-		const label2: Label = new Label({ name: faker.word.adjective(), type: LabelType.PROFESSION });
-		const label3: Label = new Label({ name: faker.word.adjective(), type: LabelType.PROFESSION });
+		const label: Label = new Label({ name: (global as any).UniqueAdjIterator.next().value, type: LabelType.PROFESSION });
+		const label2: Label = new Label({ name: (global as any).UniqueAdjIterator.next().value, type: LabelType.PROFESSION });
+		const label3: Label = new Label({ name: (global as any).UniqueAdjIterator.next().value, type: LabelType.PROFESSION });
 
 		await createNode(NodeType.LABEL, ['name: $name', 'type: $type'], label);
 		await createNode(NodeType.LABEL, ['name: $name', 'type: $type'], label2);

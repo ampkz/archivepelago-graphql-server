@@ -8,6 +8,7 @@ const config: Config = {
 	verbose: false,
 	globalSetup: './jestGlobalConfigs/globalSetup.ts',
 	globalTeardown: './jestGlobalConfigs/globalTeardown.ts',
+	setupFiles: ['./jestGlobalConfigs/globalUniqueAdj.ts'],
 };
 
 export default config;

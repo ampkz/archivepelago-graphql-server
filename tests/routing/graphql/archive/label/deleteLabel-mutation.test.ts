@@ -25,7 +25,7 @@ describe(`deleteLabel Mutation Tests`, () => {
         `;
 
 		const variables = {
-			name: faker.word.adjective(),
+			name: (global as any).UniqueAdjIterator.next().value,
 		};
 
 		const { body } = await request(app).post('/graphql').send({ query, variables }).set('Accept', 'application/json');
@@ -34,7 +34,7 @@ describe(`deleteLabel Mutation Tests`, () => {
 	});
 
 	it(`should delete a label as an admin`, async () => {
-		const name: string = faker.word.adjective();
+		const name: string = (global as any).UniqueAdjIterator.next().value;
 
 		const deleteLabelSpy = jest.spyOn(crudLabel, 'deleteLabel');
 		deleteLabelSpy.mockResolvedValue(new Label({ name, type: LabelType.PROFESSION }));
@@ -63,7 +63,7 @@ describe(`deleteLabel Mutation Tests`, () => {
 	});
 
 	it(`should delete a label as a contributor`, async () => {
-		const name: string = faker.word.adjective();
+		const name: string = (global as any).UniqueAdjIterator.next().value;
 
 		const deleteLabelSpy = jest.spyOn(crudLabel, 'deleteLabel');
 		deleteLabelSpy.mockResolvedValue(new Label({ name, type: LabelType.PROFESSION }));
@@ -92,7 +92,7 @@ describe(`deleteLabel Mutation Tests`, () => {
 	});
 
 	it(`should throw an error if there was an issue with the server`, async () => {
-		const name: string = faker.word.adjective();
+		const name: string = (global as any).UniqueAdjIterator.next().value;
 
 		const deleteLabelSpy = jest.spyOn(crudLabel, 'deleteLabel');
 		deleteLabelSpy.mockRejectedValue(new InternalError(''));

@@ -30,7 +30,7 @@ describe(`createLabelRelationship Mutation Tests`, () => {
 
 		const variables = {
 			personID: faker.database.mongodbObjectId(),
-			labelName: faker.word.adjective(),
+			labelName: (global as any).UniqueAdjIterator.next().value,
 		};
 
 		const { body } = await request(app).post('/graphql').send({ query, variables }).set('Accept', 'application/json');
@@ -40,7 +40,7 @@ describe(`createLabelRelationship Mutation Tests`, () => {
 
 	it(`should create a label relationship with admin`, async () => {
 		const personID = faker.database.mongodbObjectId(),
-			labelName = faker.word.adjective();
+			labelName = (global as any).UniqueAdjIterator.next().value;
 
 		const person: Person = new Person({ id: personID, firstName: faker.person.firstName() });
 
@@ -74,7 +74,7 @@ describe(`createLabelRelationship Mutation Tests`, () => {
 
 	it(`should create a label relationship with contributor`, async () => {
 		const personID = faker.database.mongodbObjectId(),
-			labelName = faker.word.adjective();
+			labelName = (global as any).UniqueAdjIterator.next().value;
 
 		const person: Person = new Person({ id: personID, firstName: faker.person.firstName() });
 
@@ -108,7 +108,7 @@ describe(`createLabelRelationship Mutation Tests`, () => {
 
 	it(`should throw an error if there was an issue with the server`, async () => {
 		const personID = faker.database.mongodbObjectId(),
-			labelName = faker.word.adjective();
+			labelName = (global as any).UniqueAdjIterator.next().value;
 
 		const createPersonRelationshipSpy = jest.spyOn(personLabelRelationship, 'createPersonLabel');
 		createPersonRelationshipSpy.mockRejectedValue(new InternalError(''));
