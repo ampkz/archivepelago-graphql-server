@@ -1,15 +1,12 @@
 import { faker } from '@faker-js/faker';
 import startServer from '../../../../../src/server/server';
 import request from 'supertest';
-import dotenv from 'dotenv';
 import { signToken } from '../../../../../src/_helpers/auth-helpers';
 import * as personCorrespondence from '../../../../../src/db/archive/relationship/person-correspondence-relationship';
 import { InternalError } from '../../../../../src/_helpers/errors-helper';
 import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/errors';
 import { Auth } from '../../../../../src/auth/authorization';
 import { Correspondence, CorrespondenceType } from '../../../../../src/archive/correspondence';
-
-dotenv.config();
 
 describe(`removeReceived and removeSent Mutation Tests`, () => {
 	let app: any;

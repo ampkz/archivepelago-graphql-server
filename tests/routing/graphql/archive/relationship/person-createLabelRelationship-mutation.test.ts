@@ -1,15 +1,12 @@
 import { faker } from '@faker-js/faker';
 import startServer from '../../../../../src/server/server';
 import request from 'supertest';
-import dotenv from 'dotenv';
 import { signToken } from '../../../../../src/_helpers/auth-helpers';
 import * as personLabelRelationship from '../../../../../src/db/archive/relationship/person-label-relationship';
 import { InternalError } from '../../../../../src/_helpers/errors-helper';
 import { Person } from '../../../../../src/archive/person';
 import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/errors';
 import { Auth } from '../../../../../src/auth/authorization';
-
-dotenv.config();
 
 describe(`createLabelRelationship Mutation Tests`, () => {
 	let app: any;

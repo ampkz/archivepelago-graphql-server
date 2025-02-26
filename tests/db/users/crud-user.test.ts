@@ -1,21 +1,18 @@
-import dotenv from 'dotenv';
-import { destroyTestingDBs, initializeDBs } from '../../../src/db/utils/init-dbs';
+// import { destroyDBs, initializeDBs } from '../../../src/db/utils/init-dbs';
 import { faker } from '@faker-js/faker';
 import { User } from '../../../src/users/users';
 import { Auth } from '../../../src/auth/authorization';
 import { createUser, deleteUser, getUserByEmail, updateUser } from '../../../src/db/users/crud-user';
 import { Errors as CRUDErrors } from '../../../src/db/utils/crud';
 
-dotenv.config();
-
 describe(`User DB Tests`, () => {
-	beforeAll(async () => {
-		await initializeDBs();
-	});
+	// beforeAll(async () => {
+	// 	await initializeDBs();
+	// });
 
-	afterAll(async () => {
-		await destroyTestingDBs();
-	});
+	// afterAll(async () => {
+	// 	await destroyDBs();
+	// });
 
 	it(`should create a new user`, async () => {
 		const email = faker.internet.email(),

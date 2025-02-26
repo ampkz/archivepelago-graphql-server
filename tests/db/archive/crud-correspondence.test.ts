@@ -1,5 +1,4 @@
-import dotenv from 'dotenv';
-import { destroyTestingDBs, initializeDBs } from '../../../src/db/utils/init-dbs';
+// import { destroyDBs, initializeDBs } from '../../../src/db/utils/init-dbs';
 import { faker } from '@faker-js/faker';
 import { Correspondence, CorrespondenceType } from '../../../src/archive/correspondence';
 import {
@@ -10,16 +9,14 @@ import {
 	updateCorrespondence,
 } from '../../../src/db/archive/crud-correspondence';
 
-dotenv.config();
-
 describe(`CRUD Correspondence Tests`, () => {
-	beforeAll(async () => {
-		await initializeDBs();
-	});
+	// beforeAll(async () => {
+	// 	await initializeDBs();
+	// });
 
-	afterAll(async () => {
-		await destroyTestingDBs();
-	});
+	// afterAll(async () => {
+	// 	await destroyDBs();
+	// });
 
 	beforeEach(() => {
 		jest.restoreAllMocks();

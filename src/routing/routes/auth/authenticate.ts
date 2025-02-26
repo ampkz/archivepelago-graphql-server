@@ -28,7 +28,7 @@ export async function authenticate(req: Request, res: Response, next: NextFuncti
 		.cookie('jwt', signToken(user.email, user.auth, process.env.TOKEN_EXPIRATION), {
 			httpOnly: true,
 			maxAge: Number(process.env.COOKIE_EXPIRATION),
-			sameSite: true,
+			sameSite: 'strict',
 		})
 		.end();
 }

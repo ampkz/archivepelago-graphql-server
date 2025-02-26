@@ -11,7 +11,7 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
 		data = (err as CustomError).getData();
 	}
 
-	res.status(code).json({ message: err.message, data });
+	return res.status(code).json({ message: err.message, data });
 };
 
 export function error404(req: Request, res: Response, next: NextFunction) {

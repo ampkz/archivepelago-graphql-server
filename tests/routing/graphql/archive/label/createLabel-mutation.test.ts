@@ -1,6 +1,5 @@
 import request from 'supertest';
 import startServer from '../../../../../src/server/server';
-import dotenv from 'dotenv';
 import { faker } from '@faker-js/faker';
 import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/errors';
 import * as crudLabel from '../../../../../src/db/archive/crud-label';
@@ -8,8 +7,6 @@ import { signToken } from '../../../../../src/_helpers/auth-helpers';
 import { Auth } from '../../../../../src/auth/authorization';
 import { InternalError } from '../../../../../src/_helpers/errors-helper';
 import { Label, LabelType } from '../../../../../src/archive/label';
-
-dotenv.config();
 
 describe(`createLabel Mutation Tests`, () => {
 	let app: any;

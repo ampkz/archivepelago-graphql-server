@@ -1,6 +1,5 @@
 import request from 'supertest';
 import startServer from '../../../../../src/server/server';
-import dotenv from 'dotenv';
 import { faker } from '@faker-js/faker';
 import * as crudPerson from '../../../../../src/db/archive/crud-person';
 import { Person } from '../../../../../src/archive/person';
@@ -10,8 +9,6 @@ import * as personLabelRelationship from '../../../../../src/db/archive/relation
 import { Label, LabelType } from '../../../../../src/archive/label';
 import { Correspondence, CorrespondenceType } from '../../../../../src/archive/correspondence';
 import * as personCorrespondence from '../../../../../src/db/archive/relationship/person-correspondence-relationship';
-
-dotenv.config();
 
 describe(`Person Query Tests`, () => {
 	let app: any;

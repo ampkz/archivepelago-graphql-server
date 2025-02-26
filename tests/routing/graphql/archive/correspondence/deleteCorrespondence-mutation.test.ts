@@ -1,6 +1,5 @@
 import request from 'supertest';
 import startServer from '../../../../../src/server/server';
-import dotenv from 'dotenv';
 import { faker } from '@faker-js/faker';
 import * as crudCorrespondence from '../../../../../src/db/archive/crud-correspondence';
 import { InternalError } from '../../../../../src/_helpers/errors-helper';
@@ -8,8 +7,6 @@ import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/error
 import { Correspondence, CorrespondenceType } from '../../../../../src/archive/correspondence';
 import { signToken } from '../../../../../src/_helpers/auth-helpers';
 import { Auth } from '../../../../../src/auth/authorization';
-
-dotenv.config();
 
 describe(`Correspondence Mutation Tests`, () => {
 	let app: any;

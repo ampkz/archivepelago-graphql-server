@@ -4,8 +4,7 @@ import { PersonLabel } from '../../../../src/archive/relationship/relationship';
 import { createPerson } from '../../../../src/db/archive/crud-person';
 import { Label, LabelType } from '../../../../src/archive/label';
 import { createLabel } from '../../../../src/db/archive/crud-label';
-import { destroyTestingDBs, initializeDBs } from '../../../../src/db/utils/init-dbs';
-import dotenv from 'dotenv';
+// import { destroyDBs, initializeDBs } from '../../../../src/db/utils/init-dbs';
 
 import {
 	createPersonLabel,
@@ -14,16 +13,14 @@ import {
 	getPersonsByLabel,
 } from '../../../../src/db/archive/relationship/person-label-relationship';
 
-dotenv.config();
-
 describe(`Person-[:IS]->Label Tests`, () => {
-	beforeAll(async () => {
-		await initializeDBs();
-	});
+	// beforeAll(async () => {
+	// 	await initializeDBs();
+	// });
 
-	afterAll(async () => {
-		await destroyTestingDBs();
-	});
+	// afterAll(async () => {
+	// 	await destroyDBs();
+	// });
 
 	it(`should create a relationship between a person and label`, async () => {
 		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;

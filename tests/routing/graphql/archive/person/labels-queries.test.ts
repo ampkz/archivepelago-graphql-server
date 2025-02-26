@@ -1,13 +1,10 @@
 import request from 'supertest';
 import startServer from '../../../../../src/server/server';
-import dotenv from 'dotenv';
 import { faker } from '@faker-js/faker';
 import * as crudPerson from '../../../../../src/db/archive/crud-person';
 import * as personLabelRelationship from '../../../../../src/db/archive/relationship/person-label-relationship';
 import { Person } from '../../../../../src/archive/person';
 import { Label, LabelType } from '../../../../../src/archive/label';
-
-dotenv.config();
 
 describe(`Person Labels Query Tests`, () => {
 	let app: any;

@@ -39,7 +39,14 @@ async function startServer() {
 	});
 
 	await server.start();
-	app.use(cors<cors.CorsRequest>());
+	app.use(
+		cors<cors.CorsRequest>({
+			origin: 'http://localhost:3000',
+			methods: 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+			credentials: true,
+			allowedHeaders: `Content-Type, Authorization, X-Requested-With`,
+		})
+	);
 	app.use(cookieParser());
 	app.use(express.json());
 	app.use(express.urlencoded({ extended: true }));

@@ -1,9 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { signToken, verifyToken } from '../../src/_helpers/auth-helpers';
 import { Auth, AuthorizedUser } from '../../src/auth/authorization';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 describe(`Auth Helpers Tests`, () => {
 	it('should sign and verify a jwt token', () => {

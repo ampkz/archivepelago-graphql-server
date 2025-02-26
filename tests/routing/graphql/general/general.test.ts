@@ -1,8 +1,5 @@
 import request from 'supertest';
 import startServer from '../../../../src/server/server';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 describe(`General Graphql Tests`, () => {
 	let app: any;

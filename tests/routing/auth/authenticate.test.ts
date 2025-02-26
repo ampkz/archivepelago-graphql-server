@@ -4,11 +4,8 @@ import { authenticateUri } from '../../../src/routing/uriConfig';
 import { FieldError, RoutingErrors } from '../../../src/_helpers/errors-helper';
 import { faker } from '@faker-js/faker';
 import * as authenticateUser from '../../../src/db/users/authenticate-user';
-import dotenv from 'dotenv';
 import { User } from '../../../src/users/users';
 import { Auth } from '../../../src/auth/authorization';
-
-dotenv.config();
 
 describe(`Authenticate Route Tests`, () => {
 	let app: any;

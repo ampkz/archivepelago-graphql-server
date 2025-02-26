@@ -1,22 +1,19 @@
-import dotenv from 'dotenv';
 import { createNode, Errors as CRUDErrors, deleteNode, getNode, getNodes, removeProperties, updateNode } from '../../../src/db/utils/crud';
 import { faker } from '@faker-js/faker';
-import { destroyTestingDBs, initializeDBs } from '../../../src/db/utils/init-dbs';
+// import { destroyDBs, initializeDBs } from '../../../src/db/utils/init-dbs';
 import { Neo4jError, Record, Session } from 'neo4j-driver';
 import neo4j, { Driver } from 'neo4j-driver';
 import { Label, LabelType } from '../../../src/archive/label';
 import { NodeType } from '../../../src/_helpers/nodes';
 
-dotenv.config();
-
 describe(`CRUD Tests`, () => {
-	beforeAll(async () => {
-		await initializeDBs();
-	});
+	// beforeAll(async () => {
+	// 	await initializeDBs();
+	// });
 
-	afterAll(async () => {
-		await destroyTestingDBs();
-	});
+	// afterAll(async () => {
+	// 	await destroyDBs();
+	// });
 
 	beforeEach(() => {
 		jest.restoreAllMocks();

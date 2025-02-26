@@ -1,20 +1,17 @@
-import dotenv from 'dotenv';
-import { destroyTestingDBs, initializeDBs } from '../../../src/db/utils/init-dbs';
+// import { destroyDBs, initializeDBs } from '../../../src/db/utils/init-dbs';
 import { faker } from '@faker-js/faker';
 import { createLabel, deleteLabel, getLabel, getLabels, updateLabel } from '../../../src/db/archive/crud-label';
 import { Label, LabelType } from '../../../src/archive/label';
 import { Errors } from '../../../src/db/utils/crud';
 
-dotenv.config();
-
 describe(`CRUD Label Tests`, () => {
-	beforeAll(async () => {
-		await initializeDBs();
-	});
+	// beforeAll(async () => {
+	// 	await initializeDBs();
+	// });
 
-	afterAll(async () => {
-		await destroyTestingDBs();
-	});
+	// afterAll(async () => {
+	// 	await destroyDBs();
+	// });
 
 	it(`should create a Label`, async () => {
 		const name: string = faker.word.adjective();

@@ -6,20 +6,17 @@ import { createPerson, deletePerson } from '../../../../src/db/archive/crud-pers
 import { Label, LabelType } from '../../../../src/archive/label';
 import { createLabel } from '../../../../src/db/archive/crud-label';
 import { createRelationship, deleteRelationship, Errors, getRelationshipsToNode } from '../../../../src/db/utils/relationship/crud-relationship';
-import { destroyTestingDBs, initializeDBs } from '../../../../src/db/utils/init-dbs';
-import dotenv from 'dotenv';
+// import { destroyDBs, initializeDBs } from '../../../../src/db/utils/init-dbs';
 import neo4j, { Driver, Session } from 'neo4j-driver';
 
-dotenv.config();
-
 describe(`Relationship CRUD Tests`, () => {
-	beforeAll(async () => {
-		await initializeDBs();
-	});
+	// beforeAll(async () => {
+	// 	await initializeDBs();
+	// });
 
-	afterAll(async () => {
-		await destroyTestingDBs();
-	});
+	// afterAll(async () => {
+	// 	await destroyDBs();
+	// });
 
 	it(`should create a relationship`, async () => {
 		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;

@@ -70,7 +70,7 @@ export async function verifyDB(dbName: string): Promise<boolean> {
 	return match.records.length === 1;
 }
 
-export async function destroyTestingDBs(): Promise<void> {
+export async function destroyDBs(): Promise<void> {
 	const driver: Driver = await connect();
 	const session: Session = driver.session();
 	await session.run(`DROP DATABASE ${getSessionOptions(process.env.USERS_DB as string).database} IF EXISTS DESTROY DATA WAIT`);

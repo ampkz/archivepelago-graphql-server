@@ -1,6 +1,5 @@
 import request from 'supertest';
 import startServer from '../../../../../src/server/server';
-import dotenv from 'dotenv';
 import { faker } from '@faker-js/faker';
 import * as crudLabel from '../../../../../src/db/archive/crud-label';
 import { InternalError } from '../../../../../src/_helpers/errors-helper';
@@ -8,8 +7,6 @@ import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/error
 import { Label, LabelType } from '../../../../../src/archive/label';
 import { Person } from '../../../../../src/archive/person';
 import * as personLabelRelationship from '../../../../../src/db/archive/relationship/person-label-relationship';
-
-dotenv.config();
 
 describe(`Label Query Tests`, () => {
 	let app: any;

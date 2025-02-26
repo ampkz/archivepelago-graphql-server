@@ -3,13 +3,10 @@ import startServer from '../../../../src/server/server';
 import { Auth } from '../../../../src/auth/authorization';
 import request from 'supertest';
 import { Errors as GraphQLErrors } from '../../../../src/graphql/errors/errors';
-import dotenv from 'dotenv';
 import { signToken } from '../../../../src/_helpers/auth-helpers';
 import * as crudUser from '../../../../src/db/users/crud-user';
 import { User } from '../../../../src/users/users';
 import { InternalError } from '../../../../src/_helpers/errors-helper';
-
-dotenv.config();
 
 describe(`deleteUser Mutation Tests`, () => {
 	let app: any;

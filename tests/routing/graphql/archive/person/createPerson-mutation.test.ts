@@ -1,6 +1,5 @@
 import request from 'supertest';
 import startServer from '../../../../../src/server/server';
-import dotenv from 'dotenv';
 import { faker } from '@faker-js/faker';
 import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/errors';
 import * as crudPerson from '../../../../../src/db/archive/crud-person';
@@ -8,8 +7,6 @@ import { Person } from '../../../../../src/archive/person';
 import { signToken } from '../../../../../src/_helpers/auth-helpers';
 import { Auth } from '../../../../../src/auth/authorization';
 import { InternalError } from '../../../../../src/_helpers/errors-helper';
-
-dotenv.config();
 
 describe(`createPerson Mutation Tests`, () => {
 	let app: any;
