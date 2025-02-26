@@ -22,22 +22,29 @@ function fieldQ(field: string): Promise<string> {
 async function init() {
 	await initializeDBs();
 
-	const email = await fieldQ('email');
-	const firstName = await fieldQ('first name');
-	const secondName = await fieldQ('second/middle name (leave blank if none)');
-	const lastName = await fieldQ('last name');
+	if (process.env.NODE_ENV === 'production') {
+		const email = await fieldQ('email');
+		const firstName = await fieldQ('first name');
+		const secondName = await fieldQ('second/middle name (leave blank if none)');
+		const lastName = await fieldQ('last name');
 
-	const user: User = new User(email, Auth.ADMIN, firstName, lastName, secondName);
+		const user: User = new User(email, Auth.ADMIN, firstName, lastName, secondName);
 
-	try {
-		await createUser(user, email);
-	} catch (error) {
-		if (error instanceof ResourceExistsError && (error as ResourceExistsError).getData().info === UserErrors.USER_ALREADY_EXISTS) {
-			console.error(`user ${email} already exists`);
+		try {
+			await createUser(user, email);
+		} catch (error) {
+			if (error instanceof ResourceExistsError && (error as ResourceExistsError).getData().info === UserErrors.USER_ALREADY_EXISTS) {
+				console.error(`user ${email} already exists`);
+			}
 		}
+
+		rl.close();
+	} else {
+		const user: User = new User('admin@development', Auth.ADMIN, 'Development', 'User');
+		await createUser(user, user.email);
 	}
 
-	rl.close();
+	process.exit(0);
 }
 
 init();

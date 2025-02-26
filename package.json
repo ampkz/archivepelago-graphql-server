@@ -9,7 +9,8 @@
 	},
 	"scripts": {
 		"build": "tsc",
-		"init": "tsc && node ./build/server/utils/init-server.js",
+		"init-prod": "tsc && NODE_ENV=production node ./build/server/utils/init-server.js",
+		"init-dev": "tsc && NODE_ENV=development node ./build/server/utils/init-server.js",
 		"start": "tsc && NODE_ENV=production node ./build",
 		"dev": "tsc && NODE_ENV=development node ./build",
 		"test": "jest --coverage"
