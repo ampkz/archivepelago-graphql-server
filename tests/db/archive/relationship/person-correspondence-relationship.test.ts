@@ -1,4 +1,3 @@
-// import { destroyDBs, initializeDBs } from '../../../../src/db/utils/init-dbs';
 import { faker } from '@faker-js/faker';
 import { CorrespondenceType } from '../../../../src/archive/correspondence';
 import { createCorrespondence } from '../../../../src/db/archive/crud-correspondence';
@@ -12,14 +11,6 @@ import {
 } from '../../../../src/db/archive/relationship/person-correspondence-relationship';
 
 describe(`CRUD Correspondence Tests`, () => {
-	// beforeAll(async () => {
-	// 	await initializeDBs();
-	// });
-
-	// afterAll(async () => {
-	// 	await destroyDBs();
-	// });
-
 	it(`should create a relationship between a created person and a created correspondence`, async () => {
 		const createdPerson = await createPerson({ id: '', firstName: faker.person.firstName() });
 		const createdCorrespondence = await createCorrespondence({ correspondenceID: '', correspondenceType: CorrespondenceType.LETTER });

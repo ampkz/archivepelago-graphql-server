@@ -1,20 +1,11 @@
 import { createNode, Errors as CRUDErrors, deleteNode, getNode, getNodes, removeProperties, updateNode } from '../../../src/db/utils/crud';
 import { faker } from '@faker-js/faker';
-// import { destroyDBs, initializeDBs } from '../../../src/db/utils/init-dbs';
 import { Neo4jError, Record, Session } from 'neo4j-driver';
 import neo4j, { Driver } from 'neo4j-driver';
 import { Label, LabelType } from '../../../src/archive/label';
 import { NodeType } from '../../../src/_helpers/nodes';
 
 describe(`CRUD Tests`, () => {
-	// beforeAll(async () => {
-	// 	await initializeDBs();
-	// });
-
-	// afterAll(async () => {
-	// 	await destroyDBs();
-	// });
-
 	beforeEach(() => {
 		jest.restoreAllMocks();
 	});
@@ -265,9 +256,9 @@ describe(`CRUD Tests`, () => {
 	});
 
 	it(`should get a list of created nodes`, async () => {
-		const label: Label = new Label({ name: (global as any).UniqueAdjIterator.next().value, type: LabelType.PROFESSION });
-		const label2: Label = new Label({ name: (global as any).UniqueAdjIterator.next().value, type: LabelType.PROFESSION });
-		const label3: Label = new Label({ name: (global as any).UniqueAdjIterator.next().value, type: LabelType.PROFESSION });
+		const label: Label = new Label({ name: `list_${(global as any).UniqueAdjIterator.next().value}`, type: LabelType.PROFESSION });
+		const label2: Label = new Label({ name: `list_${(global as any).UniqueAdjIterator.next().value}`, type: LabelType.PROFESSION });
+		const label3: Label = new Label({ name: `list_${(global as any).UniqueAdjIterator.next().value}`, type: LabelType.PROFESSION });
 
 		await createNode(NodeType.LABEL, ['name: $name', 'type: $type'], label);
 		await createNode(NodeType.LABEL, ['name: $name', 'type: $type'], label2);

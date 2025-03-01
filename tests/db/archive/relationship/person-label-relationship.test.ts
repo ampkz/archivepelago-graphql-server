@@ -4,7 +4,6 @@ import { PersonLabel } from '../../../../src/archive/relationship/relationship';
 import { createPerson } from '../../../../src/db/archive/crud-person';
 import { Label, LabelType } from '../../../../src/archive/label';
 import { createLabel } from '../../../../src/db/archive/crud-label';
-// import { destroyDBs, initializeDBs } from '../../../../src/db/utils/init-dbs';
 
 import {
 	createPersonLabel,
@@ -14,18 +13,10 @@ import {
 } from '../../../../src/db/archive/relationship/person-label-relationship';
 
 describe(`Person-[:IS]->Label Tests`, () => {
-	// beforeAll(async () => {
-	// 	await initializeDBs();
-	// });
-
-	// afterAll(async () => {
-	// 	await destroyDBs();
-	// });
-
 	it(`should create a relationship between a person and label`, async () => {
 		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
 		const createdLabel: Label = (await createLabel({
-			name: (global as any).UniqueAdjIterator.next().value,
+			name: `${(global as any).UniqueAdjIterator.next().value}`,
 			type: LabelType.PROFESSION,
 		})) as Label;
 
@@ -39,7 +30,7 @@ describe(`Person-[:IS]->Label Tests`, () => {
 	it(`should delete a relationship between a person and label`, async () => {
 		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
 		const createdLabel: Label = (await createLabel({
-			name: (global as any).UniqueAdjIterator.next().value,
+			name: `${(global as any).UniqueAdjIterator.next().value}`,
 			type: LabelType.NATIONALITY,
 		})) as Label;
 
@@ -54,7 +45,10 @@ describe(`Person-[:IS]->Label Tests`, () => {
 
 	test(`getLabelsByPerson should get a label`, async () => {
 		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
-		const createdLabel: Label = (await createLabel({ name: (global as any).UniqueAdjIterator.next().value, type: LabelType.SEXUALITY })) as Label;
+		const createdLabel: Label = (await createLabel({
+			name: `${(global as any).UniqueAdjIterator.next().value}`,
+			type: LabelType.SEXUALITY,
+		})) as Label;
 
 		const personLabel: PersonLabel = new PersonLabel(createdPerson.id, createdLabel.name);
 
@@ -68,15 +62,15 @@ describe(`Person-[:IS]->Label Tests`, () => {
 	test(`getLabelsByPerson should get a list of labels`, async () => {
 		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
 		const createdLabel: Label = (await createLabel({
-			name: (global as any).UniqueAdjIterator.next().value,
+			name: `${(global as any).UniqueAdjIterator.next().value}`,
 			type: LabelType.PROFESSION,
 		})) as Label;
 		const createdLabel2: Label = (await createLabel({
-			name: (global as any).UniqueAdjIterator.next().value,
+			name: `${(global as any).UniqueAdjIterator.next().value}`,
 			type: LabelType.PROFESSION,
 		})) as Label;
 		const createdLabel3: Label = (await createLabel({
-			name: (global as any).UniqueAdjIterator.next().value,
+			name: `${(global as any).UniqueAdjIterator.next().value}`,
 			type: LabelType.PROFESSION,
 		})) as Label;
 
@@ -100,7 +94,7 @@ describe(`Person-[:IS]->Label Tests`, () => {
 		const createdPerson2: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
 		const createdPerson3: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
 		const createdLabel: Label = (await createLabel({
-			name: (global as any).UniqueAdjIterator.next().value,
+			name: `${(global as any).UniqueAdjIterator.next().value}`,
 			type: LabelType.PROFESSION,
 		})) as Label;
 

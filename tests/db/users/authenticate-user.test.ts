@@ -1,4 +1,3 @@
-// import { destroyDBs, initializeDBs } from '../../../src/db/utils/init-dbs';
 import { checkPassword } from '../../../src/db/users/authenticate-user';
 import { faker } from '@faker-js/faker';
 import { User } from '../../../src/users/users';
@@ -6,14 +5,6 @@ import { Auth } from '../../../src/auth/authorization';
 import { createUser } from '../../../src/db/users/crud-user';
 
 describe(`Authenticate User Tests`, () => {
-	// beforeAll(async () => {
-	// 	await initializeDBs();
-	// });
-
-	// afterAll(async () => {
-	// 	await destroyDBs();
-	// });
-
 	it(`should return an undefined user if no user exists`, async () => {
 		const user = await checkPassword(faker.internet.email(), faker.internet.password());
 

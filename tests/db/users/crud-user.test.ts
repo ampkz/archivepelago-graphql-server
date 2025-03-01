@@ -1,4 +1,3 @@
-// import { destroyDBs, initializeDBs } from '../../../src/db/utils/init-dbs';
 import { faker } from '@faker-js/faker';
 import { User } from '../../../src/users/users';
 import { Auth } from '../../../src/auth/authorization';
@@ -6,14 +5,6 @@ import { createUser, deleteUser, getUserByEmail, updateUser } from '../../../src
 import { Errors as CRUDErrors } from '../../../src/db/utils/crud';
 
 describe(`User DB Tests`, () => {
-	// beforeAll(async () => {
-	// 	await initializeDBs();
-	// });
-
-	// afterAll(async () => {
-	// 	await destroyDBs();
-	// });
-
 	it(`should create a new user`, async () => {
 		const email = faker.internet.email(),
 			firstName = faker.person.firstName(),

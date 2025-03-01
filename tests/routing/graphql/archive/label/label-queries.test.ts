@@ -16,7 +16,7 @@ describe(`Label Query Tests`, () => {
 	});
 
 	it(`should return a created label`, async () => {
-		const name: string = (global as any).UniqueAdjIterator.next().value;
+		const name: string = `${(global as any).UniqueAdjIterator.next().value}`;
 
 		const getLabelSpy = jest.spyOn(crudLabel, 'getLabel');
 		getLabelSpy.mockResolvedValue(new Label({ name, type: LabelType.PROFESSION }));
@@ -34,7 +34,7 @@ describe(`Label Query Tests`, () => {
 	});
 
 	it(`should return undefined if no label exists`, async () => {
-		const name: string = (global as any).UniqueAdjIterator.next().value;
+		const name: string = `${(global as any).UniqueAdjIterator.next().value}`;
 
 		const getLabelSpy = jest.spyOn(crudLabel, 'getLabel');
 		getLabelSpy.mockResolvedValue(undefined);
@@ -53,7 +53,7 @@ describe(`Label Query Tests`, () => {
 	});
 
 	it(`should throw an error if there was an issue with the server`, async () => {
-		const name: string = (global as any).UniqueAdjIterator.next().value;
+		const name: string = `${(global as any).UniqueAdjIterator.next().value}`;
 
 		const getLabelSpy = jest.spyOn(crudLabel, 'getLabel');
 		getLabelSpy.mockRejectedValue(new InternalError(GraphQLErrors.SERVER_ERROR));
@@ -72,7 +72,7 @@ describe(`Label Query Tests`, () => {
 	});
 
 	it(`should return a list of associated persons of label`, async () => {
-		const name: string = (global as any).UniqueAdjIterator.next().value;
+		const name: string = `${(global as any).UniqueAdjIterator.next().value}`;
 
 		const person: Person = new Person({ id: faker.database.mongodbObjectId(), firstName: faker.person.firstName() });
 		const person2: Person = new Person({ id: faker.database.mongodbObjectId(), firstName: faker.person.firstName() });
@@ -101,9 +101,9 @@ describe(`Label Query Tests`, () => {
 	});
 
 	it(`should return a list of created labels`, async () => {
-		const label: Label = new Label({ name: (global as any).UniqueAdjIterator.next().value, type: LabelType.PROFESSION });
-		const label2: Label = new Label({ name: (global as any).UniqueAdjIterator.next().value, type: LabelType.PROFESSION });
-		const label3: Label = new Label({ name: (global as any).UniqueAdjIterator.next().value, type: LabelType.PROFESSION });
+		const label: Label = new Label({ name: `${(global as any).UniqueAdjIterator.next().value}`, type: LabelType.PROFESSION });
+		const label2: Label = new Label({ name: `${(global as any).UniqueAdjIterator.next().value}`, type: LabelType.PROFESSION });
+		const label3: Label = new Label({ name: `${(global as any).UniqueAdjIterator.next().value}`, type: LabelType.PROFESSION });
 
 		const getLabelsSpy = jest.spyOn(crudLabel, 'getLabels');
 		getLabelsSpy.mockResolvedValue([label, label2, label3]);

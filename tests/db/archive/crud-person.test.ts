@@ -1,17 +1,8 @@
-// import { destroyDBs, initializeDBs } from '../../../src/db/utils/init-dbs';
 import { faker } from '@faker-js/faker';
 import { createPerson, deletePerson, getPerson, getPersons, updatePerson } from '../../../src/db/archive/crud-person';
 import { Person, IUpdatedPerson } from '../../../src/archive/person';
 
 describe(`CRUD Person Tests`, () => {
-	// beforeAll(async () => {
-	// 	await initializeDBs();
-	// });
-
-	// afterAll(async () => {
-	// 	await destroyDBs();
-	// });
-
 	it(`should create a Person`, async () => {
 		const firstName: string = faker.person.firstName(),
 			lastName: string = faker.person.lastName(),

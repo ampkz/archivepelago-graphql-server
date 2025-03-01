@@ -10,14 +10,6 @@ import {
 } from '../../../src/db/archive/crud-correspondence';
 
 describe(`CRUD Correspondence Tests`, () => {
-	// beforeAll(async () => {
-	// 	await initializeDBs();
-	// });
-
-	// afterAll(async () => {
-	// 	await destroyDBs();
-	// });
-
 	beforeEach(() => {
 		jest.restoreAllMocks();
 	});
