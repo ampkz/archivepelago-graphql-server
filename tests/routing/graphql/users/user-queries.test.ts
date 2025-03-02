@@ -1,9 +1,10 @@
 import request from 'supertest';
 import startServer from '../../../../src/server/server';
-import { signToken } from '../../../../src/_helpers/auth-helpers';
+// import { signToken } from '../../../../src/_helpers/auth-helpers';
 import { faker } from '@faker-js/faker';
-import { Auth } from '../../../../src/auth/authorization';
+import { Auth, AuthorizedUser } from '../../../../src/auth/authorization';
 import * as crudUser from '../../../../src/db/users/crud-user';
+import * as sessions from '../../../../src/auth/session';
 import { Errors as GraphQLErrors } from '../../../../src/graphql/errors/errors';
 import { User } from '../../../../src/users/users';
 
@@ -12,6 +13,10 @@ describe(`User Query Tests`, () => {
 
 	beforeAll(async () => {
 		app = await startServer();
+	});
+
+	afterEach(() => {
+		jest.restoreAllMocks();
 	});
 
 	test('user query should throw an unauthorized error if not authenticated', async () => {
@@ -41,13 +46,21 @@ describe(`User Query Tests`, () => {
         }
       `;
 
-		const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
+		const validateSessionTokenSpy = jest.spyOn(sessions, 'validateSessionToken');
+		validateSessionTokenSpy.mockResolvedValueOnce({
+			session: { id: '', expiresAt: new Date(), userID: '' },
+			user: new AuthorizedUser(faker.internet.email(), Auth.CONTRIBUTOR, ''),
+		});
+
+		const token = sessions.generateSessionToken();
+
+		// const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`jwt=${jwtToken}`]);
+			.set('Cookie', [`token=${token}`]);
 
 		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.UNAUTHORIZED);
 	});
@@ -58,6 +71,14 @@ describe(`User Query Tests`, () => {
 
 		const getUserByEmailSpy = jest.spyOn(crudUser, 'getUserByEmail');
 		getUserByEmailSpy.mockResolvedValueOnce(user);
+
+		const validateSessionTokenSpy = jest.spyOn(sessions, 'validateSessionToken');
+		validateSessionTokenSpy.mockResolvedValueOnce({
+			session: { id: '', expiresAt: new Date(), userID: '' },
+			user: new AuthorizedUser(user.email, user.auth, ''),
+		});
+
+		const token = sessions.generateSessionToken();
 
 		const query = `
         query {
@@ -71,13 +92,13 @@ describe(`User Query Tests`, () => {
         }
       `;
 
-		const jwtToken = signToken(email, Auth.CONTRIBUTOR, '1d');
+		// const jwtToken = signToken(email, Auth.CONTRIBUTOR, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`jwt=${jwtToken}`]);
+			.set('Cookie', [`token=${token}`]);
 
 		const returnedUser = body.data.user;
 		expect(returnedUser.email).toEqual(user.email);
@@ -105,14 +126,21 @@ describe(`User Query Tests`, () => {
           }
         }
       `;
+		const validateSessionTokenSpy = jest.spyOn(sessions, 'validateSessionToken');
+		validateSessionTokenSpy.mockResolvedValueOnce({
+			session: { id: '', expiresAt: new Date(), userID: '' },
+			user: new AuthorizedUser(faker.internet.email(), Auth.ADMIN, ''),
+		});
 
-		const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
+		const token = sessions.generateSessionToken();
+
+		// const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`jwt=${jwtToken}`]);
+			.set('Cookie', [`token=${token}`]);
 
 		const returnedUser = body.data.user;
 		expect(returnedUser.email).toEqual(user.email);
@@ -136,13 +164,21 @@ describe(`User Query Tests`, () => {
       }
     `;
 
-		const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
+		const validateSessionTokenSpy = jest.spyOn(sessions, 'validateSessionToken');
+		validateSessionTokenSpy.mockResolvedValueOnce({
+			session: { id: '', expiresAt: new Date(), userID: '' },
+			user: new AuthorizedUser(faker.internet.email(), Auth.ADMIN, ''),
+		});
+
+		const token = sessions.generateSessionToken();
+
+		// const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`jwt=${jwtToken}`]);
+			.set('Cookie', [`token=${token}`]);
 
 		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.NOT_FOUND);
 	});

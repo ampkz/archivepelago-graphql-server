@@ -59,7 +59,7 @@ describe(`CRUD Label Tests`, () => {
 
 	it(`should update a created label`, async () => {
 		const name: string = `updated_${(global as any).UniqueAdjIterator.next().value}`;
-		const updatedName: string = `${(global as any).UniqueAdjIterator.next().value}`;
+		const updatedName: string = `updated_${(global as any).UniqueAdjIterator.next().value}`;
 
 		await createLabel({ name, type: LabelType.PROFESSION });
 		const updatedLabel: Label | undefined = await updateLabel(name, { updatedName, updatedType: LabelType.SEXUALITY });

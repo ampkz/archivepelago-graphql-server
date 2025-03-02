@@ -40,6 +40,7 @@ async function startServer() {
 
 	await server.start();
 
+	/* istanbul ignore next line */
 	app.use(
 		cors<cors.CorsRequest>({
 			origin: `${process.env.NODE_ENV === 'development' ? `http://localhost:3000` : ``}`,

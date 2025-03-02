@@ -1,11 +1,12 @@
 import { faker } from '@faker-js/faker';
 import startServer from '../../../../../src/server/server';
 import request from 'supertest';
-import { signToken } from '../../../../../src/_helpers/auth-helpers';
+// import { signToken } from '../../../../../src/_helpers/auth-helpers';
 import * as personCorrespondence from '../../../../../src/db/archive/relationship/person-correspondence-relationship';
+import * as sessions from '../../../../../src/auth/session';
 import { InternalError } from '../../../../../src/_helpers/errors-helper';
 import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/errors';
-import { Auth } from '../../../../../src/auth/authorization';
+import { Auth, AuthorizedUser } from '../../../../../src/auth/authorization';
 import { Correspondence, CorrespondenceType } from '../../../../../src/archive/correspondence';
 
 describe(`removeReceived and removeSent Mutation Tests`, () => {
@@ -80,13 +81,21 @@ describe(`removeReceived and removeSent Mutation Tests`, () => {
 			receivedID,
 		};
 
-		const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
+		const validateSessionTokenSpy = jest.spyOn(sessions, 'validateSessionToken');
+		validateSessionTokenSpy.mockResolvedValueOnce({
+			session: { id: '', expiresAt: new Date(), userID: '' },
+			user: new AuthorizedUser(faker.internet.email(), Auth.ADMIN, ''),
+		});
+
+		const token = sessions.generateSessionToken();
+
+		// const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query, variables })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`jwt=${jwtToken}`]);
+			.set('Cookie', [`token=${token}`]);
 
 		expect(body.data.removeReceived).toEqual(correspondence);
 	});
@@ -114,13 +123,21 @@ describe(`removeReceived and removeSent Mutation Tests`, () => {
 			sentID,
 		};
 
-		const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
+		const validateSessionTokenSpy = jest.spyOn(sessions, 'validateSessionToken');
+		validateSessionTokenSpy.mockResolvedValueOnce({
+			session: { id: '', expiresAt: new Date(), userID: '' },
+			user: new AuthorizedUser(faker.internet.email(), Auth.CONTRIBUTOR, ''),
+		});
+
+		const token = sessions.generateSessionToken();
+
+		// const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query, variables })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`jwt=${jwtToken}`]);
+			.set('Cookie', [`token=${token}`]);
 
 		expect(body.data.removeSent).toEqual(correspondence);
 	});
@@ -148,13 +165,21 @@ describe(`removeReceived and removeSent Mutation Tests`, () => {
 			receivedID,
 		};
 
-		const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
+		const validateSessionTokenSpy = jest.spyOn(sessions, 'validateSessionToken');
+		validateSessionTokenSpy.mockResolvedValueOnce({
+			session: { id: '', expiresAt: new Date(), userID: '' },
+			user: new AuthorizedUser(faker.internet.email(), Auth.ADMIN, ''),
+		});
+
+		const token = sessions.generateSessionToken();
+
+		// const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query, variables })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`jwt=${jwtToken}`]);
+			.set('Cookie', [`token=${token}`]);
 
 		expect(body.data.removeReceived).toEqual(correspondence);
 	});
@@ -182,13 +207,21 @@ describe(`removeReceived and removeSent Mutation Tests`, () => {
 			sentID,
 		};
 
-		const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
+		const validateSessionTokenSpy = jest.spyOn(sessions, 'validateSessionToken');
+		validateSessionTokenSpy.mockResolvedValueOnce({
+			session: { id: '', expiresAt: new Date(), userID: '' },
+			user: new AuthorizedUser(faker.internet.email(), Auth.CONTRIBUTOR, ''),
+		});
+
+		const token = sessions.generateSessionToken();
+
+		// const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query, variables })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`jwt=${jwtToken}`]);
+			.set('Cookie', [`token=${token}`]);
 
 		expect(body.data.removeSent).toEqual(correspondence);
 	});
@@ -214,13 +247,21 @@ describe(`removeReceived and removeSent Mutation Tests`, () => {
 			sentID,
 		};
 
-		const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
+		const validateSessionTokenSpy = jest.spyOn(sessions, 'validateSessionToken');
+		validateSessionTokenSpy.mockResolvedValueOnce({
+			session: { id: '', expiresAt: new Date(), userID: '' },
+			user: new AuthorizedUser(faker.internet.email(), Auth.ADMIN, ''),
+		});
+
+		const token = sessions.generateSessionToken();
+
+		// const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query, variables })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`jwt=${jwtToken}`]);
+			.set('Cookie', [`token=${token}`]);
 
 		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
 	});
@@ -246,13 +287,21 @@ describe(`removeReceived and removeSent Mutation Tests`, () => {
 			sentID,
 		};
 
-		const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
+		const validateSessionTokenSpy = jest.spyOn(sessions, 'validateSessionToken');
+		validateSessionTokenSpy.mockResolvedValueOnce({
+			session: { id: '', expiresAt: new Date(), userID: '' },
+			user: new AuthorizedUser(faker.internet.email(), Auth.ADMIN, ''),
+		});
+
+		const token = sessions.generateSessionToken();
+
+		// const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query, variables })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`jwt=${jwtToken}`]);
+			.set('Cookie', [`token=${token}`]);
 
 		expect(body.removeSent).toBeUndefined();
 	});
@@ -278,13 +327,21 @@ describe(`removeReceived and removeSent Mutation Tests`, () => {
 			receivedID,
 		};
 
-		const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
+		const validateSessionTokenSpy = jest.spyOn(sessions, 'validateSessionToken');
+		validateSessionTokenSpy.mockResolvedValueOnce({
+			session: { id: '', expiresAt: new Date(), userID: '' },
+			user: new AuthorizedUser(faker.internet.email(), Auth.ADMIN, ''),
+		});
+
+		const token = sessions.generateSessionToken();
+
+		// const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query, variables })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`jwt=${jwtToken}`]);
+			.set('Cookie', [`token=${token}`]);
 
 		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
 	});
@@ -310,13 +367,21 @@ describe(`removeReceived and removeSent Mutation Tests`, () => {
 			receivedID,
 		};
 
-		const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
+		const validateSessionTokenSpy = jest.spyOn(sessions, 'validateSessionToken');
+		validateSessionTokenSpy.mockResolvedValueOnce({
+			session: { id: '', expiresAt: new Date(), userID: '' },
+			user: new AuthorizedUser(faker.internet.email(), Auth.ADMIN, ''),
+		});
+
+		const token = sessions.generateSessionToken();
+
+		// const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query, variables })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`jwt=${jwtToken}`]);
+			.set('Cookie', [`token=${token}`]);
 
 		expect(body.removeReceived).toBeUndefined();
 	});

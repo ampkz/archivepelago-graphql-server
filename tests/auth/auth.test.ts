@@ -6,7 +6,7 @@ describe(`Authorization Tests`, () => {
 		const email: string = faker.internet.email(),
 			auth: Auth = Auth.ADMIN;
 
-		const authUser: AuthorizedUser = new AuthorizedUser(email, auth);
+		const authUser: AuthorizedUser = new AuthorizedUser(email, auth, '');
 
 		expect(authUser.auth).toEqual(auth);
 		expect(authUser.email).toEqual(email);
@@ -22,7 +22,7 @@ describe(`Authentication Tests`, () => {
 		const email: string = faker.internet.email(),
 			auth: Auth = Auth.ADMIN;
 
-		const authUser: AuthorizedUser = new AuthorizedUser(email, auth);
+		const authUser: AuthorizedUser = new AuthorizedUser(email, auth, '');
 		expect(isPermitted(authUser, Auth.ADMIN)).toBeTruthy();
 	});
 
@@ -30,7 +30,7 @@ describe(`Authentication Tests`, () => {
 		const email: string = faker.internet.email(),
 			auth: Auth = Auth.CONTRIBUTOR;
 
-		const authUser: AuthorizedUser = new AuthorizedUser(email, auth);
+		const authUser: AuthorizedUser = new AuthorizedUser(email, auth, '');
 		expect(isPermitted(authUser, Auth.ADMIN, Auth.CONTRIBUTOR)).toBeTruthy();
 	});
 
@@ -38,7 +38,7 @@ describe(`Authentication Tests`, () => {
 		const email: string = faker.internet.email(),
 			auth: Auth = Auth.ADMIN;
 
-		const authUser: AuthorizedUser = new AuthorizedUser(email, auth);
+		const authUser: AuthorizedUser = new AuthorizedUser(email, auth, '');
 		expect(isPermitted(authUser, Auth.ADMIN, Auth.CONTRIBUTOR)).toBeTruthy();
 	});
 
@@ -50,7 +50,7 @@ describe(`Authentication Tests`, () => {
 		const email: string = faker.internet.email(),
 			auth: Auth = Auth.ADMIN;
 
-		const authUser: AuthorizedUser = new AuthorizedUser(email, auth);
+		const authUser: AuthorizedUser = new AuthorizedUser(email, auth, '');
 		expect(permitSelf(authUser, email)).toBeTruthy();
 	});
 });
