@@ -9,7 +9,6 @@ import cookieParser from 'cookie-parser';
 import http from 'http';
 import cors from 'cors';
 import { AuthorizedUser } from '../auth/authorization';
-import { verifyToken } from '../_helpers/auth-helpers';
 import userType from '../graphql/typeDefs/userType';
 import userResolver from '../graphql/resolvers/userResolver';
 import personType from '../graphql/typeDefs/personType';
@@ -18,9 +17,10 @@ import labelType from '../graphql/typeDefs/labelType';
 import labelResolver from '../graphql/resolvers/labelResolver';
 import correspondenceType from '../graphql/typeDefs/correspondenceType';
 import correspondenceResolver from '../graphql/resolvers/correspondenceResolver';
+import { validateSessionToken } from '../auth/session';
 
 interface MyContext {
-	authorizedUser?: AuthorizedUser | undefined;
+	authorizedUser?: AuthorizedUser | null;
 }
 
 async function startServer() {
@@ -39,9 +39,10 @@ async function startServer() {
 	});
 
 	await server.start();
+
 	app.use(
 		cors<cors.CorsRequest>({
-			origin: 'http://localhost:3000',
+			origin: `${process.env.NODE_ENV === 'development' ? `http://localhost:3000` : ``}`,
 			methods: 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
 			credentials: true,
 			allowedHeaders: `Content-Type, Authorization, X-Requested-With`,
@@ -51,7 +52,15 @@ async function startServer() {
 	app.use(express.json());
 	app.use(express.urlencoded({ extended: true }));
 
-	app.use('/graphql', expressMiddleware(server, { context: async ({ req }) => ({ authorizedUser: verifyToken(req.cookies.jwt) }) }));
+	app.use(
+		'/graphql',
+		expressMiddleware(server, {
+			context: async ({ req }) => {
+				const session = await validateSessionToken(req.cookies.token);
+				return { authorizedUser: session.user };
+			},
+		})
+	);
 
 	app.use(authenticateRouter);
 

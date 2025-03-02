@@ -13,7 +13,7 @@ export function verifyToken(token: any): AuthorizedUser | undefined {
 
 	jwt.verify(token, SECRET_KEY, (err: any, decoded: any) => {
 		if (decoded) {
-			user = new AuthorizedUser(decoded.email, decoded.auth);
+			user = new AuthorizedUser(decoded.email, decoded.auth, '');
 		}
 	});
 

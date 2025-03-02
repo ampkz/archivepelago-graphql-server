@@ -3,7 +3,7 @@ import { FieldError, FieldErrors, RoutingErrors } from '../../../_helpers/errors
 import { User } from '../../../users/users';
 import { checkPassword } from '../../../db/users/authenticate-user';
 import { sendStatus401 } from '../../../middleware/statusCodes';
-import { signToken } from '../../../_helpers/auth-helpers';
+import { createSession, generateSessionToken } from '../../../auth/session';
 
 export async function authenticate(req: Request, res: Response, next: NextFunction): Promise<any> {
 	const { email, password } = req.body;
@@ -23,9 +23,13 @@ export async function authenticate(req: Request, res: Response, next: NextFuncti
 		return sendStatus401(res);
 	}
 
+	const token = await generateSessionToken();
+
+	await createSession(token, email);
+
 	return res
 		.status(204)
-		.cookie('jwt', signToken(user.email, user.auth, process.env.TOKEN_EXPIRATION), {
+		.cookie('token', token, {
 			httpOnly: true,
 			maxAge: Number(process.env.COOKIE_EXPIRATION),
 			sameSite: 'strict',
