@@ -2,6 +2,7 @@ import * as bcrypt from 'bcrypt';
 import { User, UpdatedUserI } from '../../users/users';
 import { createNode, deleteNode, getNode, updateNode } from '../utils/crud';
 import { NodeType } from '../../_helpers/nodes';
+import { invalidateAllSessions } from '../../auth/session';
 
 export enum Errors {
 	CANNOT_CREATE_USER = 'Cannot Create User',
@@ -42,6 +43,7 @@ export async function deleteUser(email: string): Promise<User | undefined> {
 
 	if (deletedUser) {
 		user = new User(deletedUser.email, deletedUser.auth, deletedUser.firstName, deletedUser.lastName, deletedUser.secondName);
+		await invalidateAllSessions(user.email);
 	}
 
 	return user;

@@ -3,6 +3,7 @@ import { User } from '../../../src/users/users';
 import { Auth } from '../../../src/auth/authorization';
 import { createUser, deleteUser, getUserByEmail, updateUser } from '../../../src/db/users/crud-user';
 import { Errors as CRUDErrors } from '../../../src/db/utils/crud';
+import { createSession, generateSessionToken, validateSessionToken } from '../../../src/auth/session';
 
 describe(`User DB Tests`, () => {
 	it(`should create a new user`, async () => {
@@ -60,6 +61,27 @@ describe(`User DB Tests`, () => {
 		const deletedUser: User | undefined = await deleteUser(email);
 
 		expect(deletedUser).toEqual(createdUser);
+	});
+
+	it(`should invalidate all sessions on user deletion`, async () => {
+		const email = faker.internet.email(),
+			firstName = faker.person.firstName(),
+			lastName = faker.person.lastName(),
+			secondName = faker.person.middleName();
+
+		const user: User = new User(email, Auth.CONTRIBUTOR, firstName, lastName, secondName);
+		const createdUser: User | undefined = await createUser(user, faker.internet.password());
+
+		const token = generateSessionToken();
+
+		await createSession(token, createdUser?.email);
+
+		await deleteUser(createdUser.email);
+
+		const svr = await validateSessionToken(token);
+
+		expect(svr.session).toBeNull();
+		expect(svr.user).toBeNull();
 	});
 
 	it(`should return undefined if no user was found to delete`, async () => {
