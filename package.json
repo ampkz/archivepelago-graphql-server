@@ -10,12 +10,12 @@
 	"scripts": {
 		"build": "tsc",
 		"init-prod": "tsc && NODE_ENV=production node ./build/server/utils/init-server.js",
-		"init-dev": "tsc && NODE_ENV=development node ./build/server/utils/init-server.js",
-		"destroy-dev": "tsc && NODE_ENV=development node ./build/server/utils/destroy-server.js",
 		"start": "tsc && NODE_ENV=production node ./build",
-		"dev": "tsc && NODE_ENV=development node ./build",
+		"init-dev": "NODE_ENV=development ts-node ./src/server/utils/init-server.ts",
+		"destroy-dev": "NODE_ENV=development ts-node ./src/server/utils/destroy-server.ts",
+		"dev": "NODE_ENV=development ts-node ./src",
 		"test": "jest --coverage",
-		"destroy-test": "tsc && NODE_ENV=test node ./build/server/utils/destroy-server.js"
+		"destroy-test": "NODE_ENV=test ts-node ./build/server/utils/destroy-server.ts"
 	},
 	"keywords": [],
 	"author": "Andrew M. Pankratz",
