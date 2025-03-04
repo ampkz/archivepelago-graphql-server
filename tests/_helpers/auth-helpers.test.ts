@@ -1,23 +1,27 @@
 import { faker } from '@faker-js/faker';
 import { signToken, verifyToken } from '../../src/_helpers/auth-helpers';
-import { Auth, AuthorizedUser } from '../../src/auth/authorization';
+import { Auth } from '../../src/auth/authorization';
+import { generateSessionToken } from '../../src/auth/session';
 
 describe(`Auth Helpers Tests`, () => {
 	it('should sign and verify a jwt token', () => {
 		const email: string = faker.internet.email(),
-			auth: Auth = Auth.ADMIN;
+			auth: Auth = Auth.ADMIN,
+			token = generateSessionToken();
 
-		const jwtToken = signToken(email, auth, '1d');
-		const authorizedUser = verifyToken(jwtToken);
+		const jwtToken = signToken(email, auth, token, '1d');
+		const { user, authToken } = verifyToken(jwtToken);
 
-		expect(authorizedUser).toBeDefined();
-		expect(authorizedUser?.auth).toEqual(auth);
-		expect(authorizedUser?.email).toEqual(email);
+		expect(user).toBeDefined();
+		expect(user?.auth).toEqual(auth);
+		expect(user?.email).toEqual(email);
+		expect(authToken).toEqual(token);
 	});
 
 	it('should return an undefined authorizedUser with invalid token', () => {
-		const authorizedUser: AuthorizedUser | undefined = verifyToken('invalid token');
+		const { user, authToken } = verifyToken('invalid token');
 
-		expect(authorizedUser).toBeUndefined();
+		expect(user).toBeUndefined();
+		expect(authToken).toBeUndefined();
 	});
 });

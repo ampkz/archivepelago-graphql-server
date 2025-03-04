@@ -4,6 +4,7 @@ import { User } from '../../../users/users';
 import { checkPassword } from '../../../db/users/authenticate-user';
 import { sendStatus401 } from '../../../middleware/statusCodes';
 import { createSession, generateSessionToken } from '../../../auth/session';
+import { signToken } from '../../../_helpers/auth-helpers';
 
 export async function authenticate(req: Request, res: Response, next: NextFunction): Promise<any> {
 	const { email, password } = req.body;
@@ -23,16 +24,25 @@ export async function authenticate(req: Request, res: Response, next: NextFuncti
 		return sendStatus401(res);
 	}
 
-	const token = await generateSessionToken();
+	const token = generateSessionToken();
 
 	await createSession(token, email);
 
-	return res
-		.status(204)
-		.cookie('token', token, {
-			httpOnly: true,
-			maxAge: Number(process.env.COOKIE_EXPIRATION),
-			sameSite: 'strict',
-		})
-		.end();
+	const jwt = signToken(user.email, user.auth, token, '1d');
+
+	return (
+		res
+			.status(204)
+			// .cookie('token', token, {
+			// 	httpOnly: true,
+			// 	maxAge: Number(process.env.COOKIE_EXPIRATION),
+			// 	sameSite: 'strict',
+			// })
+			.cookie('jwt', jwt, {
+				httpOnly: true,
+				maxAge: Number(process.env.COOKIE_EXPIRATION),
+				sameSite: 'strict',
+			})
+			.end()
+	);
 }

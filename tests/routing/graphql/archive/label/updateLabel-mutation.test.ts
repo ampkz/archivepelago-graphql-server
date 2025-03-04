@@ -4,7 +4,7 @@ import { faker } from '@faker-js/faker';
 import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/errors';
 import * as crudLabel from '../../../../../src/db/archive/crud-label';
 import * as sessions from '../../../../../src/auth/session';
-// import { signToken } from '../../../../../src/_helpers/auth-helpers';
+import { signToken } from '../../../../../src/_helpers/auth-helpers';
 import { Auth, AuthorizedUser } from '../../../../../src/auth/authorization';
 import { InternalError } from '../../../../../src/_helpers/errors-helper';
 import { Label, LabelType } from '../../../../../src/archive/label';
@@ -71,13 +71,13 @@ describe(`updateLabel Mutation Tests`, () => {
 
 		const token = sessions.generateSessionToken();
 
-		// const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
+		const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, token, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query, variables })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`token=${token}`]);
+			.set('Cookie', [`jwt=${jwtToken}`]);
 
 		expect(body.data.updateLabel.name).toEqual(updatedName);
 		expect(body.data.updateLabel.type).toEqual(LabelType.NATIONALITY);
@@ -113,13 +113,13 @@ describe(`updateLabel Mutation Tests`, () => {
 
 		const token = sessions.generateSessionToken();
 
-		// const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
+		const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, token, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query, variables })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`token=${token}`]);
+			.set('Cookie', [`jwt=${jwtToken}`]);
 
 		expect(body.data.updateLabel.name).toEqual(updatedName);
 	});
@@ -154,13 +154,13 @@ describe(`updateLabel Mutation Tests`, () => {
 
 		const token = sessions.generateSessionToken();
 
-		// const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
+		const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, token, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query, variables })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`token=${token}`]);
+			.set('Cookie', [`jwt=${jwtToken}`]);
 
 		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
 	});

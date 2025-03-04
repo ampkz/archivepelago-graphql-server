@@ -1,6 +1,6 @@
 import request from 'supertest';
 import startServer from '../../../../src/server/server';
-// import { signToken } from '../../../../src/_helpers/auth-helpers';
+import { signToken } from '../../../../src/_helpers/auth-helpers';
 import { faker } from '@faker-js/faker';
 import { Auth, AuthorizedUser } from '../../../../src/auth/authorization';
 import * as crudUser from '../../../../src/db/users/crud-user';
@@ -54,13 +54,13 @@ describe(`User Query Tests`, () => {
 
 		const token = sessions.generateSessionToken();
 
-		// const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
+		const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, token, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`token=${token}`]);
+			.set('Cookie', [`jwt=${jwtToken}`]);
 
 		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.UNAUTHORIZED);
 	});
@@ -92,13 +92,13 @@ describe(`User Query Tests`, () => {
         }
       `;
 
-		// const jwtToken = signToken(email, Auth.CONTRIBUTOR, '1d');
+		const jwtToken = signToken(email, Auth.CONTRIBUTOR, token, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`token=${token}`]);
+			.set('Cookie', [`jwt=${jwtToken}`]);
 
 		const returnedUser = body.data.user;
 		expect(returnedUser.email).toEqual(user.email);
@@ -134,13 +134,13 @@ describe(`User Query Tests`, () => {
 
 		const token = sessions.generateSessionToken();
 
-		// const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
+		const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, token, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`token=${token}`]);
+			.set('Cookie', [`jwt=${jwtToken}`]);
 
 		const returnedUser = body.data.user;
 		expect(returnedUser.email).toEqual(user.email);
@@ -172,13 +172,13 @@ describe(`User Query Tests`, () => {
 
 		const token = sessions.generateSessionToken();
 
-		// const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
+		const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, token, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`token=${token}`]);
+			.set('Cookie', [`jwt=${jwtToken}`]);
 
 		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.NOT_FOUND);
 	});

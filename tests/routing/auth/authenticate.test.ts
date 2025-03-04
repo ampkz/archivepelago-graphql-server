@@ -95,7 +95,7 @@ describe(`Authenticate Route Tests`, () => {
 			.then(response => {
 				expect(response.body).toEqual({});
 				expect(response.header['set-cookie']).toBeDefined();
-				expect(response.header['set-cookie'][0]).toContain('token');
+				expect(response.header['set-cookie'][0]).toContain('jwt');
 			});
 	});
 });

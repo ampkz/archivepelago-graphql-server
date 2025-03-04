@@ -18,6 +18,7 @@ import labelResolver from '../graphql/resolvers/labelResolver';
 import correspondenceType from '../graphql/typeDefs/correspondenceType';
 import correspondenceResolver from '../graphql/resolvers/correspondenceResolver';
 import { validateSessionToken } from '../auth/session';
+import { verifyToken } from '../_helpers/auth-helpers';
 
 interface MyContext {
 	authorizedUser?: AuthorizedUser | null;
@@ -57,7 +58,9 @@ async function startServer() {
 		'/graphql',
 		expressMiddleware(server, {
 			context: async ({ req }) => {
-				const session = await validateSessionToken(req.cookies.token);
+				const jwt = req.cookies.jwt;
+				const { authToken } = verifyToken(jwt);
+				const session = await validateSessionToken(authToken);
 				return { authorizedUser: session.user };
 			},
 		})

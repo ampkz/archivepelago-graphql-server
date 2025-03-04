@@ -3,7 +3,7 @@ import startServer from '../../../../src/server/server';
 import { Auth, AuthorizedUser } from '../../../../src/auth/authorization';
 import request from 'supertest';
 import { Errors as GraphQLErrors } from '../../../../src/graphql/errors/errors';
-// import { signToken } from '../../../../src/_helpers/auth-helpers';
+import { signToken } from '../../../../src/_helpers/auth-helpers';
 import * as crudUser from '../../../../src/db/users/crud-user';
 import * as sessions from '../../../../src/auth/session';
 import { User } from '../../../../src/users/users';
@@ -85,13 +85,13 @@ describe(`updateUser Mutation Tests`, () => {
 
 		const token = sessions.generateSessionToken();
 
-		// const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
+		const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, token, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query, variables })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`token=${token}`]);
+			.set('Cookie', [`jwt=${jwtToken}`]);
 
 		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.UNAUTHORIZED);
 	});
@@ -131,13 +131,13 @@ describe(`updateUser Mutation Tests`, () => {
 
 		const token = sessions.generateSessionToken();
 
-		// const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
+		const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, token, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query, variables })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`token=${token}`]);
+			.set('Cookie', [`jwt=${jwtToken}`]);
 
 		expect(body.errors[0].message).toEqual(crudUser.Errors.CANNOT_UPDATE_USER);
 	});
@@ -187,13 +187,13 @@ describe(`updateUser Mutation Tests`, () => {
 
 		const token = sessions.generateSessionToken();
 
-		// const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
+		const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, token, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query, variables })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`token=${token}`]);
+			.set('Cookie', [`jwt=${jwtToken}`]);
 
 		expect(body.data.updateUser).toEqual(user);
 	});

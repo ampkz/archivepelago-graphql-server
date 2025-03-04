@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import startServer from '../../../../../src/server/server';
 import request from 'supertest';
-// import { signToken } from '../../../../../src/_helpers/auth-helpers';
+import { signToken } from '../../../../../src/_helpers/auth-helpers';
 import * as personCorrespondence from '../../../../../src/db/archive/relationship/person-correspondence-relationship';
 import * as sessions from '../../../../../src/auth/session';
 import { InternalError } from '../../../../../src/_helpers/errors-helper';
@@ -89,13 +89,13 @@ describe(`addSent and addReceived Mutation Tests`, () => {
 
 		const token = sessions.generateSessionToken();
 
-		// const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
+		const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, token, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query, variables })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`token=${token}`]);
+			.set('Cookie', [`jwt=${jwtToken}`]);
 
 		expect(body.data.addReceived).toEqual(correspondence);
 	});
@@ -131,13 +131,13 @@ describe(`addSent and addReceived Mutation Tests`, () => {
 
 		const token = sessions.generateSessionToken();
 
-		// const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
+		const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, token, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query, variables })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`token=${token}`]);
+			.set('Cookie', [`jwt=${jwtToken}`]);
 
 		expect(body.data.addSent).toEqual(correspondence);
 	});
@@ -173,13 +173,13 @@ describe(`addSent and addReceived Mutation Tests`, () => {
 
 		const token = sessions.generateSessionToken();
 
-		// const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
+		const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, token, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query, variables })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`token=${token}`]);
+			.set('Cookie', [`jwt=${jwtToken}`]);
 
 		expect(body.data.addReceived).toEqual(correspondence);
 	});
@@ -215,13 +215,13 @@ describe(`addSent and addReceived Mutation Tests`, () => {
 
 		const token = sessions.generateSessionToken();
 
-		// const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, '1d');
+		const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, token, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query, variables })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`token=${token}`]);
+			.set('Cookie', [`jwt=${jwtToken}`]);
 
 		expect(body.data.addSent).toEqual(correspondence);
 	});
@@ -255,13 +255,13 @@ describe(`addSent and addReceived Mutation Tests`, () => {
 
 		const token = sessions.generateSessionToken();
 
-		// const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
+		const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, token, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query, variables })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`token=${token}`]);
+			.set('Cookie', [`jwt=${jwtToken}`]);
 
 		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
 	});
@@ -295,13 +295,13 @@ describe(`addSent and addReceived Mutation Tests`, () => {
 
 		const token = sessions.generateSessionToken();
 
-		// const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
+		const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, token, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query, variables })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`token=${token}`]);
+			.set('Cookie', [`jwt=${jwtToken}`]);
 
 		expect(body.addSent).toBeUndefined();
 	});
@@ -335,13 +335,13 @@ describe(`addSent and addReceived Mutation Tests`, () => {
 
 		const token = sessions.generateSessionToken();
 
-		// const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
+		const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, token, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query, variables })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`token=${token}`]);
+			.set('Cookie', [`jwt=${jwtToken}`]);
 
 		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
 	});
@@ -375,13 +375,13 @@ describe(`addSent and addReceived Mutation Tests`, () => {
 
 		const token = sessions.generateSessionToken();
 
-		// const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, '1d');
+		const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, token, '1d');
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query, variables })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`token=${token}`]);
+			.set('Cookie', [`jwt=${jwtToken}`]);
 
 		expect(body.addReceived).toBeUndefined();
 	});
