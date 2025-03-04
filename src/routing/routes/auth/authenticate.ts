@@ -28,7 +28,7 @@ export async function authenticate(req: Request, res: Response, next: NextFuncti
 
 	await createSession(token, email);
 
-	const jwt = signToken(user.email, user.auth, token, '1d');
+	const jwt = signToken(user.email, user.auth, token, process.env.TOKEN_EXPIRATION);
 
 	return (
 		res
