@@ -19,6 +19,7 @@ import correspondenceType from '../graphql/typeDefs/correspondenceType';
 import correspondenceResolver from '../graphql/resolvers/correspondenceResolver';
 import { validateSessionToken } from '../auth/session';
 import { verifyToken } from '../_helpers/auth-helpers';
+import helmet from 'helmet';
 
 interface MyContext {
 	authorizedUser?: AuthorizedUser | null;
@@ -32,14 +33,17 @@ async function startServer() {
 	const typeDefs = mergeTypeDefs([userType, personType, labelType, correspondenceType]);
 	const resolvers = mergeResolvers([userResolver, personResolver, labelResolver, correspondenceResolver]);
 
+	/* istanbul ignore next line */
 	const server = new ApolloServer<MyContext>({
 		typeDefs,
 		resolvers,
-		includeStacktraceInErrorResponses: false,
+		includeStacktraceInErrorResponses: process.env.NODE_ENV === 'development' ? true : false,
 		plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
 	});
 
 	await server.start();
+
+	app.use(helmet());
 
 	/* istanbul ignore next line */
 	app.use(

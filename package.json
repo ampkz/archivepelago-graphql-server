@@ -52,6 +52,7 @@
 		"express": "^4.21.2",
 		"graphql": "^16.10.0",
 		"graphql-tools": "^9.0.13",
+		"helmet": "^8.0.0",
 		"jsonwebtoken": "^9.0.2",
 		"neo4j-driver": "^5.28.0"
 	}
