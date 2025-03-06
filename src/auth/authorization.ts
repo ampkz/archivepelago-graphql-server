@@ -1,6 +1,6 @@
 export enum Auth {
-	ADMIN = 'admin',
-	CONTRIBUTOR = 'contributor',
+	ADMIN = 'ADMIN',
+	CONTRIBUTOR = 'CONTRIBUTOR',
 }
 
 export class AuthorizedUser {
@@ -13,14 +13,4 @@ export class AuthorizedUser {
 		this.auth = auth;
 		this.id = id;
 	}
-}
-
-export function isPermitted(authorizedUser: AuthorizedUser | undefined, ...rolesPermitted: Auth[]): boolean {
-	if (!authorizedUser) return false;
-	return rolesPermitted.includes(authorizedUser.auth);
-}
-
-export function permitSelf(authorizedUser: AuthorizedUser | undefined, emailQuery: string): boolean {
-	if (!authorizedUser) return false;
-	return authorizedUser.email === emailQuery;
 }

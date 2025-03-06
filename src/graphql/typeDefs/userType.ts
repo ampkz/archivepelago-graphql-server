@@ -19,7 +19,7 @@ export default /* GraphQL */ `
 
 	input CreateUserInput {
 		email: String!
-		auth: String!
+		auth: Auth!
 		firstName: String!
 		lastName: String!
 		password: String!
@@ -29,10 +29,15 @@ export default /* GraphQL */ `
 	input UpdateUserInput {
 		existingEmail: String
 		updatedEmail: String
-		updatedAuth: String
+		updatedAuth: Auth
 		updatedFirstName: String
 		updatedLastName: String
 		updatedPassword: String
 		updatedSecondName: String
+	}
+
+	enum Auth {
+		ADMIN
+		CONTRIBUTOR
 	}
 `;

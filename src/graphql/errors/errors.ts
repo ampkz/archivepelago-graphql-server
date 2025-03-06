@@ -6,7 +6,11 @@ export enum Errors {
 	MUTATION_FAILED = 'MUTATION_FAILED',
 	SERVER_ERROR = 'SERVER_ERROR',
 	INVALID_EMAIL = 'INVALID_EMAIL',
-	INVALID_AUTH = 'INVALID_AUTH',
+	BAD_USER_INPUT = 'BAD_USER_INPUT',
+}
+
+export enum Error_Msgs {
+	ENTER_VALID_EMAIL = 'Please enter a valid email address.',
 }
 
 export function notFoundError(message: string): GraphQLError {
@@ -25,10 +29,6 @@ export function serverFailed(message: string): GraphQLError {
 	return new GraphQLError(message, { extensions: { code: Errors.SERVER_ERROR } });
 }
 
-export function invalidEmail(message: string): GraphQLError {
-	return new GraphQLError(message, { extensions: { code: Errors.INVALID_EMAIL } });
-}
-
-export function invalidAuth(message: string): GraphQLError {
-	return new GraphQLError(message, { extensions: { code: Errors.INVALID_AUTH } });
+export function invalidEmail(): GraphQLError {
+	return new GraphQLError(Error_Msgs.ENTER_VALID_EMAIL, { extensions: { code: Errors.INVALID_EMAIL } });
 }

@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
-import { Auth, AuthorizedUser, isPermitted, permitSelf } from '../../src/auth/authorization';
+import { Auth, AuthorizedUser } from '../../src/auth/authorization';
+import { isPermitted, permitSelf } from '../../src/_helpers/auth-helpers';
 
 describe(`Authorization Tests`, () => {
 	it('should create and Authorized User', () => {

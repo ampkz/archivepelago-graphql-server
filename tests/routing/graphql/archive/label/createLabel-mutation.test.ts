@@ -121,6 +121,46 @@ describe(`createLabel Mutation Tests`, () => {
 		expect(body.data.createLabel.name).toEqual(name);
 	});
 
+	it(`should throw an error with invalid label type`, async () => {
+		const name: string = `${(global as any).UniqueAdjIterator.next().value}`;
+
+		const createLabelSpy = jest.spyOn(crudLabel, 'createLabel');
+		createLabelSpy.mockResolvedValue(new Label({ name, type: LabelType.PROFESSION }));
+
+		const query = `
+            mutation CreateLabel($input: CreateLabelInput!) {
+                createLabel(input: $input) {
+                    name
+                }
+            }
+        `;
+
+		const variables = {
+			input: {
+				name,
+				type: 'invalid type',
+			},
+		};
+
+		const validateSessionTokenSpy = jest.spyOn(sessions, 'validateSessionToken');
+		validateSessionTokenSpy.mockResolvedValueOnce({
+			session: { id: '', expiresAt: new Date(), userID: '' },
+			user: new AuthorizedUser(faker.internet.email(), Auth.CONTRIBUTOR, ''),
+		});
+
+		const token = sessions.generateSessionToken();
+
+		const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, token, '1d');
+
+		const { body } = await request(app)
+			.post('/graphql')
+			.send({ query, variables })
+			.set('Accept', 'application/json')
+			.set('Cookie', [`jwt=${jwtToken}`]);
+
+		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.BAD_USER_INPUT);
+	});
+
 	it(`should throw an error if there was an issue with the server`, async () => {
 		const name: string = `${(global as any).UniqueAdjIterator.next().value}`;
 

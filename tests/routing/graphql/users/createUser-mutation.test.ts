@@ -361,6 +361,6 @@ describe(`createUser Mutation Tests`, () => {
 			.send({ query, variables })
 			.set('Accept', 'application/json')
 			.set('Cookie', [`jwt=${jwtToken}`]);
-		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.INVALID_AUTH);
+		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.BAD_USER_INPUT);
 	});
 });

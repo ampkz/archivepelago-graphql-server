@@ -1,10 +1,10 @@
 import { isPermitted, permitSelf } from '../../_helpers/auth-helpers';
 import { ResourceExistsError } from '../../_helpers/errors-helper';
-import { isValidAuth, isValidEmail } from '../../_helpers/validation-helpers';
+import { isValidEmail } from '../../_helpers/validation-helpers';
 import { Auth } from '../../auth/authorization';
 import { createUser, deleteUser, getUserByEmail, updateUser } from '../../db/users/crud-user';
 import { User } from '../../users/users';
-import { invalidAuth, invalidEmail, mutationFailed, notFoundError, unauthorizedError } from '../errors/errors';
+import { invalidEmail, mutationFailed, notFoundError, unauthorizedError } from '../errors/errors';
 
 export default {
 	Query: {
@@ -30,11 +30,7 @@ export default {
 			}
 
 			if (!isValidEmail(email)) {
-				throw invalidEmail('Please enter a valid email address.');
-			}
-
-			if (!isValidAuth(auth)) {
-				throw invalidAuth('Invalid authorization role.');
+				throw invalidEmail();
 			}
 
 			let newUser: User;
@@ -62,11 +58,7 @@ export default {
 			}
 
 			if (updatedEmail && !isValidEmail(updatedEmail)) {
-				throw invalidEmail('Please enter a valid email address.');
-			}
-
-			if (updatedAuth && !isValidAuth(updatedAuth)) {
-				throw invalidAuth('Invalid authorization role.');
+				throw invalidEmail();
 			}
 
 			let updatedUser: User | undefined;
