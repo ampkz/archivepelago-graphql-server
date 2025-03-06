@@ -61,6 +61,14 @@ export default {
 				throw unauthorizedError(`You are not authorized to make this query.`);
 			}
 
+			if (updatedEmail && !isValidEmail(updatedEmail)) {
+				throw invalidEmail('Please enter a valid email address.');
+			}
+
+			if (updatedAuth && !isValidAuth(updatedAuth)) {
+				throw invalidAuth('Invalid authorization role.');
+			}
+
 			let updatedUser: User | undefined;
 
 			try {

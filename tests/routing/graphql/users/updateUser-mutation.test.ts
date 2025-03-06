@@ -197,4 +197,116 @@ describe(`updateUser Mutation Tests`, () => {
 
 		expect(body.data.updateUser).toEqual(user);
 	});
+
+	it(`should throw an error if updated email is invalid`, async () => {
+		const email = faker.internet.email();
+
+		const updatedAuth = Auth.CONTRIBUTOR,
+			updatedFirstName = faker.person.firstName(),
+			updatedLastName = faker.person.lastName(),
+			updatedPassword = faker.internet.password(),
+			updatedSecondName = faker.person.middleName();
+
+		const query = `
+            mutation UpdateUser($input: UpdateUserInput!){
+              updateUser(input: $input) {
+                firstName
+                lastName
+                secondName
+                email
+                auth
+              }
+            }
+          `;
+
+		const variables = {
+			input: {
+				existingEmail: email,
+				updatedEmail: 'invalid email',
+				updatedAuth,
+				updatedFirstName,
+				updatedLastName,
+				updatedPassword,
+				updatedSecondName,
+			},
+		};
+
+		const user: User = new User(email, updatedAuth, updatedFirstName, updatedLastName, updatedSecondName);
+
+		const updateUserSpy = jest.spyOn(crudUser, 'updateUser');
+		updateUserSpy.mockResolvedValue(user);
+
+		const validateSessionTokenSpy = jest.spyOn(sessions, 'validateSessionToken');
+		validateSessionTokenSpy.mockResolvedValueOnce({
+			session: { id: '', expiresAt: new Date(), userID: '' },
+			user: new AuthorizedUser(faker.internet.email(), Auth.ADMIN, ''),
+		});
+
+		const token = sessions.generateSessionToken();
+
+		const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, token, '1d');
+
+		const { body } = await request(app)
+			.post('/graphql')
+			.send({ query, variables })
+			.set('Accept', 'application/json')
+			.set('Cookie', [`jwt=${jwtToken}`]);
+
+		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.INVALID_EMAIL);
+	});
+
+	it(`should throw an error if updated auth is invalid`, async () => {
+		const email = faker.internet.email();
+
+		const updatedFirstName = faker.person.firstName(),
+			updatedLastName = faker.person.lastName(),
+			updatedPassword = faker.internet.password(),
+			updatedSecondName = faker.person.middleName();
+
+		const query = `
+            mutation UpdateUser($input: UpdateUserInput!){
+              updateUser(input: $input) {
+                firstName
+                lastName
+                secondName
+                email
+                auth
+              }
+            }
+          `;
+
+		const variables = {
+			input: {
+				existingEmail: email,
+				updatedAuth: 'invalid auth',
+				updatedFirstName,
+				updatedLastName,
+				updatedPassword,
+				updatedSecondName,
+			},
+		};
+
+		const user: User = new User(email, Auth.CONTRIBUTOR, updatedFirstName, updatedLastName, updatedSecondName);
+
+		const updateUserSpy = jest.spyOn(crudUser, 'updateUser');
+		updateUserSpy.mockResolvedValue(user);
+
+		const validateSessionTokenSpy = jest.spyOn(sessions, 'validateSessionToken');
+		validateSessionTokenSpy.mockResolvedValueOnce({
+			session: { id: '', expiresAt: new Date(), userID: '' },
+			user: new AuthorizedUser(faker.internet.email(), Auth.ADMIN, ''),
+		});
+
+		const token = sessions.generateSessionToken();
+
+		const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, token, '1d');
+
+		const { body } = await request(app)
+			.post('/graphql')
+			.send({ query, variables })
+			.set('Accept', 'application/json')
+			.set('Cookie', [`jwt=${jwtToken}`]);
+
+		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.INVALID_AUTH);
+	});
 });
