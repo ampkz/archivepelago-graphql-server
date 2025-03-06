@@ -68,7 +68,7 @@ describe(`CRUD Label Tests`, () => {
 	});
 
 	test(`updateLabel should return undefined if no Label exists`, async () => {
-		const updatedLabel: Label | undefined = await updateLabel(`${(global as any).UniqueAdjIterator.next().value}`, {
+		const updatedLabel: Label | undefined = await updateLabel(`updated_undefined_${(global as any).UniqueAdjIterator.next().value}`, {
 			updatedName: `updated_undefined_${(global as any).UniqueAdjIterator.next().value}`,
 		});
 
