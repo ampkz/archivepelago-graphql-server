@@ -1,7 +1,8 @@
+import { isPermitted } from '../../_helpers/auth-helpers';
 import { Correspondence, ICorrespondence } from '../../archive/correspondence';
 import { convertArchiveDateToDate, convertDateStringToArchiveDate } from '../../archive/date';
 import { RelationshipType } from '../../archive/relationship/relationship';
-import { Auth, isPermitted } from '../../auth/authorization';
+import { Auth } from '../../auth/authorization';
 import {
 	createCorrespondence,
 	deleteCorrespondence,

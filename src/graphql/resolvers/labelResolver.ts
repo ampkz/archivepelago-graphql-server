@@ -1,5 +1,6 @@
+import { isPermitted } from '../../_helpers/auth-helpers';
 import { Label } from '../../archive/label';
-import { Auth, isPermitted } from '../../auth/authorization';
+import { Auth } from '../../auth/authorization';
 import { createLabel, deleteLabel, getLabel, getLabels, updateLabel } from '../../db/archive/crud-label';
 import { getPersonsByLabel } from '../../db/archive/relationship/person-label-relationship';
 import { mutationFailed, serverFailed, unauthorizedError } from '../errors/errors';
