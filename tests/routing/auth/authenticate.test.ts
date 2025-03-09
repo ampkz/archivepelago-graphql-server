@@ -1,6 +1,6 @@
 import request from 'supertest';
 import startServer from '../../../src/server/server';
-import { authenticateUri } from '../../../src/routing/uriConfig';
+import { authenticateUri, logoutUri } from '../../../src/routing/uriConfig';
 import { FieldError, RoutingErrors } from '../../../src/_helpers/errors-helper';
 import { faker } from '@faker-js/faker';
 import * as authenticateUser from '../../../src/db/users/authenticate-user';
@@ -19,7 +19,7 @@ describe(`Authenticate Route Tests`, () => {
 		jest.restoreAllMocks();
 	});
 
-	it(`should send 405 status on PUT with Allow header 'POST'`, async () => {
+	test(`/authenticate should send 405 status on PUT with Allow header 'POST'`, async () => {
 		await request(app)
 			.put(authenticateUri)
 			.expect(405)
@@ -28,7 +28,7 @@ describe(`Authenticate Route Tests`, () => {
 			});
 	});
 
-	it(`should send 405 status on GET with Allow header 'POST'`, async () => {
+	test(`/authenticate should send 405 status on GET with Allow header 'POST'`, async () => {
 		await request(app)
 			.get(authenticateUri)
 			.expect(405)
@@ -37,7 +37,7 @@ describe(`Authenticate Route Tests`, () => {
 			});
 	});
 
-	it(`should send 405 status on DELETE with Allow header 'POST'`, async () => {
+	test(`/authenticate should send 405 status on DELETE with Allow header 'POST'`, async () => {
 		await request(app)
 			.delete(authenticateUri)
 			.expect(405)
@@ -46,7 +46,7 @@ describe(`Authenticate Route Tests`, () => {
 			});
 	});
 
-	it(`should send 400 status on POST without password`, async () => {
+	test(`/authenticate should send 400 status on POST without password`, async () => {
 		await request(app)
 			.post(authenticateUri)
 			.send({ email: faker.internet.email() })
@@ -57,7 +57,7 @@ describe(`Authenticate Route Tests`, () => {
 			});
 	});
 
-	it(`should send 400 status on POST without email`, async () => {
+	test(`/authenticate should send 400 status on POST without email`, async () => {
 		await request(app)
 			.post(authenticateUri)
 			.send({ password: faker.internet.password() })
@@ -68,7 +68,7 @@ describe(`Authenticate Route Tests`, () => {
 			});
 	});
 
-	it(`should send 401 status with incorrect password`, async () => {
+	test(`/authenticate should send 401 status with incorrect password`, async () => {
 		const checkPasswordSpy = jest.spyOn(authenticateUser, 'checkPassword');
 		checkPasswordSpy.mockResolvedValueOnce(undefined);
 
@@ -81,7 +81,7 @@ describe(`Authenticate Route Tests`, () => {
 			});
 	});
 
-	it(`should send 204 status with session cookie using correct password`, async () => {
+	test(`/authenticate should send 204 status with session cookie using correct password`, async () => {
 		const checkPasswordSpy = jest.spyOn(authenticateUser, 'checkPassword');
 		checkPasswordSpy.mockResolvedValueOnce(new User(faker.internet.email(), Auth.ADMIN, faker.person.firstName(), faker.person.lastName()));
 
@@ -96,6 +96,80 @@ describe(`Authenticate Route Tests`, () => {
 				expect(response.body).toEqual({});
 				expect(response.header['set-cookie']).toBeDefined();
 				expect(response.header['set-cookie'][0]).toContain('jwt');
+			});
+	});
+
+	test(`/logout should send 405 status on PUT with Allow header 'GET'`, async () => {
+		await request(app)
+			.put(logoutUri)
+			.expect(405)
+			.then(response => {
+				expect(response.headers.allow).toBe('GET');
+			});
+	});
+
+	test(`/logout should send 405 status on POST with Allow header 'GET'`, async () => {
+		await request(app)
+			.post(logoutUri)
+			.expect(405)
+			.then(response => {
+				expect(response.headers.allow).toBe('GET');
+			});
+	});
+
+	test(`/logout should send 405 status on DELETE with Allow header 'GET'`, async () => {
+		await request(app)
+			.delete(logoutUri)
+			.expect(405)
+			.then(response => {
+				expect(response.headers.allow).toBe('GET');
+			});
+	});
+
+	test(`/logout should send 200 status if no cookie exists`, async () => {
+		await request(app)
+			.get(logoutUri)
+			.expect(204)
+			.then(response => {
+				expect(response.body).toEqual({});
+				expect(response.header['set-cookie']).toBeUndefined();
+			});
+	});
+
+	test(`/logout should send 204 status and delete session cookie`, async () => {
+		const checkPasswordSpy = jest.spyOn(authenticateUser, 'checkPassword');
+		checkPasswordSpy.mockResolvedValueOnce(new User(faker.internet.email(), Auth.ADMIN, faker.person.firstName(), faker.person.lastName()));
+
+		const createSessionSpy = jest.spyOn(sessions, 'createSession');
+		createSessionSpy.mockResolvedValueOnce({ id: '', userID: '', expiresAt: new Date() });
+
+		const validateSessionTokenSpy = jest.spyOn(sessions, 'validateSessionToken');
+		validateSessionTokenSpy.mockResolvedValueOnce({
+			session: { id: '', userID: '', expiresAt: new Date() },
+			user: { id: '', email: faker.internet.email(), auth: Auth.ADMIN },
+		});
+
+		const invalidateSessionSpy = jest.spyOn(sessions, 'invalidateSession');
+		invalidateSessionSpy.mockResolvedValueOnce();
+
+		const agent = request.agent(app);
+
+		await agent
+			.post(authenticateUri)
+			.send({ email: faker.internet.email(), password: faker.internet.password() })
+			.expect(204)
+			.then(response => {
+				expect(response.body).toEqual({});
+				expect(response.header['set-cookie']).toBeDefined();
+				expect(response.header['set-cookie'][0]).toContain('jwt');
+			});
+
+		await agent
+			.get(logoutUri)
+			.expect(204)
+			.then(response => {
+				expect(response.body).toEqual({});
+				expect(response.header['set-cookie'][0]).toContain('jwt=;');
 			});
 	});
 });

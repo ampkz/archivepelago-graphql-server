@@ -3,8 +3,8 @@ import { FieldError, FieldErrors, RoutingErrors } from '../../../_helpers/errors
 import { User } from '../../../users/users';
 import { checkPassword } from '../../../db/users/authenticate-user';
 import { sendStatus401 } from '../../../middleware/statusCodes';
-import { createSession, generateSessionToken } from '../../../auth/session';
-import { signToken } from '../../../_helpers/auth-helpers';
+import { createSession, generateSessionToken, invalidateSession, validateSessionToken } from '../../../auth/session';
+import { signToken, verifyToken } from '../../../_helpers/auth-helpers';
 
 export async function authenticate(req: Request, res: Response, next: NextFunction): Promise<any> {
 	const { email, password } = req.body;
@@ -45,4 +45,20 @@ export async function authenticate(req: Request, res: Response, next: NextFuncti
 			})
 			.end()
 	);
+}
+
+export async function logout(req: Request, res: Response) {
+	const jwt = req.cookies.jwt;
+
+	if (!jwt) {
+		return res.status(204).end();
+	}
+
+	const { authToken } = verifyToken(jwt);
+	const svr = await validateSessionToken(authToken);
+	if (svr.session) {
+		await invalidateSession(svr.session.id);
+	}
+
+	return res.status(204).clearCookie('jwt').end();
 }

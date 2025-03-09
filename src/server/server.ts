@@ -64,8 +64,8 @@ async function startServer() {
 			context: async ({ req }) => {
 				const jwt = req.cookies.jwt;
 				const { authToken } = verifyToken(jwt);
-				const session = await validateSessionToken(authToken);
-				return { authorizedUser: session.user };
+				const svr = await validateSessionToken(authToken);
+				return { authorizedUser: svr.user };
 			},
 		})
 	);
