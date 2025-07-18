@@ -172,5 +172,3 @@ The deployment server also uses PM2 to manage the node server process. Again, th
     See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
-
-For questions or comments, please contact us at <admin@archivepelago.org>
