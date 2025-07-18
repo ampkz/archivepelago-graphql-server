@@ -160,7 +160,7 @@ The deployment server also uses PM2 to manage the node server process. Again, th
 
 ## Open Source (GPLv3) License
 
-    Copyright (C) 2020 Andrew M. Pankratz & Corey D Clawson
+    Copyright (C) 2025 Andrew M. Pankratz & Corey D Clawson
 
     This program is free software: you can redistribute it and/or modify it under the terms of the GNU General 
     Public License as published by the Free Software Foundation, either version 3 of the License, or (at your 
