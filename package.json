@@ -14,8 +14,7 @@
 		"init-dev": "NODE_ENV=development ts-node ./src/server/utils/init-server.ts",
 		"destroy-dev": "NODE_ENV=development ts-node ./src/server/utils/destroy-server.ts",
 		"dev": "NODE_ENV=development ts-node ./src",
-		"test": "jest --coverage",
-		"destroy-test": "NODE_ENV=test ts-node ./build/server/utils/destroy-server.ts"
+		"test": "jest --coverage"
 	},
 	"keywords": [],
 	"author": "Andrew M. Pankratz",
@@ -43,8 +42,6 @@
 	},
 	"dependencies": {
 		"@apollo/server": "^4.11.3",
-		"@oslojs/crypto": "^1.0.1",
-		"@oslojs/encoding": "^1.1.0",
 		"bcrypt": "^5.1.1",
 		"cookie-parser": "^1.4.7",
 		"cors": "^2.8.5",
