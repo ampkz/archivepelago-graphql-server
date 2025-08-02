@@ -1,9 +1,6 @@
 import { connect, Errors as DB_CONNECTION_ERRORS } from '../../../src/db/utils/connection';
 import { Driver, ServerInfo } from 'neo4j-driver';
-import dotenv from 'dotenv';
 import { InternalError } from '../../../src/_helpers/errors-helper';
-
-dotenv.config();
 
 describe(`DB Connection Tests`, () => {
 	const originalEnv: NodeJS.ProcessEnv = process.env;
