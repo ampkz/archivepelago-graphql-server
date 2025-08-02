@@ -1,8 +1,8 @@
-import { isPermitted } from '../../_helpers/auth-helpers';
+import { isPermitted } from '../../_helpers/auth-helper';
 import { convertDateStringToArchiveDate } from '../../archive/date';
 import { Person, IPerson } from '../../archive/person';
 import { PersonLabel, RelationshipType } from '../../archive/relationship/relationship';
-import { Auth } from '../../auth/authorization';
+import { Auth } from '@ampkz/auth-neo4j/dist/auth/auth';
 import { createPerson, deletePerson, getPerson, getPersons, updatePerson } from '../../db/archive/crud-person';
 import { getCorrespondencesByPerson } from '../../db/archive/relationship/person-correspondence-relationship';
 import { createPersonLabel, deletePersonLabel, getLabelsByPerson } from '../../db/archive/relationship/person-label-relationship';
