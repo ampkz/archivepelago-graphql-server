@@ -1,6 +1,6 @@
 import { ApolloServer } from '@apollo/server';
 import { mergeTypeDefs, mergeResolvers } from '@graphql-tools/merge';
-import { expressMiddleware } from '@apollo/server/express4';
+import { expressMiddleware } from '@as-integrations/express5';
 import express, { Express } from 'express';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import { error404, errorHandler } from '../middleware/errors';
