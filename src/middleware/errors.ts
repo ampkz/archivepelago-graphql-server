@@ -1,6 +1,7 @@
 import { NextFunction, Response, Request } from 'express';
 import { CustomError } from '../_helpers/errors-helper';
 
+/* istanbul ignore next line */
 // eslint-disable-next-line
 export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
 	let code: number = 422,

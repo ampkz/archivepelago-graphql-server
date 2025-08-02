@@ -2,11 +2,12 @@ import request from 'supertest';
 import startServer from '../../../../../src/server/server';
 import { faker } from '@faker-js/faker';
 import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/errors';
-import * as sessions from '../../../../../src/auth/session';
+import sessions from '@ampkz/auth-neo4j/dist/validate-session-token';
+import { generateSessionToken } from '@ampkz/auth-neo4j/dist/sessions/session';
+import { Auth } from '@ampkz/auth-neo4j/dist/auth/auth';
+import { User } from '@ampkz/auth-neo4j/dist/users/user';
 import * as crudPerson from '../../../../../src/db/archive/crud-person';
 import { Person } from '../../../../../src/archive/person';
-import { signToken } from '../../../../../src/_helpers/auth-helpers';
-import { Auth, AuthorizedUser } from '../../../../../src/auth/authorization';
 import { InternalError } from '../../../../../src/_helpers/errors-helper';
 
 describe(`createPerson Mutation Tests`, () => {
@@ -63,18 +64,16 @@ describe(`createPerson Mutation Tests`, () => {
 		const validateSessionTokenSpy = jest.spyOn(sessions, 'validateSessionToken');
 		validateSessionTokenSpy.mockResolvedValueOnce({
 			session: { id: '', expiresAt: new Date(), userID: '' },
-			user: new AuthorizedUser(faker.internet.email(), Auth.ADMIN, ''),
+			user: new User({ email: faker.internet.email(), auth: Auth.ADMIN }),
 		});
 
-		const token = sessions.generateSessionToken();
-
-		const jwtToken = signToken(faker.internet.email(), Auth.ADMIN, token, '1d');
+		const token = generateSessionToken();
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query, variables })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`jwt=${jwtToken}`]);
+			.set('Cookie', [`token=${token}`]);
 
 		expect(body.data.createPerson.id).toEqual(id);
 	});
@@ -102,18 +101,16 @@ describe(`createPerson Mutation Tests`, () => {
 		const validateSessionTokenSpy = jest.spyOn(sessions, 'validateSessionToken');
 		validateSessionTokenSpy.mockResolvedValueOnce({
 			session: { id: '', expiresAt: new Date(), userID: '' },
-			user: new AuthorizedUser(faker.internet.email(), Auth.CONTRIBUTOR, ''),
+			user: new User({ email: faker.internet.email(), auth: Auth.CONTRIBUTOR }),
 		});
 
-		const token = sessions.generateSessionToken();
-
-		const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, token, '1d');
+		const token = generateSessionToken();
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query, variables })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`jwt=${jwtToken}`]);
+			.set('Cookie', [`token=${token}`]);
 
 		expect(body.data.createPerson.id).toEqual(id);
 	});
@@ -139,18 +136,16 @@ describe(`createPerson Mutation Tests`, () => {
 		const validateSessionTokenSpy = jest.spyOn(sessions, 'validateSessionToken');
 		validateSessionTokenSpy.mockResolvedValueOnce({
 			session: { id: '', expiresAt: new Date(), userID: '' },
-			user: new AuthorizedUser(faker.internet.email(), Auth.ADMIN, ''),
+			user: new User({ email: faker.internet.email(), auth: Auth.ADMIN }),
 		});
 
-		const token = sessions.generateSessionToken();
-
-		const jwtToken = signToken(faker.internet.email(), Auth.CONTRIBUTOR, token, '1d');
+		const token = generateSessionToken();
 
 		const { body } = await request(app)
 			.post('/graphql')
 			.send({ query, variables })
 			.set('Accept', 'application/json')
-			.set('Cookie', [`jwt=${jwtToken}`]);
+			.set('Cookie', [`token=${token}`]);
 
 		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
 	});
