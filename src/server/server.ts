@@ -4,21 +4,15 @@ import { expressMiddleware } from '@as-integrations/express5';
 import express, { Express } from 'express';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import { error404, errorHandler } from '../middleware/errors';
-// import authenticateRouter from '../routing/auth/authenticate';
 import cookieParser from 'cookie-parser';
 import http from 'http';
 import cors from 'cors';
-// import { AuthorizedUser } from '../auth/authorization';
-// import userType from '../graphql/typeDefs/userType';
-// import userResolver from '../graphql/resolvers/userResolver';
 import personType from '../graphql/typeDefs/personType';
 import personResolver from '../graphql/resolvers/personResolver';
 import labelType from '../graphql/typeDefs/labelType';
 import labelResolver from '../graphql/resolvers/labelResolver';
 import correspondenceType from '../graphql/typeDefs/correspondenceType';
 import correspondenceResolver from '../graphql/resolvers/correspondenceResolver';
-// import { validateSessionToken } from '../auth/session';
-// import { verifyToken } from '../_helpers/auth-helpers';
 import helmet from 'helmet';
 import authNeo4j from '@ampkz/auth-neo4j';
 import { validateSessionToken } from '@ampkz/auth-neo4j/token';
@@ -71,8 +65,6 @@ async function startServer() {
 			},
 		})
 	);
-
-	// app.use(authenticateRouter);
 
 	app.use(authNeo4j());
 

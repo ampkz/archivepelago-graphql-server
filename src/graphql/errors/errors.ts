@@ -7,10 +7,6 @@ export enum Errors {
 	BAD_USER_INPUT = 'BAD_USER_INPUT',
 }
 
-export enum Error_Msgs {
-	ENTER_VALID_EMAIL = 'Please enter a valid email address.',
-}
-
 export function unauthorizedError(message: string): GraphQLError {
 	return new GraphQLError(message, { extensions: { code: Errors.UNAUTHORIZED } });
 }
