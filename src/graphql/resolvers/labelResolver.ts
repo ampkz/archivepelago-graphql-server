@@ -1,6 +1,6 @@
 import { isPermitted } from '../../_helpers/auth-helper';
 import { Label } from '../../archive/label';
-import { Auth } from '@ampkz/auth-neo4j/dist/auth/auth';
+import { Auth } from '@ampkz/auth-neo4j/auth';
 import { createLabel, deleteLabel, getLabel, getLabels, updateLabel } from '../../db/archive/crud-label';
 import { getPersonsByLabel } from '../../db/archive/relationship/person-label-relationship';
 import { mutationFailed, serverFailed, unauthorizedError } from '../errors/errors';

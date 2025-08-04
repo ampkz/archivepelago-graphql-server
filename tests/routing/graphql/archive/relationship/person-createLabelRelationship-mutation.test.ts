@@ -5,10 +5,9 @@ import * as personLabelRelationship from '../../../../../src/db/archive/relation
 import { InternalError } from '../../../../../src/_helpers/errors-helper';
 import { Person } from '../../../../../src/archive/person';
 import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/errors';
-import sessions from '@ampkz/auth-neo4j/dist/validate-session-token';
-import { generateSessionToken } from '@ampkz/auth-neo4j/dist/sessions/session';
-import { Auth } from '@ampkz/auth-neo4j/dist/auth/auth';
-import { User } from '@ampkz/auth-neo4j/dist/users/user';
+import sessions from '@ampkz/auth-neo4j/token';
+import { Auth } from '@ampkz/auth-neo4j/auth';
+import { User } from '@ampkz/auth-neo4j/user';
 
 describe(`createLabelRelationship Mutation Tests`, () => {
 	let app: any;
@@ -69,7 +68,7 @@ describe(`createLabelRelationship Mutation Tests`, () => {
 			user: new User({ email: faker.internet.email(), auth: Auth.ADMIN }),
 		});
 
-		const token = generateSessionToken();
+		const token = sessions.generateSessionToken();
 
 		const { body } = await request(app)
 			.post('/graphql')
@@ -109,7 +108,7 @@ describe(`createLabelRelationship Mutation Tests`, () => {
 			user: new User({ email: faker.internet.email(), auth: Auth.CONTRIBUTOR }),
 		});
 
-		const token = generateSessionToken();
+		const token = sessions.generateSessionToken();
 
 		const { body } = await request(app)
 			.post('/graphql')
@@ -146,7 +145,7 @@ describe(`createLabelRelationship Mutation Tests`, () => {
 			user: new User({ email: faker.internet.email(), auth: Auth.ADMIN }),
 		});
 
-		const token = generateSessionToken();
+		const token = sessions.generateSessionToken();
 
 		const { body } = await request(app)
 			.post('/graphql')

@@ -2,7 +2,7 @@ import { isPermitted } from '../../_helpers/auth-helper';
 import { Correspondence, ICorrespondence } from '../../archive/correspondence';
 import { convertArchiveDateToDate, convertDateStringToArchiveDate } from '../../archive/date';
 import { RelationshipType } from '../../archive/relationship/relationship';
-import { Auth } from '@ampkz/auth-neo4j/dist/auth/auth';
+import { Auth } from '@ampkz/auth-neo4j/auth';
 import {
 	createCorrespondence,
 	deleteCorrespondence,

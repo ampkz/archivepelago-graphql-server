@@ -21,8 +21,8 @@ import correspondenceResolver from '../graphql/resolvers/correspondenceResolver'
 // import { verifyToken } from '../_helpers/auth-helpers';
 import helmet from 'helmet';
 import authNeo4j from '@ampkz/auth-neo4j';
-import vst from '@ampkz/auth-neo4j/dist/validate-session-token';
-import { User } from '@ampkz/auth-neo4j/dist/users/user';
+import { validateSessionToken } from '@ampkz/auth-neo4j/token';
+import { User } from '@ampkz/auth-neo4j/user';
 
 interface MyContext {
 	authorizedUser?: User | null;
@@ -66,7 +66,7 @@ async function startServer() {
 		expressMiddleware(server, {
 			context: async ({ req }) => {
 				const token = req.cookies.token;
-				const svr = await vst.validateSessionToken(token);
+				const svr = await validateSessionToken(token);
 				return { authorizedUser: svr.user };
 			},
 		})
