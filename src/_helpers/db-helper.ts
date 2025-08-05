@@ -4,5 +4,5 @@ export type SessionOptions = {
 
 export function getSessionOptions(dbName: string): SessionOptions {
 	/* istanbul ignore next line */
-	return { database: `${dbName}.${process.env.NODE_ENV ? `${process.env.NODE_ENV}` : ``}` };
+	return { database: `${dbName}${process.env.NODE_ENV ? `.${process.env.NODE_ENV}` : ``}` };
 }
