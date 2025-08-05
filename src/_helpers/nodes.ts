@@ -2,7 +2,6 @@ export enum NodeType {
 	PERSON = 'Person',
 	LABEL = 'Label',
 	CORRESPONDENCE = 'Correspondence',
-	USER = 'User',
 }
 
 export class Node {
