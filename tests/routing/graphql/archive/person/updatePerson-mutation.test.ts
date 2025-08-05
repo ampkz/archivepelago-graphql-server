@@ -4,7 +4,7 @@ import { faker } from '@faker-js/faker';
 import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/errors';
 import * as crudPerson from '../../../../../src/db/archive/crud-person';
 import { Person } from '../../../../../src/archive/person';
-import { InternalError } from '../../../../../src/_helpers/errors-helper';
+import { InternalError } from '@ampkz/auth-neo4j/errors';
 import sessions from '@ampkz/auth-neo4j/token';
 import { Auth } from '@ampkz/auth-neo4j/auth';
 import { User } from '@ampkz/auth-neo4j/user';

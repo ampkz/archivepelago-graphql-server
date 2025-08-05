@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import startServer from '../../../../../src/server/server';
 import request from 'supertest';
 import * as personCorrespondence from '../../../../../src/db/archive/relationship/person-correspondence-relationship';
-import { InternalError } from '../../../../../src/_helpers/errors-helper';
+import { InternalError } from '@ampkz/auth-neo4j/errors';
 import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/errors';
 import { Correspondence, CorrespondenceType } from '../../../../../src/archive/correspondence';
 import sessions from '@ampkz/auth-neo4j/token';

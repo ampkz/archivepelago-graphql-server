@@ -1,6 +1,6 @@
 import { connect, Errors as DB_CONNECTION_ERRORS } from '../../../src/db/utils/connection';
 import { Driver, ServerInfo } from 'neo4j-driver';
-import { InternalError } from '../../../src/_helpers/errors-helper';
+import { InternalError } from '@ampkz/auth-neo4j/errors';
 
 describe(`DB Connection Tests`, () => {
 	const originalEnv: NodeJS.ProcessEnv = process.env;
@@ -25,7 +25,7 @@ describe(`DB Connection Tests`, () => {
 			...originalEnv,
 			NEO4J_PWD: `incorrect password`,
 		};
-		await expect(connect()).rejects.toThrow(DB_CONNECTION_ERRORS.DB_CONNECTION_ERROR);
+		await expect(connect()).rejects.toThrow(DB_CONNECTION_ERRORS.DB_CONNECTION_UNAUTHORIZED);
 	});
 
 	it(`should throw an InternalError with code 500 with an incorrect password`, async () => {
@@ -39,7 +39,6 @@ describe(`DB Connection Tests`, () => {
 		} catch (error) {
 			expect(error instanceof InternalError).toBeTruthy();
 			expect((error as InternalError).getCode()).toEqual(500);
-			expect((error as InternalError).getData().issue).toEqual(DB_CONNECTION_ERRORS.DB_CONNECTION_UNAUTHORIZED);
 		}
 
 		expect(true).toBeTruthy();

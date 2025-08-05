@@ -3,7 +3,7 @@ import startServer from '../../../../../src/server/server';
 import { faker } from '@faker-js/faker';
 import * as crudPerson from '../../../../../src/db/archive/crud-person';
 import { Person } from '../../../../../src/archive/person';
-import { InternalError } from '../../../../../src/_helpers/errors-helper';
+import { InternalError } from '@ampkz/auth-neo4j/errors';
 import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/errors';
 import * as personLabelRelationship from '../../../../../src/db/archive/relationship/person-label-relationship';
 import { Label, LabelType } from '../../../../../src/archive/label';

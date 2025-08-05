@@ -3,7 +3,7 @@ import startServer from '../../../../../src/server/server';
 import { faker } from '@faker-js/faker';
 import * as crudCorrespondence from '../../../../../src/db/archive/crud-correspondence';
 import * as correspondencePerson from '../../../../../src/db/archive/relationship/person-correspondence-relationship';
-import { InternalError } from '../../../../../src/_helpers/errors-helper';
+import { InternalError } from '@ampkz/auth-neo4j/errors';
 import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/errors';
 import { Correspondence, CorrespondenceType } from '../../../../../src/archive/correspondence';
 import { Person } from '../../../../../src/archive/person';

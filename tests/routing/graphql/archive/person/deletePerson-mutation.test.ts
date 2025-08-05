@@ -7,7 +7,7 @@ import sessions from '@ampkz/auth-neo4j/token';
 import { Auth } from '@ampkz/auth-neo4j/auth';
 import { User } from '@ampkz/auth-neo4j/user';
 import { Person } from '../../../../../src/archive/person';
-import { InternalError } from '../../../../../src/_helpers/errors-helper';
+import { InternalError } from '@ampkz/auth-neo4j/errors';
 
 describe(`deletePerson Mutation Tests`, () => {
 	let app: any;

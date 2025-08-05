@@ -2,7 +2,7 @@ import request from 'supertest';
 import startServer from '../../../../../src/server/server';
 import { faker } from '@faker-js/faker';
 import * as crudLabel from '../../../../../src/db/archive/crud-label';
-import { InternalError } from '../../../../../src/_helpers/errors-helper';
+import { InternalError } from '@ampkz/auth-neo4j/errors';
 import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/errors';
 import { Label, LabelType } from '../../../../../src/archive/label';
 import { Person } from '../../../../../src/archive/person';

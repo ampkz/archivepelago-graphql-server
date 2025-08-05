@@ -6,7 +6,7 @@ import * as crudLabel from '../../../../../src/db/archive/crud-label';
 import sessions from '@ampkz/auth-neo4j/token';
 import { Auth } from '@ampkz/auth-neo4j/auth';
 import { User } from '@ampkz/auth-neo4j/user';
-import { InternalError } from '../../../../../src/_helpers/errors-helper';
+import { InternalError } from '@ampkz/auth-neo4j/errors';
 import { Label, LabelType } from '../../../../../src/archive/label';
 
 describe(`updateLabel Mutation Tests`, () => {

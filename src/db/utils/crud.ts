@@ -1,7 +1,7 @@
-import { Driver, Neo4jError, RecordShape, Session } from 'neo4j-driver';
+import { Driver, RecordShape, Session } from 'neo4j-driver';
 import { connect } from './connection';
 import { getSessionOptions } from '../../_helpers/db-helper';
-import { InternalError } from '../../_helpers/errors-helper';
+import { InternalError } from '@ampkz/auth-neo4j/errors';
 import { NodeType } from '../../_helpers/nodes';
 
 export enum Errors {
@@ -37,13 +37,7 @@ export async function createNode(
 		await session.close();
 		await driver.close();
 
-		let data = {};
-
-		if (error instanceof Neo4jError) {
-			data = { info: error.code };
-		}
-
-		throw new InternalError(Errors.CANNOT_CREATE_NODE, data);
+		throw new InternalError(Errors.CANNOT_CREATE_NODE, { cause: error });
 	}
 
 	await session.close();
@@ -83,13 +77,7 @@ export async function getNode(
 			await driver.close();
 		}
 
-		let data = {};
-
-		if (error instanceof Neo4jError) {
-			data = { info: error.code };
-		}
-
-		throw new InternalError(Errors.CANNOT_MATCH_NODE, data);
+		throw new InternalError(Errors.CANNOT_MATCH_NODE, { cause: error });
 	}
 
 	if (driver) {
@@ -139,16 +127,10 @@ export async function deleteNode(
 				throw new InternalError(Errors.CANNOT_DELETE_NODE);
 			}
 		} catch (error: unknown) {
-			let data = {};
-
-			if (error instanceof Neo4jError) {
-				data = { info: error.code };
-			}
-
 			await session.close();
 			await driver.close();
 
-			throw new InternalError(Errors.CANNOT_DELETE_NODE, data);
+			throw new InternalError(Errors.CANNOT_DELETE_NODE, { cause: error });
 		}
 	}
 
@@ -179,16 +161,10 @@ export async function updateNode(
 			params
 		);
 	} catch (error: unknown) {
-		let data = {};
-
-		if (error instanceof Neo4jError) {
-			data = { info: error.code };
-		}
-
 		await session.close();
 		await driver.close();
 
-		throw new InternalError(Errors.CANNOT_UPDATE_NODE, data);
+		throw new InternalError(Errors.CANNOT_UPDATE_NODE, { cause: error });
 	}
 
 	if (match && match.records.length === 0) {
@@ -223,16 +199,10 @@ export async function removeProperties(
 			params
 		);
 	} catch (error: unknown) {
-		let data = {};
-
-		if (error instanceof Neo4jError) {
-			data = { info: error.code };
-		}
-
 		await session.close();
 		await driver.close();
 
-		throw new InternalError(Errors.CANNOT_UPDATE_NODE, data);
+		throw new InternalError(Errors.CANNOT_UPDATE_NODE, { cause: error });
 	}
 
 	if (match && match.records.length === 0) {
