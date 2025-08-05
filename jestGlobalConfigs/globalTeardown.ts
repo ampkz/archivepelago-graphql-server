@@ -1,5 +1,5 @@
-import { destroyDBs } from '../src/db/utils/init-dbs';
+import { destroyDB } from '../src/db/utils/init-db';
 
 module.exports = async () => {
-	await destroyDBs();
+	await destroyDB();
 };

@@ -1,10 +1,12 @@
 import dotenv from 'dotenv';
-import { destroyDBs } from '../../db/utils/init-dbs';
+import { destroyDB } from '../../db/utils/init-db';
+import { destroyDB as destroyUserDB } from '@ampkz/auth-neo4j/db';
 
 dotenv.config();
 
 async function destroy() {
-	await destroyDBs();
+	await destroyDB();
+	await destroyUserDB();
 	process.exit(0);
 }
 

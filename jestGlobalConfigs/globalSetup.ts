@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
-import { initializeDBs } from '../src/db/utils/init-dbs';
+import { initializeDB } from '../src/db/utils/init-db';
 
 module.exports = async () => {
 	dotenv.config();
-	await initializeDBs();
+	await initializeDB();
 };

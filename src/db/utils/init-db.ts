@@ -9,7 +9,7 @@ export enum ErrorMsgs {
 	CONSTRAINT_ALREADY_EXISTS = 'Constrain Already Exists',
 }
 
-export async function initializeDBs(): Promise<boolean> {
+export async function initializeDB(): Promise<boolean> {
 	const driver: Driver = await connect();
 	let session = driver.session();
 	const match = await session.run(`CREATE DATABASE ${getSessionOptions(process.env.ARCHIVE_DB as string).database} IF NOT EXISTS WAIT`);
@@ -109,10 +109,9 @@ export async function verifyDB(dbName: string): Promise<boolean> {
 	return match.records.length === 1;
 }
 
-export async function destroyDBs(): Promise<void> {
+export async function destroyDB(): Promise<void> {
 	const driver: Driver = await connect();
 	const session: Session = driver.session();
-	await session.run(`DROP DATABASE ${getSessionOptions(process.env.USERS_DB as string).database} IF EXISTS DESTROY DATA WAIT`);
 	await session.run(`DROP DATABASE ${getSessionOptions(process.env.ARCHIVE_DB as string).database} IF EXISTS DESTROY DATA WAIT`);
 	await session.close();
 	await driver.close();
