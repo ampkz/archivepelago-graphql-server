@@ -1,6 +1,6 @@
 {
 	"name": "archivepelago-graphql-server",
-	"version": "0.4.0",
+	"version": "0.5.0",
 	"description": "The graphql back-end for Archivepelago, a project on the transmission and translation of notions of sexuality and gender by mapping networks of queer writers and artists.",
 	"main": "./build/index.js",
 	"repository": {
@@ -13,6 +13,7 @@
 		"start": "tsc && NODE_ENV=production node ./build",
 		"init-dev": "NODE_ENV=development ts-node ./src/server/utils/init-server.ts",
 		"destroy-dev": "NODE_ENV=development ts-node ./src/server/utils/destroy-server.ts",
+		"destroy-test": "NODE_ENV=test ts-node ./src/server/utils/destroy-server.ts",
 		"dev": "NODE_ENV=development ts-node ./src",
 		"test": "jest --coverage"
 	},
@@ -22,7 +23,6 @@
 	"devDependencies": {
 		"@eslint/js": "^9.20.0",
 		"@faker-js/faker": "^9.4.0",
-		"@types/bcrypt": "^6.0.0",
 		"@types/cookie-parser": "^1.4.8",
 		"@types/cors": "^2.8.17",
 		"@types/express": "^5.0.3",
@@ -44,7 +44,6 @@
 		"@ampkz/auth-neo4j": "^0.8.1",
 		"@apollo/server": "^5.0.0",
 		"@as-integrations/express5": "^1.1.2",
-		"bcrypt": "^6.0.0",
 		"cookie-parser": "^1.4.7",
 		"cors": "^2.8.5",
 		"dotenv": "^17.2.1",
