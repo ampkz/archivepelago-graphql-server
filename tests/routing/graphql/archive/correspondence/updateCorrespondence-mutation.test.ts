@@ -62,7 +62,7 @@ describe(`updateCorrespondence Mutation Tests`, () => {
 
 		const validateSessionTokenSpy = jest.spyOn(sessions, 'validateSessionToken');
 		validateSessionTokenSpy.mockResolvedValueOnce({
-			session: { id: '', expiresAt: new Date(), userID: '' },
+			session: { id: '', expiresAt: new Date(), userID: '', host: '', userAgent: '' },
 			user: new User({ email: faker.internet.email(), auth: Auth.ADMIN }),
 		});
 
@@ -102,7 +102,7 @@ describe(`updateCorrespondence Mutation Tests`, () => {
 
 		const validateSessionTokenSpy = jest.spyOn(sessions, 'validateSessionToken');
 		validateSessionTokenSpy.mockResolvedValueOnce({
-			session: { id: '', expiresAt: new Date(), userID: '' },
+			session: { id: '', expiresAt: new Date(), userID: '', host: '', userAgent: '' },
 			user: new User({ email: faker.internet.email(), auth: Auth.CONTRIBUTOR }),
 		});
 
@@ -137,7 +137,7 @@ describe(`updateCorrespondence Mutation Tests`, () => {
 
 		const validateSessionTokenSpy = jest.spyOn(sessions, 'validateSessionToken');
 		validateSessionTokenSpy.mockResolvedValueOnce({
-			session: { id: '', expiresAt: new Date(), userID: '' },
+			session: { id: '', expiresAt: new Date(), userID: '', host: '', userAgent: '' },
 			user: new User({ email: faker.internet.email(), auth: Auth.ADMIN }),
 		});
 
@@ -172,7 +172,7 @@ describe(`updateCorrespondence Mutation Tests`, () => {
 
 		const validateSessionTokenSpy = jest.spyOn(sessions, 'validateSessionToken');
 		validateSessionTokenSpy.mockResolvedValueOnce({
-			session: { id: '', expiresAt: new Date(), userID: '' },
+			session: { id: '', expiresAt: new Date(), userID: '', host: '', userAgent: '' },
 			user: new User({ email: faker.internet.email(), auth: Auth.ADMIN }),
 		});
 
