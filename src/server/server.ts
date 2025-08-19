@@ -17,12 +17,21 @@ import helmet from 'helmet';
 import authNeo4j from '@ampkz/auth-neo4j';
 import { validateSessionToken } from '@ampkz/auth-neo4j/token';
 import { User } from '@ampkz/auth-neo4j/user';
+import rateLimit from 'express-rate-limit';
 
 interface MyContext {
 	authorizedUser?: User | null;
 }
 
 async function startServer() {
+	const limiter = rateLimit({
+		windowMs: 15 * 60 * 1000, // 15 minutes
+		max: 100, // Limit each IP to 100 requests per windowMs
+		standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+		legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+		message: 'Too many requests from this IP, please try again later.',
+	});
+
 	const app: Express = express();
 
 	const httpServer = http.createServer(app);
@@ -54,6 +63,8 @@ async function startServer() {
 	app.use(cookieParser());
 	app.use(express.json());
 	app.use(express.urlencoded({ extended: true }));
+
+	app.use(limiter);
 
 	app.use(
 		'/graphql',
