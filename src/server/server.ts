@@ -1,5 +1,5 @@
 import { ApolloServer } from '@apollo/server';
-import { mergeTypeDefs, mergeResolvers } from '@graphql-tools/merge';
+import { mergeResolvers } from '@graphql-tools/merge';
 import { expressMiddleware } from '@as-integrations/express5';
 import express, { Express } from 'express';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
@@ -7,19 +7,21 @@ import { error404, errorHandler } from '../middleware/errors';
 import cookieParser from 'cookie-parser';
 import http from 'http';
 import cors from 'cors';
-import personType from '../graphql/typeDefs/personType';
+// import personType from '../graphql/typeDefs/personType';
 import personResolver from '../graphql/resolvers/personResolver';
-import labelType from '../graphql/typeDefs/labelType';
+// import labelType from '../graphql/typeDefs/labelType';
 import labelResolver from '../graphql/resolvers/labelResolver';
-import correspondenceType from '../graphql/typeDefs/correspondenceType';
+// import correspondenceType from '../graphql/typeDefs/correspondenceType';
 import correspondenceResolver from '../graphql/resolvers/correspondenceResolver';
 import helmet from 'helmet';
 import authNeo4j from '@ampkz/auth-neo4j';
 import { validateSessionToken } from '@ampkz/auth-neo4j/token';
 import { User } from '@ampkz/auth-neo4j/user';
 import rateLimit from 'express-rate-limit';
+import { readFileSync } from 'fs';
+import path from 'path';
 
-interface MyContext {
+export interface MyContext {
 	authorizedUser?: User | null;
 }
 
@@ -36,7 +38,13 @@ async function startServer() {
 
 	const httpServer = http.createServer(app);
 
-	const typeDefs = mergeTypeDefs([personType, labelType, correspondenceType]);
+	const parentPath = path.dirname(__dirname);
+
+	// const typeDefs = mergeTypeDefs([personType, labelType, correspondenceType]);
+	let typeDefs = readFileSync(parentPath + '/graphql/schema/correspondenceSchema.graphql', { encoding: 'utf-8' });
+	typeDefs += readFileSync(parentPath + '/graphql/schema/personSchema.graphql', { encoding: 'utf-8' });
+	typeDefs += readFileSync(parentPath + '/graphql/schema/labelSchema.graphql', { encoding: 'utf-8' });
+
 	const resolvers = mergeResolvers([personResolver, labelResolver, correspondenceResolver]);
 
 	/* istanbul ignore next line */
