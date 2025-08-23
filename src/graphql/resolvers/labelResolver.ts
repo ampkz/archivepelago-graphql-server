@@ -1,13 +1,14 @@
 import { isPermitted } from '../../_helpers/auth-helper';
-import { Label } from '../../archive/label';
+import { Label, LabelType } from '../../archive/label';
 import { Auth } from '@ampkz/auth-neo4j/auth';
 import { createLabel, deleteLabel, getLabel, getLabels, updateLabel } from '../../db/archive/crud-label';
 import { getPersonsByLabel } from '../../db/archive/relationship/person-label-relationship';
 import { mutationFailed, serverFailed, unauthorizedError } from '../errors/errors';
+import { Resolvers, Label as GqlLabel } from '../../generated/graphql';
 
-export default {
+export const resolvers: Resolvers = {
 	Query: {
-		label: async (_root: any, { name }: any) => {
+		label: async (_root, { name }) => {
 			let label: Label | null = null;
 
 			try {
@@ -16,7 +17,7 @@ export default {
 				throw serverFailed(error.message);
 			}
 
-			return label;
+			return label as unknown as GqlLabel;
 		},
 
 		labels: async () => {
@@ -28,12 +29,12 @@ export default {
 				throw serverFailed(error.message);
 			}
 
-			return labels;
+			return labels as unknown as GqlLabel[];
 		},
 	},
 
 	Mutation: {
-		createLabel: async (_root: any, { input: { name, type } }: any, { authorizedUser }: any) => {
+		createLabel: async (_root, { input: { name, type } }, { authorizedUser }) => {
 			if (!isPermitted(authorizedUser, Auth.ADMIN, Auth.CONTRIBUTOR)) {
 				throw unauthorizedError(`You are not authorized to make this mutation.`);
 			}
@@ -41,15 +42,15 @@ export default {
 			let label: Label;
 
 			try {
-				label = (await createLabel({ name, type })) as Label;
+				label = (await createLabel({ name, type: type as unknown as LabelType })) as Label;
 			} catch (error: any) {
 				throw mutationFailed(error.message);
 			}
 
-			return label;
+			return label as unknown as GqlLabel;
 		},
 
-		deleteLabel: async (_root: any, { name }: any, { authorizedUser }: any) => {
+		deleteLabel: async (_root, { name }, { authorizedUser }) => {
 			if (!isPermitted(authorizedUser, Auth.ADMIN, Auth.CONTRIBUTOR)) {
 				throw unauthorizedError(`You are not authorized to make this mutation.`);
 			}
@@ -62,10 +63,10 @@ export default {
 				throw mutationFailed(error.message);
 			}
 
-			return label;
+			return label as unknown as GqlLabel;
 		},
 
-		updateLabel: async (_root: any, { input: { name, updatedName, updatedType } }: any, { authorizedUser }: any) => {
+		updateLabel: async (_root, { input: { name, updatedName, updatedType } }, { authorizedUser }) => {
 			if (!isPermitted(authorizedUser, Auth.ADMIN, Auth.CONTRIBUTOR)) {
 				throw unauthorizedError(`You are not authorized to make this mutation.`);
 			}
@@ -73,16 +74,16 @@ export default {
 			let label: Label;
 
 			try {
-				label = (await updateLabel(name, { updatedName, updatedType })) as Label;
+				label = (await updateLabel(name, { updatedName: updatedName as string, updatedType: updatedType as unknown as LabelType })) as Label;
 			} catch (error: any) {
 				throw mutationFailed(error.message);
 			}
 
-			return label;
+			return label as unknown as GqlLabel;
 		},
 	},
 
 	Label: {
-		persons: (label: Label) => getPersonsByLabel(label),
+		persons: label => getPersonsByLabel(label as unknown as Label),
 	},
 };

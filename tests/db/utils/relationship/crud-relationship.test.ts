@@ -199,15 +199,15 @@ describe(`Relationship CRUD Tests`, () => {
 	it(`should retrieve a list of relationships`, async () => {
 		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
 		const createdLabel: Label = (await createLabel({
-			name: `${(global as any).UniqueAdjIterator.next().value}`,
+			name: `rel_${(global as any).UniqueAdjIterator.next().value}`,
 			type: LabelType.PROFESSION,
 		})) as Label;
 		const createdLabel2: Label = (await createLabel({
-			name: `${(global as any).UniqueAdjIterator.next().value}`,
+			name: `rel_${(global as any).UniqueAdjIterator.next().value}`,
 			type: LabelType.PROFESSION,
 		})) as Label;
 		const createdLabel3: Label = (await createLabel({
-			name: `${(global as any).UniqueAdjIterator.next().value}`,
+			name: `rel_${(global as any).UniqueAdjIterator.next().value}`,
 			type: LabelType.PROFESSION,
 		})) as Label;
 

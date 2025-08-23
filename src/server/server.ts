@@ -11,7 +11,7 @@ import cors from 'cors';
 // import personResolver from '../graphql/resolvers/personResolver';
 import { resolvers as personResolver } from '../graphql/resolvers/personResolver';
 // import labelType from '../graphql/typeDefs/labelType';
-import labelResolver from '../graphql/resolvers/labelResolver';
+import { resolvers as labelResolver } from '../graphql/resolvers/labelResolver';
 // import correspondenceType from '../graphql/typeDefs/correspondenceType';
 import correspondenceResolver from '../graphql/resolvers/correspondenceResolver';
 import helmet from 'helmet';
