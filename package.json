@@ -15,7 +15,8 @@
 		"destroy-dev": "NODE_ENV=development ts-node ./src/server/utils/destroy-server.ts",
 		"destroy-test": "NODE_ENV=test ts-node ./src/server/utils/destroy-server.ts",
 		"dev": "NODE_ENV=development ts-node ./src",
-		"test": "jest --watchAll --coverage"
+		"test": "jest --watchAll --coverage",
+		"codegen": "graphql-codegen --config codegen.ts"
 	},
 	"keywords": [],
 	"author": "Andrew M. Pankratz",
@@ -23,6 +24,9 @@
 	"devDependencies": {
 		"@eslint/js": "^9.20.0",
 		"@faker-js/faker": "^9.4.0",
+		"@graphql-codegen/cli": "5.0.7",
+		"@graphql-codegen/typescript": "4.1.6",
+		"@graphql-codegen/typescript-resolvers": "4.5.1",
 		"@types/cookie-parser": "^1.4.8",
 		"@types/cors": "^2.8.17",
 		"@types/express": "^5.0.3",

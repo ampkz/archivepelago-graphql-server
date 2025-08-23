@@ -7,14 +7,14 @@ type Correspondence {
 	to: [Person]
 }
 
-type Query {
+extend type Query {
 	correspondence(correspondenceID: ID!): Correspondence
 	correspondences: [Correspondence]
 	from: [Person]
 	to: [Person]
 }
 
-type Mutation {
+extend type Mutation {
 	createCorrespondence(input: CreateCorrespondenceInput!): Correspondence
 	deleteCorrespondence(correspondenceID: ID!): Correspondence
 	updateCorrespondence(input: UpdateCorrespondenceInput!): Correspondence

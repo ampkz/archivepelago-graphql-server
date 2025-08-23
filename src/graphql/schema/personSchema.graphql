@@ -10,12 +10,12 @@ type Person {
 	receivedCorrespondences: [Correspondence]
 }
 
-type Query {
+extend type Query {
 	person(id: ID!): Person
 	persons: [Person]
 }
 
-type Mutation {
+extend type Mutation {
 	createPerson(input: CreatePersonInput!): Person
 	updatePerson(input: UpdatePersonInput!): Person
 	deletePerson(id: ID!): Person

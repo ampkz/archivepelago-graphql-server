@@ -4,12 +4,12 @@ type Label {
 	persons: [Person]
 }
 
-type Query {
+extend type Query {
 	label(name: ID!): Label
 	labels: [Label]
 }
 
-type Mutation {
+extend type Mutation {
 	createLabel(input: CreateLabelInput!): Label
 	updateLabel(input: UpdateLabelInput!): Label
 	deleteLabel(name: ID!): Label

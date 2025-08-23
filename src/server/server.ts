@@ -41,7 +41,8 @@ async function startServer() {
 	const parentPath = path.dirname(__dirname);
 
 	// const typeDefs = mergeTypeDefs([personType, labelType, correspondenceType]);
-	let typeDefs = readFileSync(parentPath + '/graphql/schema/correspondenceSchema.graphql', { encoding: 'utf-8' });
+	let typeDefs = readFileSync(parentPath + '/graphql/schema/schema.graphql', { encoding: 'utf-8' });
+	typeDefs += readFileSync(parentPath + '/graphql/schema/correspondenceSchema.graphql', { encoding: 'utf-8' });
 	typeDefs += readFileSync(parentPath + '/graphql/schema/personSchema.graphql', { encoding: 'utf-8' });
 	typeDefs += readFileSync(parentPath + '/graphql/schema/labelSchema.graphql', { encoding: 'utf-8' });
 
