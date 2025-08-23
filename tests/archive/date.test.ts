@@ -42,9 +42,9 @@ describe(`Date tests`, () => {
 		expect(convertDateStringToArchiveDate(dateString)).toEqual({ year: '2005', month: '12', day: '27' });
 	});
 
-	it(`should return undefined with an undefined datestring`, () => {
+	it(`should return null with an null datestring`, () => {
 		const dateString = undefined;
 
-		expect(convertDateStringToArchiveDate(dateString)).toBeUndefined();
+		expect(convertDateStringToArchiveDate(dateString)).toBeNull();
 	});
 });

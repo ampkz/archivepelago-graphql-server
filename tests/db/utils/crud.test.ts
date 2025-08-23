@@ -11,7 +11,7 @@ describe(`CRUD Tests`, () => {
 
 	it(`should create a new node`, async () => {
 		const firstName: string = faker.person.firstName();
-		const node: any | undefined = await createNode(
+		const node: any | null = await createNode(
 			NodeType.PERSON,
 			['id:apoc.create.uuid()', 'firstName: $firstName'],
 			{ firstName },
@@ -22,21 +22,21 @@ describe(`CRUD Tests`, () => {
 
 	// it(`should create a new node in the default database`, async () => {
 	// 	const email: string = faker.internet.email();
-	// 	const node: object | undefined = await createNode(NodeType.PERSON, ['email: $email'], { email });
+	// 	const node: object | null = await createNode(NodeType.PERSON, ['email: $email'], { email });
 	// 	expect(node).toEqual({ email });
 	// });
 
 	// it(`should get a node in the default database`, async () => {
 	// 	const email: string = faker.internet.email();
-	// 	const node: object | undefined = await createNode(NodeType.PERSON, ['email: $email'], { email });
-	// 	const matchedNode: any | undefined = await getNode(NodeType.PERSON, 'email: $email', { email });
+	// 	const node: object | null = await createNode(NodeType.PERSON, ['email: $email'], { email });
+	// 	const matchedNode: any | null = await getNode(NodeType.PERSON, 'email: $email', { email });
 	// 	expect(matchedNode).toEqual(node);
 	// });
 
 	// it(`should delete a node in the default database`, async () => {
 	// 	const email: string = faker.internet.email();
-	// 	const node: object | undefined = await createNode(NodeType.PERSON, ['email: $email'], { email });
-	// 	const matchedNode: any | undefined = await deleteNode(NodeType.PERSON, 'email: $email', { email });
+	// 	const node: object | null = await createNode(NodeType.PERSON, ['email: $email'], { email });
+	// 	const matchedNode: any | null = await deleteNode(NodeType.PERSON, 'email: $email', { email });
 	// 	expect(matchedNode).toEqual(node);
 	// });
 
@@ -70,9 +70,9 @@ describe(`CRUD Tests`, () => {
 
 	// it(`should return a created node`, async () => {
 	// 	const email: string = faker.internet.email();
-	// 	const node: object | undefined = await createNode(NodeType.PERSON, ['email: $email'], { email }, process.env.ARCHIVE_DB as string);
+	// 	const node: object | null = await createNode(NodeType.PERSON, ['email: $email'], { email }, process.env.ARCHIVE_DB as string);
 
-	// 	const matchedNode: any | undefined = await getNode(NodeType.PERSON, 'email: $email', { email }, process.env.ARCHIVE_DB as string);
+	// 	const matchedNode: any | null = await getNode(NodeType.PERSON, 'email: $email', { email }, process.env.ARCHIVE_DB as string);
 
 	// 	expect(matchedNode).toEqual(node);
 	// });
@@ -97,9 +97,9 @@ describe(`CRUD Tests`, () => {
 
 	// it(`should delete an existing node`, async () => {
 	// 	const email: string = faker.internet.email();
-	// 	const node: object | undefined = await createNode(NodeType.PERSON, ['email: $email'], { email }, process.env.ARCHIVE_DB as string);
+	// 	const node: object | null = await createNode(NodeType.PERSON, ['email: $email'], { email }, process.env.ARCHIVE_DB as string);
 
-	// 	const deletedNode: any | undefined = await deleteNode(NodeType.PERSON, 'email: $email', { email }, process.env.ARCHIVE_DB as string);
+	// 	const deletedNode: any | null = await deleteNode(NodeType.PERSON, 'email: $email', { email }, process.env.ARCHIVE_DB as string);
 
 	// 	expect(deletedNode).toEqual(node);
 	// });
@@ -199,7 +199,7 @@ describe(`CRUD Tests`, () => {
 
 	// 	await createNode(NodeType.PERSON, ['email: $email', 'firstName: $firstName'], { email, firstName }, process.env.ARCHIVE_DB as string);
 
-	// 	const updatedNode: any | undefined = await updateNode(
+	// 	const updatedNode: any | null = await updateNode(
 	// 		NodeType.PERSON,
 	// 		'u',
 	// 		'email',
@@ -218,7 +218,7 @@ describe(`CRUD Tests`, () => {
 
 	// 	await createNode(NodeType.PERSON, ['email: $email', 'firstName: $firstName'], { email, firstName });
 
-	// 	const updatedNode: any | undefined = await updateNode(NodeType.PERSON, 'u', 'email', ['u.firstName = $firstName'], {
+	// 	const updatedNode: any | null = await updateNode(NodeType.PERSON, 'u', 'email', ['u.firstName = $firstName'], {
 	// 		email,
 	// 		firstName: updatedFirstName,
 	// 	});
@@ -226,11 +226,11 @@ describe(`CRUD Tests`, () => {
 	// 	expect(updatedNode).toEqual({ email, firstName: updatedFirstName });
 	// });
 
-	// it(`should return undefined if no node was updated`, async () => {
+	// it(`should return null if no node was updated`, async () => {
 	// 	const email: string = faker.internet.email(),
 	// 		updatedFirstName: string = faker.person.firstName();
 
-	// 	const updatedNode: any | undefined = await updateNode(NodeType.PERSON, 'u', 'email', ['u.firstName = $firstName'], {
+	// 	const updatedNode: any | null = await updateNode(NodeType.PERSON, 'u', 'email', ['u.firstName = $firstName'], {
 	// 		email,
 	// 		firstName: updatedFirstName,
 	// 	});
@@ -281,7 +281,7 @@ describe(`CRUD Tests`, () => {
 
 	// 	await createNode(NodeType.PERSON, ['email: $email', 'firstName: $firstName'], { email, firstName });
 
-	// 	const updatedNode: any | undefined = await removeProperties(NodeType.PERSON, 'u', 'email', ['u.firstName'], { email });
+	// 	const updatedNode: any | null = await removeProperties(NodeType.PERSON, 'u', 'email', ['u.firstName'], { email });
 
 	// 	expect(updatedNode).toEqual({ email });
 	// 	expect(updatedNode.firstName).toBeUndefined();
@@ -305,11 +305,11 @@ describe(`CRUD Tests`, () => {
 		await expect(removeProperties(NodeType.PERSON, 'u', 'email', ['u.firstName'], { email })).rejects.toThrow(CRUDErrors.CANNOT_UPDATE_NODE);
 	});
 
-	it(`should return undefined if no node exists to remove properties`, async () => {
+	it(`should return null if no node exists to remove properties`, async () => {
 		const email: string = faker.internet.email();
 
-		const updatedNode: any | undefined = await removeProperties(NodeType.PERSON, 'u', 'email', ['u.firstName'], { email });
+		const updatedNode: any | null = await removeProperties(NodeType.PERSON, 'u', 'email', ['u.firstName'], { email });
 
-		expect(updatedNode).toBeUndefined();
+		expect(updatedNode).toBeNull();
 	});
 });

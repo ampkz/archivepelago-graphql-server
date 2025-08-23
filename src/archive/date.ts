@@ -4,14 +4,14 @@ export interface IArchiveDate {
 	day?: string;
 }
 
-export function convertArchiveDateToDate(archiveDate: IArchiveDate): string | undefined {
+export function convertArchiveDateToDate(archiveDate: IArchiveDate): string | null {
 	return archiveDate
 		? `${archiveDate.year}${archiveDate.month ? `-${archiveDate.month}${archiveDate.day ? `-${archiveDate.day}` : ``}` : ``}`
-		: undefined;
+		: null;
 }
 
-export function convertDateStringToArchiveDate(dateString?: string): IArchiveDate | undefined {
-	if (dateString === undefined) return undefined;
+export function convertDateStringToArchiveDate(dateString?: string): IArchiveDate | null {
+	if (dateString === undefined) return null;
 
 	const dateArray = dateString.split(`-`);
 

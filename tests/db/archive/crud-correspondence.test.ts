@@ -60,23 +60,23 @@ describe(`CRUD Correspondence Tests`, () => {
 		expect(deletedCorrespondence).toEqual(createdCorrespondence);
 	});
 
-	test(`getCorrespondence should return undefined if no Correspondence exists`, async () => {
+	test(`getCorrespondence should return null if no Correspondence exists`, async () => {
 		const matchedCorrespondence = await getCorrespondence(faker.database.mongodbObjectId());
-		expect(matchedCorrespondence).toBeUndefined();
+		expect(matchedCorrespondence).toBeNull();
 	});
 
-	test(`deleteCorrespondence should return undefined if no Correspondence exists`, async () => {
+	test(`deleteCorrespondence should return null if no Correspondence exists`, async () => {
 		const deletedCorrespondence = await deleteCorrespondence(faker.database.mongodbObjectId());
-		expect(deletedCorrespondence).toBeUndefined();
+		expect(deletedCorrespondence).toBeNull();
 	});
 
-	test(`updateCorrespondence should return undefined if no Label exists`, async () => {
+	test(`updateCorrespondence should return null if no Label exists`, async () => {
 		const updatedCorrespondence = await updateCorrespondence({
 			correspondenceID: faker.database.mongodbObjectId(),
 			updatedCorrespondenceDate: faker.date.anytime().toDateString(),
 		});
 
-		expect(updatedCorrespondence).toBeUndefined();
+		expect(updatedCorrespondence).toBeNull();
 	});
 
 	it(`should update a created correspondence`, async () => {
@@ -110,8 +110,8 @@ describe(`CRUD Correspondence Tests`, () => {
 
 		const updatedCorrespondence = await updateCorrespondence({
 			correspondenceID: createdCorrespondence?.correspondenceID as string,
-			updatedCorrespondenceDate: null,
-			updatedCorrespondenceEndDate: null,
+			updatedCorrespondenceDate: undefined,
+			updatedCorrespondenceEndDate: undefined,
 		});
 
 		expect(updatedCorrespondence).toEqual({
