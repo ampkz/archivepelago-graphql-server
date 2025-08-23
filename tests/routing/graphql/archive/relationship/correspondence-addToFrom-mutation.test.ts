@@ -256,12 +256,12 @@ describe(`addSent and addReceived Mutation Tests`, () => {
 		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
 	});
 
-	test(`addSent should return unedfined if no correspondence relationship was created`, async () => {
+	test(`addSent should return null if no correspondence relationship was created`, async () => {
 		const correspondenceID = faker.database.mongodbObjectId(),
 			sentID = faker.database.mongodbObjectId();
 
 		const createPersonRelationshipSpy = jest.spyOn(personCorrespondence, 'createPersonRelationship');
-		createPersonRelationshipSpy.mockResolvedValue(undefined);
+		createPersonRelationshipSpy.mockResolvedValue(null);
 
 		const query = `
             mutation AddSent($correspondenceID: ID!, $sentID: ID!){
@@ -332,12 +332,12 @@ describe(`addSent and addReceived Mutation Tests`, () => {
 		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
 	});
 
-	test(`addReceived should return undefined if no relationship was created`, async () => {
+	test(`addReceived should return null if no relationship was created`, async () => {
 		const correspondenceID = faker.database.mongodbObjectId(),
 			receivedID = faker.database.mongodbObjectId();
 
 		const createPersonRelationshipSpy = jest.spyOn(personCorrespondence, 'createPersonRelationship');
-		createPersonRelationshipSpy.mockResolvedValue(undefined);
+		createPersonRelationshipSpy.mockResolvedValue(null);
 
 		const query = `
             mutation AddReceived($correspondenceID: ID!, $receivedID: ID!){

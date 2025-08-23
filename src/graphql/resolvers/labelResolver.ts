@@ -8,7 +8,7 @@ import { mutationFailed, serverFailed, unauthorizedError } from '../errors/error
 export default {
 	Query: {
 		label: async (_root: any, { name }: any) => {
-			let label: Label | undefined = undefined;
+			let label: Label | null = null;
 
 			try {
 				label = await getLabel(name);

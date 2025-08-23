@@ -152,9 +152,9 @@ describe(`updateCorrespondence Mutation Tests`, () => {
 		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
 	});
 
-	it(`should return undefined if no correspondence was updated`, async () => {
+	it(`should return null if no correspondence was updated`, async () => {
 		const updateCorrespondenceSpy = jest.spyOn(crudCorrespondence, 'updateCorrespondence');
-		updateCorrespondenceSpy.mockResolvedValue(undefined);
+		updateCorrespondenceSpy.mockResolvedValue(null);
 
 		const query = `
             mutation UpdateCorrespondence($input: UpdateCorrespondenceInput!) {

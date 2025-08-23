@@ -8,7 +8,8 @@ import cookieParser from 'cookie-parser';
 import http from 'http';
 import cors from 'cors';
 // import personType from '../graphql/typeDefs/personType';
-import personResolver from '../graphql/resolvers/personResolver';
+// import personResolver from '../graphql/resolvers/personResolver';
+import { resolvers as personResolver } from '../graphql/resolvers/personResolver';
 // import labelType from '../graphql/typeDefs/labelType';
 import labelResolver from '../graphql/resolvers/labelResolver';
 // import correspondenceType from '../graphql/typeDefs/correspondenceType';
@@ -22,7 +23,7 @@ import { readFileSync } from 'fs';
 import path from 'path';
 
 export interface MyContext {
-	authorizedUser?: User | null;
+	authorizedUser?: User;
 }
 
 async function startServer() {

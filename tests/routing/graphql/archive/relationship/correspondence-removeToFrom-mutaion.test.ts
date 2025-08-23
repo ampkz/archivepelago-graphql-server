@@ -256,12 +256,12 @@ describe(`removeReceived and removeSent Mutation Tests`, () => {
 		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
 	});
 
-	test(`removeSent should return undefined if no relationship was deleted`, async () => {
+	test(`removeSent should return null if no relationship was deleted`, async () => {
 		const correspondenceID = faker.database.mongodbObjectId(),
 			sentID = faker.database.mongodbObjectId();
 
 		const deletePersonRelationshipSpy = jest.spyOn(personCorrespondence, 'deletePersonRelationship');
-		deletePersonRelationshipSpy.mockResolvedValue(undefined);
+		deletePersonRelationshipSpy.mockResolvedValue(null);
 
 		const query = `
             mutation RemoveSent($correspondenceID: ID!, $sentID: ID!){
@@ -332,12 +332,12 @@ describe(`removeReceived and removeSent Mutation Tests`, () => {
 		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
 	});
 
-	test(`removeReceived should return undefined if no relationship was removed`, async () => {
+	test(`removeReceived should return null if no relationship was removed`, async () => {
 		const correspondenceID = faker.database.mongodbObjectId(),
 			receivedID = faker.database.mongodbObjectId();
 
 		const deletePersonRelationshipSpy = jest.spyOn(personCorrespondence, 'deletePersonRelationship');
-		deletePersonRelationshipSpy.mockResolvedValue(undefined);
+		deletePersonRelationshipSpy.mockResolvedValue(null);
 
 		const query = `
             mutation RemoveReceived($correspondenceID: ID!, $receivedID: ID!){

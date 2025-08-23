@@ -20,7 +20,7 @@ import { mutationFailed, serverFailed, unauthorizedError } from '../errors/error
 export default {
 	Query: {
 		correspondence: async (_root: any, { correspondenceID }: any) => {
-			let correspondence: Correspondence | undefined;
+			let correspondence: Correspondence | null;
 
 			try {
 				correspondence = await getCorrespondence(correspondenceID);
@@ -28,7 +28,7 @@ export default {
 				throw serverFailed(error.message);
 			}
 
-			if (correspondence !== undefined) {
+			if (correspondence !== null) {
 				return {
 					...correspondence,
 					correspondenceDate: convertDateStringToArchiveDate(correspondence?.correspondenceDate),
@@ -36,7 +36,7 @@ export default {
 				};
 			}
 
-			return undefined;
+			return null;
 		},
 
 		correspondences: async () => {
@@ -71,7 +71,7 @@ export default {
 				throw unauthorizedError(`You are not authorized to make this mutation.`);
 			}
 
-			let correspondence: Correspondence | undefined;
+			let correspondence: Correspondence | null;
 
 			try {
 				correspondence = await createCorrespondence({
@@ -83,7 +83,7 @@ export default {
 				throw mutationFailed(error.message);
 			}
 
-			if (correspondence !== undefined) {
+			if (correspondence !== null) {
 				return {
 					...correspondence,
 					correspondenceDate: convertDateStringToArchiveDate(correspondence?.correspondenceDate),
@@ -91,7 +91,7 @@ export default {
 				};
 			}
 
-			return undefined;
+			return null;
 		},
 
 		deleteCorrespondence: async (_root: any, { correspondenceID }: any, { authorizedUser }: any) => {
@@ -99,7 +99,7 @@ export default {
 				throw unauthorizedError(`You are not authorized to make this mutation.`);
 			}
 
-			let correspondence: Correspondence | undefined;
+			let correspondence: Correspondence | null;
 
 			try {
 				correspondence = await deleteCorrespondence(correspondenceID);
@@ -107,7 +107,7 @@ export default {
 				throw mutationFailed(error.message);
 			}
 
-			if (correspondence !== undefined) {
+			if (correspondence !== null) {
 				return {
 					...correspondence,
 					correspondenceDate: convertDateStringToArchiveDate(correspondence?.correspondenceDate),
@@ -115,7 +115,7 @@ export default {
 				};
 			}
 
-			return undefined;
+			return null;
 		},
 
 		updateCorrespondence: async (
@@ -127,7 +127,7 @@ export default {
 				throw unauthorizedError(`You are not authorized to make this mutation.`);
 			}
 
-			let correspondence: Correspondence | undefined;
+			let correspondence: Correspondence | null;
 
 			try {
 				correspondence = await updateCorrespondence({
@@ -140,7 +140,7 @@ export default {
 				throw mutationFailed(error.message);
 			}
 
-			if (correspondence !== undefined) {
+			if (correspondence !== null) {
 				return {
 					...correspondence,
 					correspondenceDate: convertDateStringToArchiveDate(correspondence?.correspondenceDate),
@@ -148,7 +148,7 @@ export default {
 				};
 			}
 
-			return undefined;
+			return null;
 		},
 
 		addReceived: async (_root: any, { correspondenceID, receivedID }: any, { authorizedUser }: any) => {
@@ -156,7 +156,7 @@ export default {
 				throw unauthorizedError(`You are not authorized to make this mutation.`);
 			}
 
-			let correspondence: Correspondence | undefined;
+			let correspondence: Correspondence | null;
 
 			try {
 				correspondence = await createPersonRelationship(correspondenceID, receivedID, RelationshipType.RECEIVED);
@@ -164,7 +164,7 @@ export default {
 				throw mutationFailed(error.message);
 			}
 
-			if (correspondence !== undefined) {
+			if (correspondence !== null) {
 				return {
 					...correspondence,
 					correspondenceDate: convertDateStringToArchiveDate(correspondence?.correspondenceDate),
@@ -172,7 +172,7 @@ export default {
 				};
 			}
 
-			return undefined;
+			return null;
 		},
 
 		removeReceived: async (_root: any, { correspondenceID, receivedID }: any, { authorizedUser }: any) => {
@@ -180,7 +180,7 @@ export default {
 				throw unauthorizedError(`You are not authorized to make this mutation.`);
 			}
 
-			let correspondence: Correspondence | undefined;
+			let correspondence: Correspondence | null;
 
 			try {
 				correspondence = await deletePersonRelationship(correspondenceID, receivedID, RelationshipType.RECEIVED);
@@ -188,7 +188,7 @@ export default {
 				throw mutationFailed(error.message);
 			}
 
-			if (correspondence !== undefined) {
+			if (correspondence !== null) {
 				return {
 					...correspondence,
 					correspondenceDate: convertDateStringToArchiveDate(correspondence?.correspondenceDate),
@@ -196,7 +196,7 @@ export default {
 				};
 			}
 
-			return undefined;
+			return null;
 		},
 
 		addSent: async (_root: any, { correspondenceID, sentID }: any, { authorizedUser }: any) => {
@@ -204,7 +204,7 @@ export default {
 				throw unauthorizedError(`You are not authorized to make this mutation.`);
 			}
 
-			let correspondence: Correspondence | undefined;
+			let correspondence: Correspondence | null;
 
 			try {
 				correspondence = await createPersonRelationship(correspondenceID, sentID, RelationshipType.SENT);
@@ -212,7 +212,7 @@ export default {
 				throw mutationFailed(error.message);
 			}
 
-			if (correspondence !== undefined) {
+			if (correspondence !== null) {
 				return {
 					...correspondence,
 					correspondenceDate: convertDateStringToArchiveDate(correspondence?.correspondenceDate),
@@ -220,7 +220,7 @@ export default {
 				};
 			}
 
-			return undefined;
+			return null;
 		},
 
 		removeSent: async (_root: any, { correspondenceID, sentID }: any, { authorizedUser }: any) => {
@@ -228,7 +228,7 @@ export default {
 				throw unauthorizedError(`You are not authorized to make this mutation.`);
 			}
 
-			let correspondence: Correspondence | undefined;
+			let correspondence: Correspondence | null;
 
 			try {
 				correspondence = await deletePersonRelationship(correspondenceID, sentID, RelationshipType.SENT);
@@ -236,7 +236,7 @@ export default {
 				throw mutationFailed(error.message);
 			}
 
-			if (correspondence !== undefined) {
+			if (correspondence !== null) {
 				return {
 					...correspondence,
 					correspondenceDate: convertDateStringToArchiveDate(correspondence?.correspondenceDate),
@@ -244,7 +244,7 @@ export default {
 				};
 			}
 
-			return undefined;
+			return null;
 		},
 	},
 

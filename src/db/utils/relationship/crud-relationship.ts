@@ -13,7 +13,7 @@ export enum Errors {
 export async function createRelationship(
 	relationship: Relationship,
 	dbName: string = process.env.ARCHIVE_DB as string
-): Promise<[any | undefined, any | undefined]> {
+): Promise<[any | null, any | null]> {
 	const driver: Driver = await connect();
 	const session: Session = driver.session(getSessionOptions(dbName));
 
@@ -40,7 +40,7 @@ export async function createRelationship(
 export async function deleteRelationship(
 	relationship: Relationship,
 	dbName: string = process.env.ARCHIVE_DB as string
-): Promise<[any | undefined, any | undefined]> {
+): Promise<[any | null, any | null]> {
 	const driver: Driver = await connect();
 	const session: Session = driver.session(getSessionOptions(dbName));
 
@@ -100,9 +100,9 @@ function prepShouldReturnFromQuery(relationship: Relationship): string {
 	return shouldReturn.join(', ');
 }
 
-function prepReturnTuple(records: any): [any | undefined, any | undefined] {
-	let f: any | undefined = undefined;
-	let s: any | undefined = undefined;
+function prepReturnTuple(records: any): [any | null, any | null] {
+	let f: any | null = null;
+	let s: any | null = null;
 
 	if (records.length > 0) {
 		if (records[0].keys.includes('f')) f = records[0].get('f').properties;

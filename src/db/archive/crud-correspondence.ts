@@ -2,24 +2,24 @@ import { NodeType } from '../../_helpers/nodes';
 import { Correspondence, ICorrespondence, IUpdatedCorrespondence } from '../../archive/correspondence';
 import { createNode, deleteNode, getNode, getNodes, removeProperties, updateNode } from '../utils/crud';
 
-export async function getCorrespondence(correspondenceID: string): Promise<Correspondence | undefined> {
+export async function getCorrespondence(correspondenceID: string): Promise<Correspondence | null> {
 	const matchedNode = await getNode(NodeType.CORRESPONDENCE, 'correspondenceID: $correspondenceID', { correspondenceID });
 	return matchedNode;
 }
 
-export async function createCorrespondence(correspondence: ICorrespondence): Promise<Correspondence | undefined> {
+export async function createCorrespondence(correspondence: ICorrespondence): Promise<Correspondence | null> {
 	const createdCorrespondence = await createNode(NodeType.CORRESPONDENCE, prepCorrespondenceProps(correspondence), correspondence);
 
 	return createdCorrespondence;
 }
 
-export async function deleteCorrespondence(correspondenceID: string): Promise<Correspondence | undefined> {
+export async function deleteCorrespondence(correspondenceID: string): Promise<Correspondence | null> {
 	const deletedCorrespondence = await deleteNode(NodeType.CORRESPONDENCE, 'correspondenceID: $correspondenceID', { correspondenceID });
 
 	return deletedCorrespondence;
 }
 
-export async function updateCorrespondence(updatedCorrespondence: IUpdatedCorrespondence): Promise<Correspondence | undefined> {
+export async function updateCorrespondence(updatedCorrespondence: IUpdatedCorrespondence): Promise<Correspondence | null> {
 	const anythingToUpdate = updatedCorrespondenceToProps(updatedCorrespondence);
 	let matchedCorrespondence;
 
@@ -63,11 +63,11 @@ function prepCorrespondenceProps(correspondence: ICorrespondence): string[] {
 function updatedCorrespondenceToProps(updatedCorrespondence: IUpdatedCorrespondence): string[] {
 	const props: string[] = [];
 
-	if (updatedCorrespondence.updatedCorrespondenceDate !== undefined && updatedCorrespondence.updatedCorrespondenceDate !== null)
+	if (updatedCorrespondence.updatedCorrespondenceDate !== null && updatedCorrespondence.updatedCorrespondenceDate !== null)
 		props.push('c.correspondenceDate = $updatedCorrespondenceDate');
-	if (updatedCorrespondence.updatedCorrespondenceEndDate !== undefined && updatedCorrespondence.updatedCorrespondenceEndDate !== null)
+	if (updatedCorrespondence.updatedCorrespondenceEndDate !== null && updatedCorrespondence.updatedCorrespondenceEndDate !== null)
 		props.push('c.correspondenceEndDate = $updatedCorrespondenceEndDate');
-	if (updatedCorrespondence.updatedCorrespondenceType !== undefined) props.push('c.correspondenceType = $updatedCorrespondenceType');
+	if (updatedCorrespondence.updatedCorrespondenceType !== null) props.push('c.correspondenceType = $updatedCorrespondenceType');
 
 	return props;
 }

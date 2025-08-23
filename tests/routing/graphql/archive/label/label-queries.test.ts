@@ -33,11 +33,11 @@ describe(`Label Query Tests`, () => {
 		expect(body.data.label.name).toEqual(name);
 	});
 
-	it(`should return undefined if no label exists`, async () => {
+	it(`should return null if no label exists`, async () => {
 		const name: string = `${(global as any).UniqueAdjIterator.next().value}`;
 
 		const getLabelSpy = jest.spyOn(crudLabel, 'getLabel');
-		getLabelSpy.mockResolvedValue(undefined);
+		getLabelSpy.mockResolvedValue(null);
 
 		const query = `
             query {

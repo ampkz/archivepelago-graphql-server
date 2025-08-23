@@ -61,11 +61,11 @@ describe(`Correspondence Query Tests`, () => {
 		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.SERVER_ERROR);
 	});
 
-	it(`should return undefined if no correspondence was found`, async () => {
+	it(`should return null if no correspondence was found`, async () => {
 		const correspondenceID: string = faker.database.mongodbObjectId();
 
 		const getCorrespondenceSpy = jest.spyOn(crudCorrespondence, 'getCorrespondence');
-		getCorrespondenceSpy.mockResolvedValue(undefined);
+		getCorrespondenceSpy.mockResolvedValue(null);
 
 		const query = `
             query {

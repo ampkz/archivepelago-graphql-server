@@ -4,13 +4,13 @@ import { PersonLabel, RelationshipDirection, RelationshipType } from '../../../a
 import { Node, NodeType } from '../../../_helpers/nodes';
 import { createRelationship, deleteRelationship, getRelationshipsToNode } from '../../utils/relationship/crud-relationship';
 
-export async function createPersonLabel(personLabel: PersonLabel): Promise<Person | undefined> {
+export async function createPersonLabel(personLabel: PersonLabel): Promise<Person | null> {
 	const [f] = await createRelationship(personLabel.getRelationship());
 
 	return f as Person;
 }
 
-export async function deletePersonLabel(personLabel: PersonLabel): Promise<Person | undefined> {
+export async function deletePersonLabel(personLabel: PersonLabel): Promise<Person | null> {
 	const [f] = await deleteRelationship(personLabel.getRelationship());
 
 	return f as Person;

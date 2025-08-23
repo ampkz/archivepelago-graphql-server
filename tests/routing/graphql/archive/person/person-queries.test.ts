@@ -36,11 +36,11 @@ describe(`Person Query Tests`, () => {
 		expect(body.data.person.id).toEqual(id);
 	});
 
-	it(`should return undefined if no person exists`, async () => {
+	it(`should return null if no person exists`, async () => {
 		const id: string = faker.database.mongodbObjectId();
 
 		const createUserSpy = jest.spyOn(crudPerson, 'getPerson');
-		createUserSpy.mockResolvedValue(undefined);
+		createUserSpy.mockResolvedValue(null);
 
 		const query = `
             query {

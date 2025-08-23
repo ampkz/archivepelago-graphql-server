@@ -16,11 +16,11 @@ export async function createNode(
 	props: string[],
 	params: object,
 	dbName: string = process.env.ARCHIVE_DB as string
-): Promise<any | undefined> {
+): Promise<any | null> {
 	const driver: Driver = await connect();
 	const session: Session = driver.session(getSessionOptions(dbName));
 
-	let createdNode: object | undefined = undefined;
+	let createdNode: object | null = null;
 
 	try {
 		const match: RecordShape = await session.run(`CREATE(n:${nodeType} { ${props.join(', ')} }) RETURN n`, params);
@@ -52,8 +52,8 @@ export async function getNode(
 	params: object,
 	dbName: string = process.env.ARCHIVE_DB as string,
 	existingSession?: Session
-): Promise<any | undefined> {
-	let driver: Driver | undefined = undefined;
+): Promise<any | null> {
+	let driver: Driver | null = null;
 	let session: Session;
 
 	if (existingSession) {
@@ -63,7 +63,7 @@ export async function getNode(
 		session = driver.session(getSessionOptions(dbName));
 	}
 
-	let matchedNode: any | undefined = undefined;
+	let matchedNode: any | null = null;
 
 	try {
 		const match: RecordShape = await session.run(`MATCH(n:${nodeType} { ${idProp}}) RETURN n`, params);
@@ -109,11 +109,11 @@ export async function deleteNode(
 	idProp: string,
 	params: object,
 	dbName: string = process.env.ARCHIVE_DB as string
-): Promise<any | undefined> {
+): Promise<any | null> {
 	const driver: Driver = await connect();
 	const session: Session = driver.session(getSessionOptions(dbName));
 
-	const matchedNode: any | undefined = await getNode(nodeType, idProp, params, dbName, session);
+	const matchedNode: any | null = await getNode(nodeType, idProp, params, dbName, session);
 
 	if (matchedNode) {
 		let match: RecordShape;
@@ -149,11 +149,11 @@ export async function updateNode(
 	updatedProps: string[],
 	params: object,
 	dbName: string = process.env.ARCHIVE_DB as string
-): Promise<any | undefined> {
+): Promise<any | null> {
 	const driver: Driver = await connect();
 	const session: Session = driver.session(getSessionOptions(dbName));
 
-	let match: RecordShape | undefined = undefined;
+	let match: RecordShape | null = null;
 
 	try {
 		match = await session.run(
@@ -171,7 +171,7 @@ export async function updateNode(
 		await session.close();
 		await driver.close();
 
-		return undefined;
+		return null;
 	}
 
 	await session.close();
@@ -187,11 +187,11 @@ export async function removeProperties(
 	propsToRemove: string[],
 	params: object,
 	dbName: string = process.env.ARCHIVE_DB as string
-): Promise<any | undefined> {
+): Promise<any | null> {
 	const driver: Driver = await connect();
 	const session: Session = driver.session(getSessionOptions(dbName));
 
-	let match: RecordShape | undefined = undefined;
+	let match: RecordShape | null = null;
 
 	try {
 		match = await session.run(
@@ -209,7 +209,7 @@ export async function removeProperties(
 		await session.close();
 		await driver.close();
 
-		return undefined;
+		return null;
 	}
 
 	await session.close();

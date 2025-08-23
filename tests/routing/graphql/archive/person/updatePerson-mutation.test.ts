@@ -84,12 +84,12 @@ describe(`Update Person Mutation Tests`, () => {
 		expect(body.data.updatePerson.firstName).toEqual(updatedFirstName);
 	});
 
-	it(`should return undefined if no person exists`, async () => {
+	it(`should return null if no person exists`, async () => {
 		const id: string = faker.database.mongodbObjectId(),
 			updatedFirstName: string = faker.person.firstName();
 
 		const updatePersonSpy = jest.spyOn(crudPerson, 'updatePerson');
-		updatePersonSpy.mockResolvedValue(undefined);
+		updatePersonSpy.mockResolvedValue(null);
 
 		const query = `
             mutation UpdatePerson($input: UpdatePersonInput!) {

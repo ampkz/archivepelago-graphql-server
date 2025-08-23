@@ -8,7 +8,7 @@ export async function createPersonRelationship(
 	correspondenceID: string,
 	personID: string,
 	relationshipType: RelationshipType
-): Promise<Correspondence | undefined> {
+): Promise<Correspondence | null> {
 	const correspondence = await createRelationship(prepRelationship(correspondenceID, personID, relationshipType));
 
 	return correspondence[1];
@@ -18,7 +18,7 @@ export async function deletePersonRelationship(
 	correspondenceID: string,
 	personID: string,
 	relationshipType: RelationshipType
-): Promise<Correspondence | undefined> {
+): Promise<Correspondence | null> {
 	const correspondence = await deleteRelationship(prepRelationship(correspondenceID, personID, relationshipType));
 
 	return correspondence[1];

@@ -157,9 +157,9 @@ describe(`createCorrespondence Mutation Tests`, () => {
 		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
 	});
 
-	it(`should return undefined if no correspondence was created`, async () => {
+	it(`should return null if no correspondence was created`, async () => {
 		const createCorrespondenceSpy = jest.spyOn(crudCorrespondence, 'createCorrespondence');
-		createCorrespondenceSpy.mockResolvedValue(undefined);
+		createCorrespondenceSpy.mockResolvedValue(null);
 
 		const query = `
             mutation CreateCorrespondence($input: CreateCorrespondenceInput!) {

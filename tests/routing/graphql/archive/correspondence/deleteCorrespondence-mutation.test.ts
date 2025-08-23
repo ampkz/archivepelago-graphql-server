@@ -143,11 +143,11 @@ describe(`Correspondence Mutation Tests`, () => {
 		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
 	});
 
-	it(`should return undefined if no correspondence was deleted`, async () => {
+	it(`should return null if no correspondence was deleted`, async () => {
 		const correspondenceID: string = faker.database.mongodbObjectId();
 
 		const deleteCorrespondenceSpy = jest.spyOn(crudCorrespondence, 'deleteCorrespondence');
-		deleteCorrespondenceSpy.mockResolvedValue(undefined);
+		deleteCorrespondenceSpy.mockResolvedValue(null);
 
 		const query = `
             mutation DeleteCorrespondence($correspondenceID: ID!) {
