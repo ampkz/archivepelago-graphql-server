@@ -13,7 +13,7 @@ import { resolvers as personResolver } from '../graphql/resolvers/personResolver
 // import labelType from '../graphql/typeDefs/labelType';
 import { resolvers as labelResolver } from '../graphql/resolvers/labelResolver';
 // import correspondenceType from '../graphql/typeDefs/correspondenceType';
-import correspondenceResolver from '../graphql/resolvers/correspondenceResolver';
+import { resolvers as correspondenceResolver } from '../graphql/resolvers/correspondenceResolver';
 import helmet from 'helmet';
 import authNeo4j from '@ampkz/auth-neo4j';
 import { validateSessionToken } from '@ampkz/auth-neo4j/token';
