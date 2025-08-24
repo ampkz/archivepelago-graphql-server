@@ -81,12 +81,15 @@ describe(`createPerson Mutation Tests`, () => {
 		const id: string = faker.database.mongodbObjectId();
 
 		const createPersonSpy = jest.spyOn(crudPerson, 'createPerson');
-		createPersonSpy.mockResolvedValue(new Person({ id }));
+		createPersonSpy.mockResolvedValue(new Person({ id, birthDate: { year: '2000' } }));
 
 		const query = `
             mutation CreatePerson($input: CreatePersonInput!) {
                 createPerson(input: $input) {
                     id
+					birthDate {
+						year
+					}
                 }
             }
         `;
@@ -94,6 +97,9 @@ describe(`createPerson Mutation Tests`, () => {
 		const variables = {
 			input: {
 				firstName: faker.person.firstName(),
+				birthDate: {
+					year: '2000',
+				},
 			},
 		};
 
@@ -112,6 +118,7 @@ describe(`createPerson Mutation Tests`, () => {
 			.set('Cookie', [`token=${token}`]);
 
 		expect(body.data.createPerson.id).toEqual(id);
+		expect(body.data.createPerson.birthDate.year).toEqual('2000');
 	});
 
 	it(`should throw an error if there was an issue with the server`, async () => {
