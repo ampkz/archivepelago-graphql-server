@@ -127,35 +127,7 @@ export const resolvers: Resolvers = {
 
 	Person: {
 		labels: person => getLabelsByPerson(person as Person) as unknown as Promise<Label[]>,
-		sentCorrespondences: async person => {
-			const convertedCorrespondences: any[] = [];
-
-			const correspondences = await getCorrespondencesByPerson(person.id, RelationshipType.SENT);
-
-			correspondences.map(correspondence => {
-				convertedCorrespondences.push({
-					...correspondence,
-					correspondenceDate: convertDateStringToArchiveDate(correspondence?.correspondenceDate),
-					correspondenceEndDate: convertDateStringToArchiveDate(correspondence.correspondenceEndDate),
-				});
-			});
-
-			return convertedCorrespondences;
-		},
-		receivedCorrespondences: async person => {
-			const convertedCorrespondences: any[] = [];
-
-			const correspondences = await getCorrespondencesByPerson(person.id, RelationshipType.RECEIVED);
-
-			correspondences.map(correspondence => {
-				convertedCorrespondences.push({
-					...correspondence,
-					correspondenceDate: convertDateStringToArchiveDate(correspondence?.correspondenceDate),
-					correspondenceEndDate: convertDateStringToArchiveDate(correspondence.correspondenceEndDate),
-				});
-			});
-
-			return convertedCorrespondences;
-		},
+		sentCorrespondences: person => getCorrespondencesByPerson(person.id, RelationshipType.SENT),
+		receivedCorrespondences: person => getCorrespondencesByPerson(person.id, RelationshipType.RECEIVED),
 	},
 };

@@ -1,6 +1,6 @@
 import { NodeType } from '../../_helpers/nodes';
 import { Person } from '../../archive/person';
-import { Person as IPerson, UpdatePersonInput as IUpdatedPerson } from '../../generated/graphql';
+import { CreatePersonInput as IPerson, UpdatePersonInput as IUpdatedPerson } from '../../generated/graphql';
 import { createNode, deleteNode, getNode, getNodes, removeProperties, updateNode } from '../utils/crud';
 
 export async function getPerson(id: string): Promise<Person | null> {
@@ -17,7 +17,7 @@ export async function getPerson(id: string): Promise<Person | null> {
 export async function createPerson(person: IPerson): Promise<Person> {
 	const createdPerson: object | null = await createNode(NodeType.PERSON, prepPersonProps(person), person);
 
-	return new Person(createdPerson as IPerson);
+	return new Person(createdPerson as Person);
 }
 
 export async function deletePerson(id: string): Promise<Person | null> {

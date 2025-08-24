@@ -5,7 +5,8 @@ import * as crudCorrespondence from '../../../../../src/db/archive/crud-correspo
 import sessions from '@ampkz/auth-neo4j/token';
 import { InternalError } from '@ampkz/auth-neo4j/errors';
 import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/errors';
-import { Correspondence, CorrespondenceType } from '../../../../../src/archive/correspondence';
+import { Correspondence } from '../../../../../src/archive/correspondence';
+import { CorrespondenceType } from '../../../../../src/generated/graphql';
 import { Auth } from '@ampkz/auth-neo4j/auth';
 import { User } from '@ampkz/auth-neo4j/user';
 
@@ -44,7 +45,7 @@ describe(`updateCorrespondence Mutation Tests`, () => {
 		const correspondenceID: string = faker.database.mongodbObjectId();
 
 		const updateCorrespondenceSpy = jest.spyOn(crudCorrespondence, 'updateCorrespondence');
-		updateCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.LETTER }));
+		updateCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.Letter }));
 
 		const query = `
             mutation UpdateCorrespondence($input: UpdateCorrespondenceInput!) {
@@ -81,7 +82,7 @@ describe(`updateCorrespondence Mutation Tests`, () => {
 		const correspondenceID: string = faker.database.mongodbObjectId();
 
 		const updateCorrespondenceSpy = jest.spyOn(crudCorrespondence, 'updateCorrespondence');
-		updateCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.LETTER }));
+		updateCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.Letter }));
 
 		const query = `
             mutation UpdateCorrespondence($input: UpdateCorrespondenceInput!) {

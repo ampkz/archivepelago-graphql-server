@@ -1,6 +1,7 @@
 // import { destroyDBs, initializeDBs } from '../../../src/db/utils/init-dbs';
 import { faker } from '@faker-js/faker';
-import { Correspondence, CorrespondenceType } from '../../../src/archive/correspondence';
+import { Correspondence } from '../../../src/archive/correspondence';
+import { ArchiveDate, CorrespondenceType } from '../../../src/generated/graphql';
 import {
 	createCorrespondence,
 	deleteCorrespondence,
@@ -8,6 +9,7 @@ import {
 	getCorrespondences,
 	updateCorrespondence,
 } from '../../../src/db/archive/crud-correspondence';
+import { convertDateStringToArchiveDate } from '../../../src/archive/date';
 
 describe(`CRUD Correspondence Tests`, () => {
 	beforeEach(() => {
@@ -15,9 +17,9 @@ describe(`CRUD Correspondence Tests`, () => {
 	});
 
 	it(`should create a Correspondence`, async () => {
-		const correspondenceType: CorrespondenceType = CorrespondenceType.LETTER,
-			correspondenceDate: string = faker.date.anytime().toDateString(),
-			correspondenceEndDate: string = faker.date.anytime().toDateString();
+		const correspondenceType: CorrespondenceType = CorrespondenceType.Letter,
+			correspondenceDate: ArchiveDate | null = convertDateStringToArchiveDate('2022-01-01'),
+			correspondenceEndDate: ArchiveDate | null = convertDateStringToArchiveDate('2022-01-31');
 
 		const correspondence: Correspondence = new Correspondence({
 			correspondenceID: '',
@@ -27,7 +29,6 @@ describe(`CRUD Correspondence Tests`, () => {
 		});
 
 		const createdCorrespondence = await createCorrespondence({
-			correspondenceID: '',
 			correspondenceType,
 			correspondenceDate,
 			correspondenceEndDate,
@@ -39,23 +40,25 @@ describe(`CRUD Correspondence Tests`, () => {
 	});
 
 	it(`should get a created Correspondence`, async () => {
-		const correspondenceType: CorrespondenceType = CorrespondenceType.LETTER,
-			correspondenceDate: string = faker.date.anytime().toDateString();
+		const correspondenceType: CorrespondenceType = CorrespondenceType.Letter,
+			correspondenceDate: ArchiveDate | null = convertDateStringToArchiveDate('2024-01-01'),
+			correspondenceEndDate: ArchiveDate | null = convertDateStringToArchiveDate('2024-01-31');
 
-		const createdCorrespondence = await createCorrespondence({ correspondenceID: '', correspondenceType, correspondenceDate });
+		const createdCorrespondence = await createCorrespondence({ correspondenceType, correspondenceDate, correspondenceEndDate });
 
-		const matchedCorrespondence = await getCorrespondence(createdCorrespondence?.correspondenceID as string);
+		const matchedCorrespondence = await getCorrespondence(createdCorrespondence?.correspondenceID!);
 
 		expect(matchedCorrespondence).toEqual(createdCorrespondence);
 	});
 
 	it(`should delete a created Correspondence`, async () => {
-		const correspondenceType: CorrespondenceType = CorrespondenceType.LETTER,
-			correspondenceDate: string = faker.date.anytime().toDateString();
+		const correspondenceType: CorrespondenceType = CorrespondenceType.Letter,
+			correspondenceDate: ArchiveDate | null = convertDateStringToArchiveDate('2024-01-01'),
+			correspondenceEndDate: ArchiveDate | null = convertDateStringToArchiveDate('2024-01-31');
 
-		const createdCorrespondence = await createCorrespondence({ correspondenceID: '', correspondenceType, correspondenceDate });
+		const createdCorrespondence = await createCorrespondence({ correspondenceType, correspondenceDate, correspondenceEndDate });
 
-		const deletedCorrespondence = await deleteCorrespondence(createdCorrespondence?.correspondenceID as string);
+		const deletedCorrespondence = await deleteCorrespondence(createdCorrespondence?.correspondenceID!);
 
 		expect(deletedCorrespondence).toEqual(createdCorrespondence);
 	});
@@ -73,39 +76,38 @@ describe(`CRUD Correspondence Tests`, () => {
 	test(`updateCorrespondence should return null if no Label exists`, async () => {
 		const updatedCorrespondence = await updateCorrespondence({
 			correspondenceID: faker.database.mongodbObjectId(),
-			updatedCorrespondenceDate: faker.date.anytime().toDateString(),
+			updatedCorrespondenceDate: convertDateStringToArchiveDate(faker.date.anytime().toDateString()),
 		});
 
 		expect(updatedCorrespondence).toBeNull();
 	});
 
 	it(`should update a created correspondence`, async () => {
-		const updatedCorrespondenceDate = faker.date.anytime().toDateString(),
-			updatedCorrespondenceEndDate = faker.date.anytime().toDateString();
+		const updatedCorrespondenceDate = convertDateStringToArchiveDate('2024-01-01'),
+			updatedCorrespondenceEndDate = convertDateStringToArchiveDate('2024-01-31');
 
-		const createdCorrespondence = await createCorrespondence({ correspondenceID: '', correspondenceType: CorrespondenceType.LETTER });
+		const createdCorrespondence = await createCorrespondence({ correspondenceType: CorrespondenceType.Letter });
 
 		const updatedCorrespondence = await updateCorrespondence({
 			correspondenceID: createdCorrespondence?.correspondenceID as string,
 			updatedCorrespondenceDate,
 			updatedCorrespondenceEndDate,
-			updatedCorrespondenceType: CorrespondenceType.LETTER,
+			updatedCorrespondenceType: CorrespondenceType.Letter,
 		});
 
 		expect(updatedCorrespondence).toEqual({
 			correspondenceID: createdCorrespondence?.correspondenceID as string,
 			correspondenceDate: updatedCorrespondenceDate,
-			correspondenceType: CorrespondenceType.LETTER,
+			correspondenceType: CorrespondenceType.Letter,
 			correspondenceEndDate: updatedCorrespondenceEndDate,
 		});
 	});
 
 	it(`should update a created correspondence by deleted a null date`, async () => {
 		const createdCorrespondence = await createCorrespondence({
-			correspondenceID: '',
-			correspondenceType: CorrespondenceType.LETTER,
-			correspondenceDate: faker.date.anytime().toDateString(),
-			correspondenceEndDate: faker.date.anytime().toDateString(),
+			correspondenceType: CorrespondenceType.Letter,
+			correspondenceDate: convertDateStringToArchiveDate('1900-01-01'),
+			correspondenceEndDate: convertDateStringToArchiveDate('1900-01-31'),
 		});
 
 		const updatedCorrespondence = await updateCorrespondence({
@@ -116,24 +118,22 @@ describe(`CRUD Correspondence Tests`, () => {
 
 		expect(updatedCorrespondence).toEqual({
 			correspondenceID: createdCorrespondence?.correspondenceID as string,
-			correspondenceType: CorrespondenceType.LETTER,
+			correspondenceType: CorrespondenceType.Letter,
 		});
 	});
 
 	it(`should get a list of created Correspondences`, async () => {
-		const correspondenceType: CorrespondenceType = CorrespondenceType.LETTER,
-			correspondenceDate: string = faker.date.anytime().toDateString(),
-			correspondenceDate2: string = faker.date.anytime().toDateString(),
-			correspondenceDate3: string = faker.date.anytime().toDateString();
+		const correspondenceType: CorrespondenceType = CorrespondenceType.Letter,
+			correspondenceDate: ArchiveDate | null = convertDateStringToArchiveDate('2024-01-01'),
+			correspondenceDate2: ArchiveDate | null = convertDateStringToArchiveDate('2024-01-02'),
+			correspondenceDate3: ArchiveDate | null = convertDateStringToArchiveDate('2024-01-03');
 
-		const createdCorrespondence = await createCorrespondence({ correspondenceID: '', correspondenceType, correspondenceDate });
+		const createdCorrespondence = await createCorrespondence({ correspondenceType, correspondenceDate });
 		const createdCorrespondence2 = await createCorrespondence({
-			correspondenceID: '',
 			correspondenceType,
 			correspondenceDate: correspondenceDate2,
 		});
 		const createdCorrespondence3 = await createCorrespondence({
-			correspondenceID: '',
 			correspondenceType,
 			correspondenceDate: correspondenceDate3,
 		});

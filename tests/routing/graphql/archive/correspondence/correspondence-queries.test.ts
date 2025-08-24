@@ -5,8 +5,10 @@ import * as crudCorrespondence from '../../../../../src/db/archive/crud-correspo
 import * as correspondencePerson from '../../../../../src/db/archive/relationship/person-correspondence-relationship';
 import { InternalError } from '@ampkz/auth-neo4j/errors';
 import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/errors';
-import { Correspondence, CorrespondenceType } from '../../../../../src/archive/correspondence';
+import { Correspondence } from '../../../../../src/archive/correspondence';
+import { CorrespondenceType } from '../../../../../src/generated/graphql';
 import { Person } from '../../../../../src/archive/person';
+import { convertDateStringToArchiveDate } from '../../../../../src/archive/date';
 
 describe(`Correspondence Query Tests`, () => {
 	let app: any;
@@ -26,8 +28,8 @@ describe(`Correspondence Query Tests`, () => {
 		getCorrespondenceSpy.mockResolvedValue(
 			new Correspondence({
 				correspondenceID,
-				correspondenceDate: faker.date.anytime().toDateString(),
-				correspondenceType: CorrespondenceType.LETTER,
+				correspondenceDate: convertDateStringToArchiveDate(faker.date.anytime().toDateString()),
+				correspondenceType: CorrespondenceType.Letter,
 			})
 		);
 
@@ -89,8 +91,8 @@ describe(`Correspondence Query Tests`, () => {
 		getCorrespondenceSpy.mockResolvedValue(
 			new Correspondence({
 				correspondenceID,
-				correspondenceDate: faker.date.anytime().toDateString(),
-				correspondenceType: CorrespondenceType.LETTER,
+				correspondenceDate: convertDateStringToArchiveDate(faker.date.anytime().toDateString()),
+				correspondenceType: CorrespondenceType.Letter,
 			})
 		);
 
@@ -122,8 +124,8 @@ describe(`Correspondence Query Tests`, () => {
 		getCorrespondenceSpy.mockResolvedValue(
 			new Correspondence({
 				correspondenceID,
-				correspondenceDate: faker.date.anytime().toDateString(),
-				correspondenceType: CorrespondenceType.LETTER,
+				correspondenceDate: convertDateStringToArchiveDate(faker.date.anytime().toDateString()),
+				correspondenceType: CorrespondenceType.Letter,
 			})
 		);
 
@@ -148,11 +150,11 @@ describe(`Correspondence Query Tests`, () => {
 	it(`should retrieve a list of correspondences`, async () => {
 		const correspondence1 = new Correspondence({
 			correspondenceID: faker.database.mongodbObjectId(),
-			correspondenceType: CorrespondenceType.LETTER,
+			correspondenceType: CorrespondenceType.Letter,
 		});
 		const correspondence2 = new Correspondence({
 			correspondenceID: faker.database.mongodbObjectId(),
-			correspondenceType: CorrespondenceType.LETTER,
+			correspondenceType: CorrespondenceType.Letter,
 		});
 
 		const getCorrespondencesSpy = jest.spyOn(crudCorrespondence, 'getCorrespondences');

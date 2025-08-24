@@ -12,8 +12,8 @@ export function convertArchiveDateToDateString(archiveDate?: ArchiveDateInput | 
 		: null;
 }
 
-export function convertDateStringToArchiveDate(dateString?: string): ArchiveDate | null {
-	if (dateString === undefined) return null;
+export function convertDateStringToArchiveDate(dateString?: string | null): ArchiveDate | null {
+	if (dateString === undefined || dateString === null) return null;
 
 	const dateArray = dateString.split(`-`);
 

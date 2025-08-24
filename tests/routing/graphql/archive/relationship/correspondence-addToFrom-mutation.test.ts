@@ -4,7 +4,8 @@ import request from 'supertest';
 import * as personCorrespondence from '../../../../../src/db/archive/relationship/person-correspondence-relationship';
 import { InternalError } from '@ampkz/auth-neo4j/errors';
 import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/errors';
-import { Correspondence, CorrespondenceType } from '../../../../../src/archive/correspondence';
+import { Correspondence } from '../../../../../src/archive/correspondence';
+import { CorrespondenceType } from '../../../../../src/generated/graphql';
 import sessions from '@ampkz/auth-neo4j/token';
 import { Auth } from '@ampkz/auth-neo4j/auth';
 import { User } from '@ampkz/auth-neo4j/user';
@@ -62,7 +63,7 @@ describe(`addSent and addReceived Mutation Tests`, () => {
 		const correspondenceID = faker.database.mongodbObjectId(),
 			receivedID = faker.database.mongodbObjectId();
 
-		const correspondence = new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.LETTER });
+		const correspondence = new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.Letter });
 
 		const createPersonRelationshipSpy = jest.spyOn(personCorrespondence, 'createPersonRelationship');
 		createPersonRelationshipSpy.mockResolvedValueOnce(correspondence);
@@ -102,7 +103,7 @@ describe(`addSent and addReceived Mutation Tests`, () => {
 		const correspondenceID = faker.database.mongodbObjectId(),
 			sentID = faker.database.mongodbObjectId();
 
-		const correspondence = new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.LETTER });
+		const correspondence = new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.Letter });
 
 		const createPersonRelationshipSpy = jest.spyOn(personCorrespondence, 'createPersonRelationship');
 		createPersonRelationshipSpy.mockResolvedValueOnce(correspondence);
@@ -142,7 +143,7 @@ describe(`addSent and addReceived Mutation Tests`, () => {
 		const correspondenceID = faker.database.mongodbObjectId(),
 			receivedID = faker.database.mongodbObjectId();
 
-		const correspondence = new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.LETTER });
+		const correspondence = new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.Letter });
 
 		const createPersonRelationshipSpy = jest.spyOn(personCorrespondence, 'createPersonRelationship');
 		createPersonRelationshipSpy.mockResolvedValueOnce(correspondence);
@@ -182,7 +183,7 @@ describe(`addSent and addReceived Mutation Tests`, () => {
 		const correspondenceID = faker.database.mongodbObjectId(),
 			sentID = faker.database.mongodbObjectId();
 
-		const correspondence = new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.LETTER });
+		const correspondence = new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.Letter });
 
 		const createPersonRelationshipSpy = jest.spyOn(personCorrespondence, 'createPersonRelationship');
 		createPersonRelationshipSpy.mockResolvedValueOnce(correspondence);

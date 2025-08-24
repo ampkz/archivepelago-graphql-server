@@ -8,7 +8,8 @@ import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/error
 import * as personLabelRelationship from '../../../../../src/db/archive/relationship/person-label-relationship';
 import { Label } from '../../../../../src/archive/label';
 import { LabelType } from '../../../../../src/generated/graphql';
-import { Correspondence, CorrespondenceType } from '../../../../../src/archive/correspondence';
+import { Correspondence } from '../../../../../src/archive/correspondence';
+import { CorrespondenceType } from '../../../../../src/generated/graphql';
 import * as personCorrespondence from '../../../../../src/db/archive/relationship/person-correspondence-relationship';
 
 describe(`Person Query Tests`, () => {
@@ -110,7 +111,7 @@ describe(`Person Query Tests`, () => {
 
 		const correspondence: Correspondence = new Correspondence({
 			correspondenceID: faker.database.mongodbObjectId(),
-			correspondenceType: CorrespondenceType.LETTER,
+			correspondenceType: CorrespondenceType.Letter,
 		});
 
 		const getPersonSpy = jest.spyOn(crudPerson, 'getPerson');
@@ -141,7 +142,7 @@ describe(`Person Query Tests`, () => {
 
 		const correspondence: Correspondence = new Correspondence({
 			correspondenceID: faker.database.mongodbObjectId(),
-			correspondenceType: CorrespondenceType.LETTER,
+			correspondenceType: CorrespondenceType.Letter,
 		});
 
 		const getPersonSpy = jest.spyOn(crudPerson, 'getPerson');

@@ -1,5 +1,5 @@
 import { isPermitted } from '../../_helpers/auth-helper';
-import { Correspondence, ICorrespondence, IUpdatedCorrespondence } from '../../archive/correspondence';
+import { Correspondence } from '../../archive/correspondence';
 import { convertArchiveDateToDateString, convertDateStringToArchiveDate } from '../../archive/date';
 import { RelationshipType } from '../../archive/relationship/relationship';
 import { Auth } from '@ampkz/auth-neo4j/auth';
@@ -29,12 +29,11 @@ export const resolvers: Resolvers = {
 				throw serverFailed(error.message);
 			}
 
-			return correspondence as unknown as GqlCorrespondence;
+			return correspondence;
 		},
 
 		correspondences: async () => {
 			let correspondences: Correspondence[] = [];
-			const convertedCorrespondences: any[] = [];
 
 			try {
 				correspondences = await getCorrespondences();
@@ -42,15 +41,7 @@ export const resolvers: Resolvers = {
 				throw serverFailed(error.message);
 			}
 
-			correspondences.map(correspondence => {
-				convertedCorrespondences.push({
-					...correspondence,
-					correspondenceDate: convertDateStringToArchiveDate(correspondence.correspondenceDate),
-					correspondenceEndDate: convertDateStringToArchiveDate(correspondence.correspondenceEndDate),
-				});
-			});
-
-			return convertedCorrespondences;
+			return correspondences;
 		},
 	},
 
@@ -64,23 +55,15 @@ export const resolvers: Resolvers = {
 
 			try {
 				correspondence = await createCorrespondence({
-					correspondenceDate: convertArchiveDateToDateString(correspondenceDate),
-					correspondenceEndDate: convertArchiveDateToDateString(correspondenceEndDate),
+					correspondenceDate,
+					correspondenceEndDate,
 					correspondenceType,
-				} as unknown as ICorrespondence);
+				});
 			} catch (error: any) {
 				throw mutationFailed(error.message);
 			}
 
-			if (correspondence !== null) {
-				return {
-					...correspondence,
-					correspondenceDate: convertDateStringToArchiveDate(correspondence.correspondenceDate),
-					correspondenceEndDate: convertDateStringToArchiveDate(correspondence.correspondenceEndDate),
-				} as unknown as GqlCorrespondence;
-			}
-
-			return null;
+			return correspondence;
 		},
 
 		deleteCorrespondence: async (_root, { correspondenceID }, { authorizedUser }) => {
@@ -96,15 +79,7 @@ export const resolvers: Resolvers = {
 				throw mutationFailed(error.message);
 			}
 
-			if (correspondence !== null) {
-				return {
-					...correspondence,
-					correspondenceDate: convertDateStringToArchiveDate(correspondence.correspondenceDate),
-					correspondenceEndDate: convertDateStringToArchiveDate(correspondence.correspondenceEndDate),
-				} as unknown as GqlCorrespondence;
-			}
-
-			return null;
+			return correspondence;
 		},
 
 		updateCorrespondence: async (
@@ -121,23 +96,15 @@ export const resolvers: Resolvers = {
 			try {
 				correspondence = await updateCorrespondence({
 					correspondenceID,
-					updatedCorrespondenceDate: convertArchiveDateToDateString(updatedCorrespondenceDate),
-					updatedCorrespondenceEndDate: convertArchiveDateToDateString(updatedCorrespondenceEndDate),
+					updatedCorrespondenceDate,
+					updatedCorrespondenceEndDate,
 					updatedCorrespondenceType,
-				} as unknown as IUpdatedCorrespondence);
+				});
 			} catch (error: any) {
 				throw mutationFailed(error.message);
 			}
 
-			if (correspondence !== null) {
-				return {
-					...correspondence,
-					correspondenceDate: convertDateStringToArchiveDate(correspondence.correspondenceDate),
-					correspondenceEndDate: convertDateStringToArchiveDate(correspondence.correspondenceEndDate),
-				} as unknown as GqlCorrespondence;
-			}
-
-			return null;
+			return correspondence;
 		},
 
 		addReceived: async (_root, { correspondenceID, receivedID }, { authorizedUser }) => {
@@ -153,15 +120,7 @@ export const resolvers: Resolvers = {
 				throw mutationFailed(error.message);
 			}
 
-			if (correspondence !== null) {
-				return {
-					...correspondence,
-					correspondenceDate: convertDateStringToArchiveDate(correspondence?.correspondenceDate),
-					correspondenceEndDate: convertDateStringToArchiveDate(correspondence.correspondenceEndDate),
-				} as unknown as GqlCorrespondence;
-			}
-
-			return null;
+			return correspondence;
 		},
 
 		removeReceived: async (_root, { correspondenceID, receivedID }, { authorizedUser }) => {
@@ -177,15 +136,7 @@ export const resolvers: Resolvers = {
 				throw mutationFailed(error.message);
 			}
 
-			if (correspondence !== null) {
-				return {
-					...correspondence,
-					correspondenceDate: convertDateStringToArchiveDate(correspondence?.correspondenceDate),
-					correspondenceEndDate: convertDateStringToArchiveDate(correspondence.correspondenceEndDate),
-				} as unknown as GqlCorrespondence;
-			}
-
-			return null;
+			return correspondence;
 		},
 
 		addSent: async (_root, { correspondenceID, sentID }, { authorizedUser }) => {
@@ -201,15 +152,7 @@ export const resolvers: Resolvers = {
 				throw mutationFailed(error.message);
 			}
 
-			if (correspondence !== null) {
-				return {
-					...correspondence,
-					correspondenceDate: convertDateStringToArchiveDate(correspondence?.correspondenceDate),
-					correspondenceEndDate: convertDateStringToArchiveDate(correspondence.correspondenceEndDate),
-				} as unknown as GqlCorrespondence;
-			}
-
-			return null;
+			return correspondence;
 		},
 
 		removeSent: async (_root, { correspondenceID, sentID }, { authorizedUser }) => {
@@ -225,20 +168,12 @@ export const resolvers: Resolvers = {
 				throw mutationFailed(error.message);
 			}
 
-			if (correspondence !== null) {
-				return {
-					...correspondence,
-					correspondenceDate: convertDateStringToArchiveDate(correspondence?.correspondenceDate),
-					correspondenceEndDate: convertDateStringToArchiveDate(correspondence.correspondenceEndDate),
-				} as unknown as GqlCorrespondence;
-			}
-
-			return null;
+			return correspondence;
 		},
 	},
 
 	Correspondence: {
 		to: correspondence => getPersonsByCorrespondence(correspondence.correspondenceID, RelationshipType.RECEIVED),
-		from: Correspondence => getPersonsByCorrespondence(Correspondence.correspondenceID, RelationshipType.SENT),
+		from: correspondence => getPersonsByCorrespondence(correspondence.correspondenceID, RelationshipType.SENT),
 	},
 };

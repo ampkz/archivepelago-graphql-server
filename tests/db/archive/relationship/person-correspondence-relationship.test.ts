@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
-import { CorrespondenceType } from '../../../../src/archive/correspondence';
 import { createCorrespondence } from '../../../../src/db/archive/crud-correspondence';
+import { CorrespondenceType } from '../../../../src/generated/graphql';
 import { createPerson } from '../../../../src/db/archive/crud-person';
 import { RelationshipType } from '../../../../src/archive/relationship/relationship';
 import {
@@ -12,8 +12,8 @@ import {
 
 describe(`CRUD Correspondence Tests`, () => {
 	it(`should create a relationship between a created person and a created correspondence`, async () => {
-		const createdPerson = await createPerson({ id: '', firstName: faker.person.firstName() });
-		const createdCorrespondence = await createCorrespondence({ correspondenceID: '', correspondenceType: CorrespondenceType.LETTER });
+		const createdPerson = await createPerson({ firstName: faker.person.firstName() });
+		const createdCorrespondence = await createCorrespondence({ correspondenceType: CorrespondenceType.Letter });
 		const returnedCorrespondence = await createPersonRelationship(
 			createdCorrespondence?.correspondenceID as string,
 			createdPerson.id,
@@ -24,8 +24,8 @@ describe(`CRUD Correspondence Tests`, () => {
 	});
 
 	it(`should delete a created relationship between a created person and a created correspondence`, async () => {
-		const createdPerson = await createPerson({ id: '', firstName: faker.person.firstName() });
-		const createdCorrespondence = await createCorrespondence({ correspondenceID: '', correspondenceType: CorrespondenceType.LETTER });
+		const createdPerson = await createPerson({ firstName: faker.person.firstName() });
+		const createdCorrespondence = await createCorrespondence({ correspondenceType: CorrespondenceType.Letter });
 		await createPersonRelationship(createdCorrespondence?.correspondenceID as string, createdPerson.id, RelationshipType.SENT);
 		const returnedCorrespondence = await deletePersonRelationship(
 			createdCorrespondence?.correspondenceID as string,
@@ -37,8 +37,8 @@ describe(`CRUD Correspondence Tests`, () => {
 	});
 
 	it(`should get persons who sent correspondence`, async () => {
-		const createdPerson = await createPerson({ id: '', firstName: faker.person.firstName() });
-		const createdCorrespondence = await createCorrespondence({ correspondenceID: '', correspondenceType: CorrespondenceType.LETTER });
+		const createdPerson = await createPerson({ firstName: faker.person.firstName() });
+		const createdCorrespondence = await createCorrespondence({ correspondenceType: CorrespondenceType.Letter });
 		await createPersonRelationship(createdCorrespondence?.correspondenceID as string, createdPerson.id, RelationshipType.SENT);
 
 		const persons = await getPersonsByCorrespondence(createdCorrespondence?.correspondenceID as string, RelationshipType.SENT);
@@ -47,8 +47,8 @@ describe(`CRUD Correspondence Tests`, () => {
 	});
 
 	it(`should get persons who received correspondence`, async () => {
-		const createdPerson = await createPerson({ id: '', firstName: faker.person.firstName() });
-		const createdCorrespondence = await createCorrespondence({ correspondenceID: '', correspondenceType: CorrespondenceType.LETTER });
+		const createdPerson = await createPerson({ firstName: faker.person.firstName() });
+		const createdCorrespondence = await createCorrespondence({ correspondenceType: CorrespondenceType.Letter });
 		await createPersonRelationship(createdCorrespondence?.correspondenceID as string, createdPerson.id, RelationshipType.RECEIVED);
 
 		const persons = await getPersonsByCorrespondence(createdCorrespondence?.correspondenceID as string, RelationshipType.RECEIVED);
@@ -57,8 +57,8 @@ describe(`CRUD Correspondence Tests`, () => {
 	});
 
 	it(`should get correspondences sent by person`, async () => {
-		const createdPerson = await createPerson({ id: '', firstName: faker.person.firstName() });
-		const createdCorrespondence = await createCorrespondence({ correspondenceID: '', correspondenceType: CorrespondenceType.LETTER });
+		const createdPerson = await createPerson({ firstName: faker.person.firstName() });
+		const createdCorrespondence = await createCorrespondence({ correspondenceType: CorrespondenceType.Letter });
 		await createPersonRelationship(createdCorrespondence?.correspondenceID as string, createdPerson.id, RelationshipType.SENT);
 
 		const correspondences = await getCorrespondencesByPerson(createdPerson.id, RelationshipType.SENT);
@@ -67,8 +67,8 @@ describe(`CRUD Correspondence Tests`, () => {
 	});
 
 	it(`should get correspondences received by person`, async () => {
-		const createdPerson = await createPerson({ id: '', firstName: faker.person.firstName() });
-		const createdCorrespondence = await createCorrespondence({ correspondenceID: '', correspondenceType: CorrespondenceType.LETTER });
+		const createdPerson = await createPerson({ firstName: faker.person.firstName() });
+		const createdCorrespondence = await createCorrespondence({ correspondenceType: CorrespondenceType.Letter });
 		await createPersonRelationship(createdCorrespondence?.correspondenceID as string, createdPerson.id, RelationshipType.RECEIVED);
 
 		const correspondences = await getCorrespondencesByPerson(createdPerson.id, RelationshipType.RECEIVED);

@@ -5,7 +5,8 @@ import * as crudCorrespondence from '../../../../../src/db/archive/crud-correspo
 import sessions from '@ampkz/auth-neo4j/token';
 import { InternalError } from '@ampkz/auth-neo4j/errors';
 import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/errors';
-import { Correspondence, CorrespondenceType } from '../../../../../src/archive/correspondence';
+import { Correspondence } from '../../../../../src/archive/correspondence';
+import { CorrespondenceType } from '../../../../../src/generated/graphql';
 import { Auth } from '@ampkz/auth-neo4j/auth';
 import { User } from '@ampkz/auth-neo4j/user';
 
@@ -31,7 +32,7 @@ describe(`createCorrespondence Mutation Tests`, () => {
 
 		const variables = {
 			input: {
-				correspondenceType: CorrespondenceType.LETTER,
+				correspondenceType: CorrespondenceType.Letter,
 			},
 		};
 
@@ -42,7 +43,7 @@ describe(`createCorrespondence Mutation Tests`, () => {
 
 	it(`should create a correspondence as admin`, async () => {
 		const correspondenceID: string = faker.database.mongodbObjectId(),
-			correspondenceType: CorrespondenceType = CorrespondenceType.LETTER;
+			correspondenceType: CorrespondenceType = CorrespondenceType.Letter;
 
 		const createCorrespondenceSpy = jest.spyOn(crudCorrespondence, 'createCorrespondence');
 		createCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, correspondenceType }));
@@ -86,7 +87,7 @@ describe(`createCorrespondence Mutation Tests`, () => {
 
 	it(`should create a correspondence as contributor`, async () => {
 		const correspondenceID: string = faker.database.mongodbObjectId(),
-			correspondenceType: CorrespondenceType = CorrespondenceType.LETTER;
+			correspondenceType: CorrespondenceType = CorrespondenceType.Letter;
 
 		const createCorrespondenceSpy = jest.spyOn(crudCorrespondence, 'createCorrespondence');
 		createCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, correspondenceType }));
@@ -136,7 +137,7 @@ describe(`createCorrespondence Mutation Tests`, () => {
 
 		const variables = {
 			input: {
-				correspondenceType: CorrespondenceType.LETTER,
+				correspondenceType: CorrespondenceType.Letter,
 			},
 		};
 
@@ -157,7 +158,7 @@ describe(`createCorrespondence Mutation Tests`, () => {
 		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.MUTATION_FAILED);
 	});
 
-	it(`should return null if no correspondence was created`, async () => {
+	it(`should return undefined if no correspondence was created`, async () => {
 		const createCorrespondenceSpy = jest.spyOn(crudCorrespondence, 'createCorrespondence');
 		createCorrespondenceSpy.mockResolvedValue(null);
 
@@ -171,7 +172,7 @@ describe(`createCorrespondence Mutation Tests`, () => {
 
 		const variables = {
 			input: {
-				correspondenceType: CorrespondenceType.LETTER,
+				correspondenceType: CorrespondenceType.Letter,
 			},
 		};
 
