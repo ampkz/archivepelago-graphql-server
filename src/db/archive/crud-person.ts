@@ -95,11 +95,11 @@ function prepPersonProps(person: CreatePersonInput): string[] {
 function updatedPersonRemovedProps(updatedPerson: UpdatePersonInput): string[] {
 	const removedProps: string[] = [];
 
-	if (updatedPerson.updatedFirstName === undefined) removedProps.push(`p.firstName`);
-	if (updatedPerson.updatedSecondName === undefined) removedProps.push(`p.secondName`);
-	if (updatedPerson.updatedLastName === undefined) removedProps.push(`p.lastName`);
-	if (updatedPerson.updatedBirthDate === undefined) removedProps.push(`p.birthDate`);
-	if (updatedPerson.updatedDeathDate === undefined) removedProps.push(`p.deathDate`);
+	if (!updatedPerson.updatedFirstName) removedProps.push(`p.firstName`);
+	if (!updatedPerson.updatedSecondName) removedProps.push(`p.secondName`);
+	if (!updatedPerson.updatedLastName) removedProps.push(`p.lastName`);
+	if (!updatedPerson.updatedBirthDate) removedProps.push(`p.birthDate`);
+	if (!updatedPerson.updatedDeathDate) removedProps.push(`p.deathDate`);
 
 	return removedProps;
 }
@@ -107,11 +107,11 @@ function updatedPersonRemovedProps(updatedPerson: UpdatePersonInput): string[] {
 function updatedPersonToProps(updatedPerson: UpdatePersonInput): string[] {
 	const props: string[] = [];
 
-	if (updatedPerson.updatedFirstName !== undefined && updatedPerson.updatedFirstName !== null) props.push(`p.firstName = $updatedFirstName`);
-	if (updatedPerson.updatedSecondName !== undefined && updatedPerson.updatedSecondName !== null) props.push(`p.secondName = $updatedSecondName`);
-	if (updatedPerson.updatedLastName !== undefined && updatedPerson.updatedLastName !== null) props.push(`p.lastName = $updatedLastName`);
-	if (updatedPerson.updatedBirthDate !== undefined && updatedPerson.updatedBirthDate !== null) props.push(`p.birthDate = $updatedBirthDate`);
-	if (updatedPerson.updatedDeathDate !== undefined && updatedPerson.updatedDeathDate !== null) props.push(`p.deathDate = $updatedDeathDate`);
+	if (!!updatedPerson.updatedFirstName) props.push(`p.firstName = $updatedFirstName`);
+	if (!!updatedPerson.updatedSecondName) props.push(`p.secondName = $updatedSecondName`);
+	if (!!updatedPerson.updatedLastName) props.push(`p.lastName = $updatedLastName`);
+	if (!!updatedPerson.updatedBirthDate) props.push(`p.birthDate = $updatedBirthDate`);
+	if (!!updatedPerson.updatedDeathDate) props.push(`p.deathDate = $updatedDeathDate`);
 
 	return props;
 }
