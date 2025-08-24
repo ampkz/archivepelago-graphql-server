@@ -1,12 +1,14 @@
-export class Person implements IPerson {
-	public id: string;
-	public firstName: string | undefined;
-	public lastName: string | undefined;
-	public secondName: string | undefined;
-	public birthDate: string | undefined;
-	public deathDate: string | undefined;
+import type { Person as GqlPerson } from '../generated/graphql.js';
 
-	constructor(person: IPerson) {
+export class Person implements GqlPerson {
+	public id: string;
+	public firstName?: string | null;
+	public lastName?: string | null;
+	public secondName?: string | null;
+	public birthDate?: string | null;
+	public deathDate?: string | null;
+
+	constructor(person: GqlPerson) {
 		this.id = person.id;
 		this.firstName = person.firstName;
 		this.lastName = person.lastName;
@@ -16,20 +18,20 @@ export class Person implements IPerson {
 	}
 }
 
-export interface IPerson {
-	id: string;
-	firstName?: string;
-	lastName?: string;
-	secondName?: string;
-	birthDate?: string;
-	deathDate?: string;
-}
+// export interface IPerson {
+// 	id: string;
+// 	firstName?: string;
+// 	lastName?: string;
+// 	secondName?: string;
+// 	birthDate?: string;
+// 	deathDate?: string;
+// }
 
-export interface IUpdatedPerson {
-	id: string;
-	updatedFirstName?: string | null;
-	updatedLastName?: string | null;
-	updatedSecondName?: string | null;
-	updatedBirthDate?: string | null;
-	updatedDeathDate?: string | null;
-}
+// export interface IUpdatedPerson {
+// 	id: string;
+// 	updatedFirstName?: string | null;
+// 	updatedLastName?: string | null;
+// 	updatedSecondName?: string | null;
+// 	updatedBirthDate?: string | null;
+// 	updatedDeathDate?: string | null;
+// }

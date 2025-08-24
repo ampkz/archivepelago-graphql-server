@@ -1,13 +1,13 @@
 import { isPermitted } from '../../_helpers/auth-helper';
 import { convertDateStringToArchiveDate } from '../../archive/date';
-import { Person, IPerson } from '../../archive/person';
+import { Person } from '../../archive/person';
 import { PersonLabel, RelationshipType } from '../../archive/relationship/relationship';
 import { Auth } from '@ampkz/auth-neo4j/auth';
 import { createPerson, deletePerson, getPerson, getPersons, updatePerson } from '../../db/archive/crud-person';
 import { getCorrespondencesByPerson } from '../../db/archive/relationship/person-correspondence-relationship';
 import { createPersonLabel, deletePersonLabel, getLabelsByPerson } from '../../db/archive/relationship/person-label-relationship';
 import { mutationFailed, serverFailed, unauthorizedError } from '../errors/errors';
-import { Label, Resolvers } from '../../generated/graphql';
+import { Label, Resolvers, Person as IPerson } from '../../generated/graphql';
 
 export const resolvers: Resolvers = {
 	Query: {

@@ -4,7 +4,8 @@ import { faker } from '@faker-js/faker';
 import * as crudLabel from '../../../../../src/db/archive/crud-label';
 import { InternalError } from '@ampkz/auth-neo4j/errors';
 import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/errors';
-import { Label, LabelType } from '../../../../../src/archive/label';
+import { Label } from '../../../../../src/archive/label';
+import { LabelType } from '../../../../../src/generated/graphql';
 import { Person } from '../../../../../src/archive/person';
 import * as personLabelRelationship from '../../../../../src/db/archive/relationship/person-label-relationship';
 
@@ -19,7 +20,7 @@ describe(`Label Query Tests`, () => {
 		const name: string = `${(global as any).UniqueAdjIterator.next().value}`;
 
 		const getLabelSpy = jest.spyOn(crudLabel, 'getLabel');
-		getLabelSpy.mockResolvedValue(new Label({ name, type: LabelType.PROFESSION }));
+		getLabelSpy.mockResolvedValue(new Label({ name, type: LabelType.Profession }));
 
 		const query = `
             query {
@@ -78,7 +79,7 @@ describe(`Label Query Tests`, () => {
 		const person2: Person = new Person({ id: faker.database.mongodbObjectId(), firstName: faker.person.firstName() });
 
 		const getLabelSpy = jest.spyOn(crudLabel, 'getLabel');
-		getLabelSpy.mockResolvedValue({ name, type: LabelType.PROFESSION });
+		getLabelSpy.mockResolvedValue({ name, type: LabelType.Profession });
 
 		const getPersonsByLabelSpy = jest.spyOn(personLabelRelationship, 'getPersonsByLabel');
 		getPersonsByLabelSpy.mockResolvedValue([person, person2]);
@@ -101,9 +102,9 @@ describe(`Label Query Tests`, () => {
 	});
 
 	it(`should return a list of created labels`, async () => {
-		const label: Label = new Label({ name: `${(global as any).UniqueAdjIterator.next().value}`, type: LabelType.PROFESSION });
-		const label2: Label = new Label({ name: `${(global as any).UniqueAdjIterator.next().value}`, type: LabelType.PROFESSION });
-		const label3: Label = new Label({ name: `${(global as any).UniqueAdjIterator.next().value}`, type: LabelType.PROFESSION });
+		const label: Label = new Label({ name: `${(global as any).UniqueAdjIterator.next().value}`, type: LabelType.Profession });
+		const label2: Label = new Label({ name: `${(global as any).UniqueAdjIterator.next().value}`, type: LabelType.Profession });
+		const label3: Label = new Label({ name: `${(global as any).UniqueAdjIterator.next().value}`, type: LabelType.Profession });
 
 		const getLabelsSpy = jest.spyOn(crudLabel, 'getLabels');
 		getLabelsSpy.mockResolvedValue([label, label2, label3]);

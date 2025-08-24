@@ -1,15 +1,16 @@
 // import { destroyDBs, initializeDBs } from '../../../src/db/utils/init-dbs';
 import { createLabel, deleteLabel, getLabel, getLabels, updateLabel } from '../../../src/db/archive/crud-label';
-import { Label, LabelType } from '../../../src/archive/label';
+import { Label } from '../../../src/archive/label';
+import { LabelType } from '../../../src/generated/graphql';
 import { Errors } from '../../../src/db/utils/crud';
 
 describe(`CRUD Label Tests`, () => {
 	it(`should create a Label`, async () => {
 		const name: string = `create_${(global as any).UniqueAdjIterator.next().value}`;
 
-		const label: Label = new Label({ name, type: LabelType.PROFESSION });
+		const label: Label = new Label({ name, type: LabelType.Profession });
 
-		const createdLabel: Label | null = await createLabel({ name, type: LabelType.PROFESSION });
+		const createdLabel: Label | null = await createLabel({ name, type: LabelType.Profession });
 
 		expect(createdLabel).toEqual(label);
 	});
@@ -17,9 +18,9 @@ describe(`CRUD Label Tests`, () => {
 	it(`should get a created Label`, async () => {
 		const name: string = `get_created_${(global as any).UniqueAdjIterator.next().value}`;
 
-		const label: Label = new Label({ name, type: LabelType.PROFESSION });
+		const label: Label = new Label({ name, type: LabelType.Profession });
 
-		await createLabel({ name, type: LabelType.PROFESSION });
+		await createLabel({ name, type: LabelType.Profession });
 
 		const matchedLabel: Label | null = await getLabel(name);
 
@@ -29,17 +30,17 @@ describe(`CRUD Label Tests`, () => {
 	it(`should throw an error if trying to create an existing label`, async () => {
 		const name: string = `exists_error_${(global as any).UniqueAdjIterator.next().value}`;
 
-		await createLabel({ name, type: LabelType.PROFESSION });
+		await createLabel({ name, type: LabelType.Profession });
 
-		await expect(createLabel({ name, type: LabelType.PROFESSION })).rejects.toThrow(Errors.CANNOT_CREATE_NODE);
+		await expect(createLabel({ name, type: LabelType.Profession })).rejects.toThrow(Errors.CANNOT_CREATE_NODE);
 	});
 
 	it(`should delete a created Label`, async () => {
 		const name: string = `delete_${(global as any).UniqueAdjIterator.next().value}`;
 
-		const label: Label = new Label({ name, type: LabelType.PROFESSION });
+		const label: Label = new Label({ name, type: LabelType.Profession });
 
-		await createLabel({ name, type: LabelType.PROFESSION });
+		await createLabel({ name, type: LabelType.Profession });
 
 		const matchedLabel: Label | null = await deleteLabel(name);
 
@@ -61,14 +62,15 @@ describe(`CRUD Label Tests`, () => {
 		const name: string = `updated_${(global as any).UniqueAdjIterator.next().value}`;
 		const updatedName: string = `updated_${(global as any).UniqueAdjIterator.next().value}`;
 
-		await createLabel({ name, type: LabelType.PROFESSION });
-		const updatedLabel: Label | null = await updateLabel(name, { updatedName, updatedType: LabelType.SEXUALITY });
+		await createLabel({ name, type: LabelType.Profession });
+		const updatedLabel: Label | null = await updateLabel({ name, updatedName, updatedType: LabelType.Sexuality });
 
-		expect(updatedLabel).toEqual(new Label({ name: updatedName, type: LabelType.SEXUALITY }));
+		expect(updatedLabel).toEqual(new Label({ name: updatedName, type: LabelType.Sexuality }));
 	});
 
 	test(`updateLabel should return null if no Label exists`, async () => {
-		const updatedLabel: Label | null = await updateLabel(`updated_null_${(global as any).UniqueAdjIterator.next().value}`, {
+		const updatedLabel: Label | null = await updateLabel({
+			name: `updated_null_${(global as any).UniqueAdjIterator.next().value}`,
 			updatedName: `updated_null_${(global as any).UniqueAdjIterator.next().value}`,
 		});
 
@@ -76,9 +78,9 @@ describe(`CRUD Label Tests`, () => {
 	});
 
 	test(`getLabels should return a list of created labels`, async () => {
-		const label: Label = new Label({ name: `get_list_${(global as any).UniqueAdjIterator.next().value}`, type: LabelType.PROFESSION });
-		const label2: Label = new Label({ name: `get_list_${(global as any).UniqueAdjIterator.next().value}`, type: LabelType.PROFESSION });
-		const label3: Label = new Label({ name: `get_list_${(global as any).UniqueAdjIterator.next().value}`, type: LabelType.PROFESSION });
+		const label: Label = new Label({ name: `get_list_${(global as any).UniqueAdjIterator.next().value}`, type: LabelType.Profession });
+		const label2: Label = new Label({ name: `get_list_${(global as any).UniqueAdjIterator.next().value}`, type: LabelType.Profession });
+		const label3: Label = new Label({ name: `get_list_${(global as any).UniqueAdjIterator.next().value}`, type: LabelType.Profession });
 
 		const createdLabel: Label | null = await createLabel(label);
 		const createdLabel2: Label | null = await createLabel(label2);

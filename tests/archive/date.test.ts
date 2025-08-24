@@ -1,27 +1,28 @@
 import { faker } from '@faker-js/faker';
-import { convertArchiveDateToDate, convertDateStringToArchiveDate, IArchiveDate } from '../../src/archive/date';
+import { convertArchiveDateToDateString, convertDateStringToArchiveDate } from '../../src/archive/date';
+import { ArchiveDateInput } from '../../src/generated/graphql';
 
 describe(`Date tests`, () => {
 	it(`should create a date with just a year`, () => {
-		const dateObj: IArchiveDate = { year: faker.date.anytime().getFullYear().toString() };
+		const dateObj: ArchiveDateInput = { year: faker.date.anytime().getFullYear().toString() };
 
-		expect(convertArchiveDateToDate(dateObj)).toEqual(dateObj.year);
+		expect(convertArchiveDateToDateString(dateObj)).toEqual(dateObj.year);
 	});
 
 	it(`should create a date with just a year and month`, () => {
-		const dateObj: IArchiveDate = { year: faker.date.anytime().getFullYear().toString(), month: faker.date.anytime().getMonth().toString() };
+		const dateObj: ArchiveDateInput = { year: faker.date.anytime().getFullYear().toString(), month: faker.date.anytime().getMonth().toString() };
 
-		expect(convertArchiveDateToDate(dateObj)).toEqual(`${dateObj.year}-${dateObj.month}`);
+		expect(convertArchiveDateToDateString(dateObj)).toEqual(`${dateObj.year}-${dateObj.month}`);
 	});
 
 	it(`should create a date with a year, month, and day`, () => {
-		const dateObj: IArchiveDate = {
+		const dateObj: ArchiveDateInput = {
 			year: faker.date.anytime().getFullYear().toString(),
 			month: faker.date.anytime().getMonth().toString(),
 			day: faker.date.anytime().getDay().toString(),
 		};
 
-		expect(convertArchiveDateToDate(dateObj)).toEqual(`${dateObj.year}-${dateObj.month}-${dateObj.day}`);
+		expect(convertArchiveDateToDateString(dateObj)).toEqual(`${dateObj.year}-${dateObj.month}-${dateObj.day}`);
 	});
 
 	it(`should convert a year string into an IArchiveDate`, () => {

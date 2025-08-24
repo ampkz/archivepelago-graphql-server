@@ -13,7 +13,7 @@ export enum Errors {
 
 export async function createNode(
 	nodeType: NodeType,
-	props: string[],
+	idProps: string[],
 	params: object,
 	dbName: string = process.env.ARCHIVE_DB as string
 ): Promise<any | null> {
@@ -23,7 +23,7 @@ export async function createNode(
 	let createdNode: object | null = null;
 
 	try {
-		const match: RecordShape = await session.run(`CREATE(n:${nodeType} { ${props.join(', ')} }) RETURN n`, params);
+		const match: RecordShape = await session.run(`CREATE(n:${nodeType} { ${idProps.join(', ')} }) RETURN n`, params);
 
 		if (match.summary.counters._stats.nodesCreated !== 1) {
 			await session.close();
@@ -48,7 +48,7 @@ export async function createNode(
 
 export async function getNode(
 	nodeType: string,
-	idProp: string,
+	idProps: string[],
 	params: object,
 	dbName: string = process.env.ARCHIVE_DB as string,
 	existingSession?: Session
@@ -66,7 +66,7 @@ export async function getNode(
 	let matchedNode: any | null = null;
 
 	try {
-		const match: RecordShape = await session.run(`MATCH(n:${nodeType} { ${idProp}}) RETURN n`, params);
+		const match: RecordShape = await session.run(`MATCH(n:${nodeType} { ${idProps.join(', ')} }) RETURN n`, params);
 
 		if (match.records.length === 1) {
 			matchedNode = match.records[0].get(0).properties;
@@ -106,20 +106,20 @@ export async function getNodes(nodeType: string, dbName: string = process.env.AR
 
 export async function deleteNode(
 	nodeType: NodeType,
-	idProp: string,
+	idProps: string[],
 	params: object,
 	dbName: string = process.env.ARCHIVE_DB as string
 ): Promise<any | null> {
 	const driver: Driver = await connect();
 	const session: Session = driver.session(getSessionOptions(dbName));
 
-	const matchedNode: any | null = await getNode(nodeType, idProp, params, dbName, session);
+	const matchedNode: any | null = await getNode(nodeType, idProps, params, dbName, session);
 
 	if (matchedNode) {
 		let match: RecordShape;
 
 		try {
-			match = await session.run(`MATCH(n:${nodeType} { ${idProp}}) DETACH DELETE n`, params);
+			match = await session.run(`MATCH(n:${nodeType} { ${idProps.join(', ')} }) DETACH DELETE n`, params);
 
 			if (match.summary.counters._stats.nodesDeleted !== 1) {
 				await session.close();
@@ -145,7 +145,7 @@ export async function deleteNode(
 export async function updateNode(
 	nodeType: NodeType,
 	nodePrefix: string,
-	idProp: string,
+	idProps: string[],
 	updatedProps: string[],
 	params: object,
 	dbName: string = process.env.ARCHIVE_DB as string
@@ -157,7 +157,7 @@ export async function updateNode(
 
 	try {
 		match = await session.run(
-			`MATCH(${nodePrefix}:${nodeType} { ${idProp}: $${idProp} }) SET ${updatedProps.join(', ')} RETURN ${nodePrefix}`,
+			`MATCH(${nodePrefix}:${nodeType} { ${idProps.join(', ')} }) SET ${updatedProps.join(', ')} RETURN ${nodePrefix}`,
 			params
 		);
 	} catch (error: unknown) {
@@ -183,7 +183,7 @@ export async function updateNode(
 export async function removeProperties(
 	nodeType: NodeType,
 	nodePrefix: string,
-	idProp: string,
+	idProps: string[],
 	propsToRemove: string[],
 	params: object,
 	dbName: string = process.env.ARCHIVE_DB as string
@@ -195,7 +195,7 @@ export async function removeProperties(
 
 	try {
 		match = await session.run(
-			`MATCH(${nodePrefix}:${nodeType} { ${idProp}: $${idProp} }) REMOVE ${propsToRemove.join(', ')} RETURN ${nodePrefix}`,
+			`MATCH(${nodePrefix}:${nodeType} { ${idProps.join(', ')} }) REMOVE ${propsToRemove.join(', ')} RETURN ${nodePrefix}`,
 			params
 		);
 	} catch (error: unknown) {

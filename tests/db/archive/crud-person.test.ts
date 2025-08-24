@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { createPerson, deletePerson, getPerson, getPersons, updatePerson } from '../../../src/db/archive/crud-person';
-import { Person, IUpdatedPerson } from '../../../src/archive/person';
+import { Person } from '../../../src/archive/person';
+import { UpdatePersonInput as IUpdatedPerson } from '../../../src/generated/graphql';
 
 describe(`CRUD Person Tests`, () => {
 	it(`should create a Person`, async () => {

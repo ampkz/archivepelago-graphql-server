@@ -1,9 +1,10 @@
 import { NodeType } from '../../_helpers/nodes';
-import { Person, IPerson, IUpdatedPerson } from '../../archive/person';
+import { Person } from '../../archive/person';
+import { Person as IPerson, UpdatePersonInput as IUpdatedPerson } from '../../generated/graphql';
 import { createNode, deleteNode, getNode, getNodes, removeProperties, updateNode } from '../utils/crud';
 
 export async function getPerson(id: string): Promise<Person | null> {
-	const matchedNode: object | null = await getNode(NodeType.PERSON, 'id: $id', { id });
+	const matchedNode: object | null = await getNode(NodeType.PERSON, ['id: $id'], { id });
 
 	if (matchedNode) {
 		return matchedNode as Person;
@@ -20,7 +21,7 @@ export async function createPerson(person: IPerson): Promise<Person> {
 }
 
 export async function deletePerson(id: string): Promise<Person | null> {
-	const deletedPerson: object | null = await deleteNode(NodeType.PERSON, 'id: $id', { id });
+	const deletedPerson: object | null = await deleteNode(NodeType.PERSON, ['id: $id'], { id });
 
 	return deletedPerson as Person;
 }
@@ -30,12 +31,12 @@ export async function updatePerson(updatedPerson: IUpdatedPerson): Promise<Perso
 	let matchedPerson;
 
 	if (anythingToUpdate.length > 0) {
-		matchedPerson = await updateNode(NodeType.PERSON, 'p', 'id', anythingToUpdate, updatedPerson);
+		matchedPerson = await updateNode(NodeType.PERSON, 'p', ['id: $id'], anythingToUpdate, updatedPerson);
 	}
 
 	const removedProps = updatedPersonRemovedProps(updatedPerson);
 	if (removedProps.length > 0) {
-		matchedPerson = await removeProperties(NodeType.PERSON, 'p', 'id', removedProps, { id: updatedPerson.id });
+		matchedPerson = await removeProperties(NodeType.PERSON, 'p', ['id: $id'], removedProps, { id: updatedPerson.id });
 	}
 	return matchedPerson as Person;
 }

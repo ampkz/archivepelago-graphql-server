@@ -1,16 +1,18 @@
-export interface IArchiveDate {
-	year: string;
-	month?: string;
-	day?: string;
-}
+import { ArchiveDate, ArchiveDateInput } from '../generated/graphql';
 
-export function convertArchiveDateToDate(archiveDate: IArchiveDate): string | null {
+// export interface IArchiveDate {
+// 	year: string;
+// 	month?: string;
+// 	day?: string;
+// }
+
+export function convertArchiveDateToDateString(archiveDate?: ArchiveDateInput | null): string | null {
 	return archiveDate
 		? `${archiveDate.year}${archiveDate.month ? `-${archiveDate.month}${archiveDate.day ? `-${archiveDate.day}` : ``}` : ``}`
 		: null;
 }
 
-export function convertDateStringToArchiveDate(dateString?: string): IArchiveDate | null {
+export function convertDateStringToArchiveDate(dateString?: string): ArchiveDate | null {
 	if (dateString === undefined) return null;
 
 	const dateArray = dateString.split(`-`);

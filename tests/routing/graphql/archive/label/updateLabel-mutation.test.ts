@@ -7,7 +7,8 @@ import sessions from '@ampkz/auth-neo4j/token';
 import { Auth } from '@ampkz/auth-neo4j/auth';
 import { User } from '@ampkz/auth-neo4j/user';
 import { InternalError } from '@ampkz/auth-neo4j/errors';
-import { Label, LabelType } from '../../../../../src/archive/label';
+import { Label } from '../../../../../src/archive/label';
+import { LabelType } from '../../../../../src/generated/graphql';
 
 describe(`updateLabel Mutation Tests`, () => {
 	let app: any;
@@ -30,7 +31,7 @@ describe(`updateLabel Mutation Tests`, () => {
 			input: {
 				name: `${(global as any).UniqueAdjIterator.next().value}`,
 				updatedName: `${(global as any).UniqueAdjIterator.next().value}`,
-				updatedType: LabelType.NATIONALITY,
+				updatedType: LabelType.Nationality,
 			},
 		};
 
@@ -44,7 +45,7 @@ describe(`updateLabel Mutation Tests`, () => {
 			updatedName: string = `${(global as any).UniqueAdjIterator.next().value}`;
 
 		const updateLabelSpy = jest.spyOn(crudLabel, 'updateLabel');
-		updateLabelSpy.mockResolvedValue(new Label({ name: updatedName, type: LabelType.NATIONALITY }));
+		updateLabelSpy.mockResolvedValue(new Label({ name: updatedName, type: LabelType.Nationality }));
 
 		const query = `
             mutation UpdateLabel($input: UpdateLabelInput!) {
@@ -59,7 +60,7 @@ describe(`updateLabel Mutation Tests`, () => {
 			input: {
 				name,
 				updatedName,
-				updatedType: LabelType.NATIONALITY,
+				updatedType: LabelType.Nationality,
 			},
 		};
 
@@ -78,7 +79,7 @@ describe(`updateLabel Mutation Tests`, () => {
 			.set('Cookie', [`token=${token}`]);
 
 		expect(body.data.updateLabel.name).toEqual(updatedName);
-		expect(body.data.updateLabel.type).toEqual(LabelType.NATIONALITY);
+		expect(body.data.updateLabel.type).toEqual(LabelType.Nationality);
 	});
 
 	it(`should update a label as a contributor`, async () => {
@@ -86,7 +87,7 @@ describe(`updateLabel Mutation Tests`, () => {
 			updatedName: string = `${(global as any).UniqueAdjIterator.next().value}`;
 
 		const updateLabelSpy = jest.spyOn(crudLabel, 'updateLabel');
-		updateLabelSpy.mockResolvedValue(new Label({ name: updatedName, type: LabelType.PROFESSION }));
+		updateLabelSpy.mockResolvedValue(new Label({ name: updatedName, type: LabelType.Profession }));
 
 		const query = `
             mutation UpdateLabel($input: UpdateLabelInput!) {

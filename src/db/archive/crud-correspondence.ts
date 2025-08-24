@@ -3,7 +3,7 @@ import { Correspondence, ICorrespondence, IUpdatedCorrespondence } from '../../a
 import { createNode, deleteNode, getNode, getNodes, removeProperties, updateNode } from '../utils/crud';
 
 export async function getCorrespondence(correspondenceID: string): Promise<Correspondence | null> {
-	const matchedNode = await getNode(NodeType.CORRESPONDENCE, 'correspondenceID: $correspondenceID', { correspondenceID });
+	const matchedNode = await getNode(NodeType.CORRESPONDENCE, ['correspondenceID: $correspondenceID'], { correspondenceID });
 	return matchedNode;
 }
 
@@ -14,7 +14,7 @@ export async function createCorrespondence(correspondence: ICorrespondence): Pro
 }
 
 export async function deleteCorrespondence(correspondenceID: string): Promise<Correspondence | null> {
-	const deletedCorrespondence = await deleteNode(NodeType.CORRESPONDENCE, 'correspondenceID: $correspondenceID', { correspondenceID });
+	const deletedCorrespondence = await deleteNode(NodeType.CORRESPONDENCE, ['correspondenceID: $correspondenceID'], { correspondenceID });
 
 	return deletedCorrespondence;
 }
@@ -24,12 +24,18 @@ export async function updateCorrespondence(updatedCorrespondence: IUpdatedCorres
 	let matchedCorrespondence;
 
 	if (anythingToUpdate.length > 0) {
-		matchedCorrespondence = await updateNode(NodeType.CORRESPONDENCE, 'c', 'correspondenceID', anythingToUpdate, updatedCorrespondence);
+		matchedCorrespondence = await updateNode(
+			NodeType.CORRESPONDENCE,
+			'c',
+			['correspondenceID: $correspondenceID'],
+			anythingToUpdate,
+			updatedCorrespondence
+		);
 	}
 
 	const removedProps = updatedCorrespondenceRemovedProps(updatedCorrespondence);
 	if (removedProps.length > 0) {
-		matchedCorrespondence = await removeProperties(NodeType.CORRESPONDENCE, 'c', 'correspondenceID', removedProps, {
+		matchedCorrespondence = await removeProperties(NodeType.CORRESPONDENCE, 'c', ['correspondenceID: $correspondenceID'], removedProps, {
 			correspondenceID: updatedCorrespondence.correspondenceID,
 		});
 	}

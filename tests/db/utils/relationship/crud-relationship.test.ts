@@ -3,7 +3,8 @@ import { Person } from '../../../../src/archive/person';
 import { Relationship, RelationshipDirection, RelationshipType } from '../../../../src/archive/relationship/relationship';
 import { Node, NodeType } from '../../../../src/_helpers/nodes';
 import { createPerson, deletePerson } from '../../../../src/db/archive/crud-person';
-import { Label, LabelType } from '../../../../src/archive/label';
+import { Label } from '../../../../src/archive/label';
+import { LabelType } from '../../../../src/generated/graphql';
 import { createLabel } from '../../../../src/db/archive/crud-label';
 import { createRelationship, deleteRelationship, Errors, getRelationshipsToNode } from '../../../../src/db/utils/relationship/crud-relationship';
 import neo4j, { Driver, Session } from 'neo4j-driver';
@@ -13,7 +14,7 @@ describe(`Relationship CRUD Tests`, () => {
 		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
 		const createdLabel: Label = (await createLabel({
 			name: `${(global as any).UniqueAdjIterator.next().value}`,
-			type: LabelType.PROFESSION,
+			type: LabelType.Profession,
 		})) as Label;
 
 		const person: Node = new Node(NodeType.PERSON, 'id', createdPerson.id, true);
@@ -29,7 +30,7 @@ describe(`Relationship CRUD Tests`, () => {
 		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
 		const createdLabel: Label = (await createLabel({
 			name: `${(global as any).UniqueAdjIterator.next().value}`,
-			type: LabelType.PROFESSION,
+			type: LabelType.Profession,
 		})) as Label;
 
 		const person: Node = new Node(NodeType.PERSON, 'id', createdPerson.id, true);
@@ -45,7 +46,7 @@ describe(`Relationship CRUD Tests`, () => {
 		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
 		const createdLabel: Label = (await createLabel({
 			name: `${(global as any).UniqueAdjIterator.next().value}`,
-			type: LabelType.PROFESSION,
+			type: LabelType.Profession,
 		})) as Label;
 
 		const person: Node = new Node(NodeType.PERSON, 'id', createdPerson.id);
@@ -73,7 +74,7 @@ describe(`Relationship CRUD Tests`, () => {
 		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
 		const createdLabel: Label = (await createLabel({
 			name: `${(global as any).UniqueAdjIterator.next().value}`,
-			type: LabelType.PROFESSION,
+			type: LabelType.Profession,
 		})) as Label;
 
 		const person: Node = new Node(NodeType.PERSON, 'id', createdPerson.id, true);
@@ -91,7 +92,7 @@ describe(`Relationship CRUD Tests`, () => {
 		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
 		const createdLabel: Label = (await createLabel({
 			name: `${(global as any).UniqueAdjIterator.next().value}`,
-			type: LabelType.PROFESSION,
+			type: LabelType.Profession,
 		})) as Label;
 
 		const person: Node = new Node(NodeType.PERSON, 'id', createdPerson.id, true);
@@ -109,7 +110,7 @@ describe(`Relationship CRUD Tests`, () => {
 		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
 		const createdLabel: Label = (await createLabel({
 			name: `${(global as any).UniqueAdjIterator.next().value}`,
-			type: LabelType.PROFESSION,
+			type: LabelType.Profession,
 		})) as Label;
 
 		const person: Node = new Node(NodeType.PERSON, 'id', createdPerson.id);
@@ -137,7 +138,7 @@ describe(`Relationship CRUD Tests`, () => {
 		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
 		const createdLabel: Label = (await createLabel({
 			name: `${(global as any).UniqueAdjIterator.next().value}`,
-			type: LabelType.PROFESSION,
+			type: LabelType.Profession,
 		})) as Label;
 
 		const person: Node = new Node(NodeType.PERSON, 'id', createdPerson.id);
@@ -155,7 +156,7 @@ describe(`Relationship CRUD Tests`, () => {
 		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
 		const createdLabel: Label = (await createLabel({
 			name: `${(global as any).UniqueAdjIterator.next().value}`,
-			type: LabelType.PROFESSION,
+			type: LabelType.Profession,
 		})) as Label;
 
 		const person: Node = new Node(NodeType.PERSON, 'id', createdPerson.id);
@@ -177,7 +178,7 @@ describe(`Relationship CRUD Tests`, () => {
 		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
 		const createdLabel: Label = (await createLabel({
 			name: `${(global as any).UniqueAdjIterator.next().value}`,
-			type: LabelType.PROFESSION,
+			type: LabelType.Profession,
 		})) as Label;
 
 		const person: Node = new Node(NodeType.PERSON, 'id', createdPerson.id);
@@ -200,15 +201,15 @@ describe(`Relationship CRUD Tests`, () => {
 		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
 		const createdLabel: Label = (await createLabel({
 			name: `rel_${(global as any).UniqueAdjIterator.next().value}`,
-			type: LabelType.PROFESSION,
+			type: LabelType.Profession,
 		})) as Label;
 		const createdLabel2: Label = (await createLabel({
 			name: `rel_${(global as any).UniqueAdjIterator.next().value}`,
-			type: LabelType.PROFESSION,
+			type: LabelType.Profession,
 		})) as Label;
 		const createdLabel3: Label = (await createLabel({
 			name: `rel_${(global as any).UniqueAdjIterator.next().value}`,
-			type: LabelType.PROFESSION,
+			type: LabelType.Profession,
 		})) as Label;
 
 		const person: Node = new Node(NodeType.PERSON, 'id', createdPerson.id);

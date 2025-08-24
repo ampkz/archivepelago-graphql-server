@@ -4,7 +4,8 @@ import { faker } from '@faker-js/faker';
 import * as crudPerson from '../../../../../src/db/archive/crud-person';
 import * as personLabelRelationship from '../../../../../src/db/archive/relationship/person-label-relationship';
 import { Person } from '../../../../../src/archive/person';
-import { Label, LabelType } from '../../../../../src/archive/label';
+import { Label } from '../../../../../src/archive/label';
+import { LabelType } from '../../../../../src/generated/graphql';
 
 describe(`Person Labels Query Tests`, () => {
 	let app: any;
@@ -19,8 +20,8 @@ describe(`Person Labels Query Tests`, () => {
 		const getPersonSpy = jest.spyOn(crudPerson, 'getPerson');
 		getPersonSpy.mockResolvedValue(new Person({ id }));
 
-		const label: Label = new Label({ name: `${(global as any).UniqueAdjIterator.next().value}`, type: LabelType.PROFESSION });
-		const label2: Label = new Label({ name: `${(global as any).UniqueAdjIterator.next().value}`, type: LabelType.PROFESSION });
+		const label: Label = new Label({ name: `${(global as any).UniqueAdjIterator.next().value}`, type: LabelType.Profession });
+		const label2: Label = new Label({ name: `${(global as any).UniqueAdjIterator.next().value}`, type: LabelType.Profession });
 
 		const getLabelsByPersonSpy = jest.spyOn(personLabelRelationship, 'getLabelsByPerson');
 		getLabelsByPersonSpy.mockResolvedValue([label, label2]);

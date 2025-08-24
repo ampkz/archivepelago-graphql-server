@@ -1,6 +1,6 @@
 import { isPermitted } from '../../_helpers/auth-helper';
 import { Correspondence, ICorrespondence, IUpdatedCorrespondence } from '../../archive/correspondence';
-import { convertArchiveDateToDate, convertDateStringToArchiveDate, IArchiveDate } from '../../archive/date';
+import { convertArchiveDateToDateString, convertDateStringToArchiveDate } from '../../archive/date';
 import { RelationshipType } from '../../archive/relationship/relationship';
 import { Auth } from '@ampkz/auth-neo4j/auth';
 import {
@@ -64,8 +64,8 @@ export const resolvers: Resolvers = {
 
 			try {
 				correspondence = await createCorrespondence({
-					correspondenceDate: convertArchiveDateToDate(correspondenceDate as IArchiveDate),
-					correspondenceEndDate: convertArchiveDateToDate(correspondenceEndDate as IArchiveDate),
+					correspondenceDate: convertArchiveDateToDateString(correspondenceDate),
+					correspondenceEndDate: convertArchiveDateToDateString(correspondenceEndDate),
 					correspondenceType,
 				} as unknown as ICorrespondence);
 			} catch (error: any) {
@@ -121,8 +121,8 @@ export const resolvers: Resolvers = {
 			try {
 				correspondence = await updateCorrespondence({
 					correspondenceID,
-					updatedCorrespondenceDate: convertArchiveDateToDate(updatedCorrespondenceDate as IArchiveDate),
-					updatedCorrespondenceEndDate: convertArchiveDateToDate(updatedCorrespondenceEndDate as IArchiveDate),
+					updatedCorrespondenceDate: convertArchiveDateToDateString(updatedCorrespondenceDate),
+					updatedCorrespondenceEndDate: convertArchiveDateToDateString(updatedCorrespondenceEndDate),
 					updatedCorrespondenceType,
 				} as unknown as IUpdatedCorrespondence);
 			} catch (error: any) {

@@ -6,7 +6,8 @@ import { Person } from '../../../../../src/archive/person';
 import { InternalError } from '@ampkz/auth-neo4j/errors';
 import { Errors as GraphQLErrors } from '../../../../../src/graphql/errors/errors';
 import * as personLabelRelationship from '../../../../../src/db/archive/relationship/person-label-relationship';
-import { Label, LabelType } from '../../../../../src/archive/label';
+import { Label } from '../../../../../src/archive/label';
+import { LabelType } from '../../../../../src/generated/graphql';
 import { Correspondence, CorrespondenceType } from '../../../../../src/archive/correspondence';
 import * as personCorrespondence from '../../../../../src/db/archive/relationship/person-correspondence-relationship';
 
@@ -77,8 +78,8 @@ describe(`Person Query Tests`, () => {
 	it(`should return a list of associated labels of a person`, async () => {
 		const id: string = faker.database.mongodbObjectId();
 
-		const label: Label = new Label({ name: `${(global as any).UniqueAdjIterator.next().value}`, type: LabelType.PROFESSION });
-		const label2: Label = new Label({ name: `${(global as any).UniqueAdjIterator.next().value}`, type: LabelType.PROFESSION });
+		const label: Label = new Label({ name: `${(global as any).UniqueAdjIterator.next().value}`, type: LabelType.Profession });
+		const label2: Label = new Label({ name: `${(global as any).UniqueAdjIterator.next().value}`, type: LabelType.Profession });
 
 		const getPersonSpy = jest.spyOn(crudPerson, 'getPerson');
 		getPersonSpy.mockResolvedValue(new Person({ id }));

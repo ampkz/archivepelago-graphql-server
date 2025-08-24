@@ -90,9 +90,9 @@ describe(`CRUD Tests`, () => {
 		const driverSpy = jest.spyOn(neo4j, 'driver');
 		driverSpy.mockReturnValueOnce(driverMock);
 
-		await expect(getNode(NodeType.PERSON, 'email: $email', { email: faker.internet.email() }, process.env.ARCHIVE_DB as string)).rejects.toThrow(
-			CRUDErrors.CANNOT_MATCH_NODE
-		);
+		await expect(
+			getNode(NodeType.PERSON, ['email: $email'], { email: faker.internet.email() }, process.env.ARCHIVE_DB as string)
+		).rejects.toThrow(CRUDErrors.CANNOT_MATCH_NODE);
 	});
 
 	// it(`should delete an existing node`, async () => {
@@ -144,7 +144,7 @@ describe(`CRUD Tests`, () => {
 		driverSpy.mockReturnValueOnce(driverMock);
 
 		await expect(
-			deleteNode(NodeType.PERSON, 'email: $email', { email: faker.internet.email() }, process.env.ARCHIVE_DB as string)
+			deleteNode(NodeType.PERSON, ['email: $email'], { email: faker.internet.email() }, process.env.ARCHIVE_DB as string)
 		).rejects.toThrow(CRUDErrors.CANNOT_DELETE_NODE);
 	});
 
@@ -188,7 +188,7 @@ describe(`CRUD Tests`, () => {
 		driverSpy.mockReturnValueOnce(driverMock);
 
 		await expect(
-			deleteNode(NodeType.PERSON, 'email: $email', { email: faker.internet.email() }, process.env.ARCHIVE_DB as string)
+			deleteNode(NodeType.PERSON, ['email: $email'], { email: faker.internet.email() }, process.env.ARCHIVE_DB as string)
 		).rejects.toThrow(CRUDErrors.CANNOT_DELETE_NODE);
 	});
 
@@ -254,9 +254,9 @@ describe(`CRUD Tests`, () => {
 		const email: string = faker.internet.email(),
 			updatedFirstName: string = faker.person.firstName();
 
-		await expect(updateNode(NodeType.PERSON, 'u', 'email', ['u.firstName = $firstName'], { email, firstName: updatedFirstName })).rejects.toThrow(
-			CRUDErrors.CANNOT_UPDATE_NODE
-		);
+		await expect(
+			updateNode(NodeType.PERSON, 'u', ['email: $email'], ['u.firstName = $firstName'], { email, firstName: updatedFirstName })
+		).rejects.toThrow(CRUDErrors.CANNOT_UPDATE_NODE);
 	});
 
 	// it(`should get a list of created nodes`, async () => {
@@ -302,13 +302,15 @@ describe(`CRUD Tests`, () => {
 
 		const email: string = faker.internet.email();
 
-		await expect(removeProperties(NodeType.PERSON, 'u', 'email', ['u.firstName'], { email })).rejects.toThrow(CRUDErrors.CANNOT_UPDATE_NODE);
+		await expect(removeProperties(NodeType.PERSON, 'u', ['email: $email'], ['u.firstName'], { email })).rejects.toThrow(
+			CRUDErrors.CANNOT_UPDATE_NODE
+		);
 	});
 
 	it(`should return null if no node exists to remove properties`, async () => {
 		const email: string = faker.internet.email();
 
-		const updatedNode: any | null = await removeProperties(NodeType.PERSON, 'u', 'email', ['u.firstName'], { email });
+		const updatedNode: any | null = await removeProperties(NodeType.PERSON, 'u', ['email: $email'], ['u.firstName'], { email });
 
 		expect(updatedNode).toBeNull();
 	});
