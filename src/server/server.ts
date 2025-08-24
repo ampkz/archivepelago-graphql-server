@@ -7,12 +7,8 @@ import { error404, errorHandler } from '../middleware/errors';
 import cookieParser from 'cookie-parser';
 import http from 'http';
 import cors from 'cors';
-// import personType from '../graphql/typeDefs/personType';
-// import personResolver from '../graphql/resolvers/personResolver';
 import { resolvers as personResolver } from '../graphql/resolvers/personResolver';
-// import labelType from '../graphql/typeDefs/labelType';
 import { resolvers as labelResolver } from '../graphql/resolvers/labelResolver';
-// import correspondenceType from '../graphql/typeDefs/correspondenceType';
 import { resolvers as correspondenceResolver } from '../graphql/resolvers/correspondenceResolver';
 import helmet from 'helmet';
 import authNeo4j from '@ampkz/auth-neo4j';
@@ -41,7 +37,6 @@ async function startServer() {
 
 	const parentPath = path.dirname(__dirname);
 
-	// const typeDefs = mergeTypeDefs([personType, labelType, correspondenceType]);
 	let typeDefs = readFileSync(parentPath + '/graphql/schema/schema.graphql', { encoding: 'utf-8' });
 	typeDefs += readFileSync(parentPath + '/graphql/schema/correspondenceSchema.graphql', { encoding: 'utf-8' });
 	typeDefs += readFileSync(parentPath + '/graphql/schema/personSchema.graphql', { encoding: 'utf-8' });
