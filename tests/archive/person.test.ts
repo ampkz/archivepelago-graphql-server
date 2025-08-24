@@ -1,5 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { Person } from '../../src/archive/person';
+import { ArchiveDate } from '../../src/generated/graphql';
+import { convertDateStringToArchiveDate } from '../../src/archive/date';
 
 describe(`Person Tests`, () => {
 	it(`should create a person`, () => {
@@ -7,8 +9,8 @@ describe(`Person Tests`, () => {
 			firstName: string = faker.person.firstName(),
 			lastName: string = faker.person.lastName(),
 			secondName: string = faker.person.middleName(),
-			birthDate: string = faker.date.birthdate().toDateString(),
-			deathDate: string = faker.date.birthdate().toDateString();
+			birthDate: ArchiveDate | null = convertDateStringToArchiveDate('1901-01-01'),
+			deathDate: ArchiveDate | null = convertDateStringToArchiveDate('1901-01-31');
 
 		const person: Person = new Person({ id, firstName, lastName, secondName, birthDate, deathDate });
 

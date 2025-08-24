@@ -1,15 +1,16 @@
 import { faker } from '@faker-js/faker';
 import { createPerson, deletePerson, getPerson, getPersons, updatePerson } from '../../../src/db/archive/crud-person';
 import { Person } from '../../../src/archive/person';
-import { UpdatePersonInput as IUpdatedPerson } from '../../../src/generated/graphql';
+import { ArchiveDate, UpdatePersonInput as IUpdatedPerson } from '../../../src/generated/graphql';
+import { convertDateStringToArchiveDate } from '../../../src/archive/date';
 
 describe(`CRUD Person Tests`, () => {
 	it(`should create a Person`, async () => {
 		const firstName: string = faker.person.firstName(),
 			lastName: string = faker.person.lastName(),
 			secondName: string = faker.person.middleName(),
-			birthDate: string = faker.date.birthdate().toDateString(),
-			deathDate: string = faker.date.birthdate().toDateString();
+			birthDate: ArchiveDate | null = convertDateStringToArchiveDate('1901-01-01'),
+			deathDate: ArchiveDate | null = convertDateStringToArchiveDate('1901-01-31');
 
 		const person: Person = new Person({ id: '', firstName, lastName, secondName, birthDate, deathDate });
 
@@ -39,12 +40,10 @@ describe(`CRUD Person Tests`, () => {
 		const firstName: string = faker.person.firstName(),
 			lastName: string = faker.person.lastName(),
 			secondName: string = faker.person.middleName(),
-			birthDate: string = faker.date.birthdate().toDateString(),
-			deathDate: string = faker.date.birthdate().toDateString();
+			birthDate: ArchiveDate | null = convertDateStringToArchiveDate('1901-01-01'),
+			deathDate: ArchiveDate | null = convertDateStringToArchiveDate('1901-01-31');
 
-		const person: Person = new Person({ id: '', firstName, lastName, secondName, birthDate, deathDate });
-
-		const createdPerson: Person = await createPerson(person);
+		const createdPerson: Person = await createPerson({ firstName, lastName, secondName, birthDate, deathDate });
 
 		const matchedPerson: Person | null = await getPerson(createdPerson.id);
 
@@ -55,8 +54,8 @@ describe(`CRUD Person Tests`, () => {
 		const firstName: string = faker.person.firstName(),
 			lastName: string = faker.person.lastName(),
 			secondName: string = faker.person.middleName(),
-			birthDate: string = faker.date.birthdate().toDateString(),
-			deathDate: string = faker.date.birthdate().toDateString();
+			birthDate: ArchiveDate | null = convertDateStringToArchiveDate('1901-01-01'),
+			deathDate: ArchiveDate | null = convertDateStringToArchiveDate('1901-01-31');
 
 		const person: Person = new Person({ id: '', firstName, lastName, secondName, birthDate, deathDate });
 
@@ -77,14 +76,14 @@ describe(`CRUD Person Tests`, () => {
 		const firstName: string = faker.person.firstName(),
 			lastName: string = faker.person.lastName(),
 			secondName: string = faker.person.middleName(),
-			birthDate: string = faker.date.birthdate().toDateString(),
-			deathDate: string = faker.date.birthdate().toDateString();
+			birthDate: ArchiveDate | null = convertDateStringToArchiveDate('1901-01-01'),
+			deathDate: ArchiveDate | null = convertDateStringToArchiveDate('1901-01-31');
 
 		const updatedFirstName: string = faker.person.firstName(),
 			updatedLastName: string = faker.person.lastName(),
 			updatedSecondName: string = faker.person.middleName(),
-			updatedBirthDate: string = faker.date.birthdate().toDateString(),
-			updatedDeathDate: string = faker.date.birthdate().toDateString();
+			updatedBirthDate: ArchiveDate | null = convertDateStringToArchiveDate('1902-01-01'),
+			updatedDeathDate: ArchiveDate | null = convertDateStringToArchiveDate('1902-01-31');
 
 		const person: Person = new Person({ id: '', firstName, lastName, secondName, birthDate, deathDate });
 
@@ -116,8 +115,8 @@ describe(`CRUD Person Tests`, () => {
 		const firstName: string = faker.person.firstName(),
 			lastName: string = faker.person.lastName(),
 			secondName: string = faker.person.middleName(),
-			birthDate: string = faker.date.birthdate().toDateString(),
-			deathDate: string = faker.date.birthdate().toDateString();
+			birthDate: ArchiveDate | null = convertDateStringToArchiveDate('1901-01-01'),
+			deathDate: ArchiveDate | null = convertDateStringToArchiveDate('1901-01-31');
 
 		const person: Person = new Person({ id: '', firstName, lastName, secondName, birthDate, deathDate });
 

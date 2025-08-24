@@ -56,8 +56,8 @@ export type CreateLabelInput = {
 };
 
 export type CreatePersonInput = {
-  birthDate?: InputMaybe<Scalars['String']['input']>;
-  deathDate?: InputMaybe<Scalars['String']['input']>;
+  birthDate?: InputMaybe<ArchiveDateInput>;
+  deathDate?: InputMaybe<ArchiveDateInput>;
   firstName?: InputMaybe<Scalars['String']['input']>;
   lastName?: InputMaybe<Scalars['String']['input']>;
   secondName?: InputMaybe<Scalars['String']['input']>;
@@ -178,8 +178,8 @@ export type MutationUpdatePersonArgs = {
 
 export type Person = {
   __typename?: 'Person';
-  birthDate?: Maybe<Scalars['String']['output']>;
-  deathDate?: Maybe<Scalars['String']['output']>;
+  birthDate?: Maybe<ArchiveDate>;
+  deathDate?: Maybe<ArchiveDate>;
   firstName?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   labels?: Maybe<Array<Maybe<Label>>>;
@@ -231,8 +231,8 @@ export type UpdateLabelInput = {
 
 export type UpdatePersonInput = {
   id: Scalars['ID']['input'];
-  updatedBirthDate?: InputMaybe<Scalars['String']['input']>;
-  updatedDeathDate?: InputMaybe<Scalars['String']['input']>;
+  updatedBirthDate?: InputMaybe<ArchiveDateInput>;
+  updatedDeathDate?: InputMaybe<ArchiveDateInput>;
   updatedFirstName?: InputMaybe<Scalars['String']['input']>;
   updatedLastName?: InputMaybe<Scalars['String']['input']>;
   updatedSecondName?: InputMaybe<Scalars['String']['input']>;
@@ -392,8 +392,8 @@ export type MutationResolvers<ContextType = MyContext, ParentType extends Resolv
 };
 
 export type PersonResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Person'] = ResolversParentTypes['Person']> = {
-  birthDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  deathDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  birthDate?: Resolver<Maybe<ResolversTypes['ArchiveDate']>, ParentType, ContextType>;
+  deathDate?: Resolver<Maybe<ResolversTypes['ArchiveDate']>, ParentType, ContextType>;
   firstName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   labels?: Resolver<Maybe<Array<Maybe<ResolversTypes['Label']>>>, ParentType, ContextType>;

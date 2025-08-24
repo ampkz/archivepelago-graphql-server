@@ -3,8 +3,8 @@ type Person {
 	firstName: String
 	lastName: String
 	secondName: String
-	birthDate: String
-	deathDate: String
+	birthDate: ArchiveDate
+	deathDate: ArchiveDate
 	labels: [Label]
 	sentCorrespondences: [Correspondence]
 	receivedCorrespondences: [Correspondence]
@@ -27,8 +27,8 @@ input CreatePersonInput {
 	firstName: String
 	lastName: String
 	secondName: String
-	birthDate: String
-	deathDate: String
+	birthDate: ArchiveDateInput
+	deathDate: ArchiveDateInput
 }
 
 input UpdatePersonInput {
@@ -36,6 +36,6 @@ input UpdatePersonInput {
 	updatedFirstName: String
 	updatedLastName: String
 	updatedSecondName: String
-	updatedBirthDate: String
-	updatedDeathDate: String
+	updatedBirthDate: ArchiveDateInput
+	updatedDeathDate: ArchiveDateInput
 }
