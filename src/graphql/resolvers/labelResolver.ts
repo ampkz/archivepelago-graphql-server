@@ -4,34 +4,13 @@ import { LabelType } from '../../generated/graphql';
 import { Auth } from '@ampkz/auth-neo4j/auth';
 import { createLabel, deleteLabel, getLabel, getLabels, updateLabel } from '../../db/archive/crud-label';
 import { getPersonsByLabel } from '../../db/archive/relationship/person-label-relationship';
-import { mutationFailed, serverFailed, unauthorizedError } from '../errors/errors';
+import { mutationFailed, unauthorizedError } from '../errors/errors';
 import { Resolvers } from '../../generated/graphql';
 
 export const resolvers: Resolvers = {
 	Query: {
-		label: async (_root, { name }) => {
-			let label: Label | null = null;
-
-			try {
-				label = await getLabel(name);
-			} catch (error: any) {
-				throw serverFailed(error.message);
-			}
-
-			return label;
-		},
-
-		labels: async () => {
-			let labels: Label[] = [];
-
-			try {
-				labels = await getLabels();
-			} catch (error: any) {
-				throw serverFailed(error.message);
-			}
-
-			return labels;
-		},
+		label: (_root, { name }) => getLabel(name),
+		labels: () => getLabels(),
 	},
 
 	Mutation: {

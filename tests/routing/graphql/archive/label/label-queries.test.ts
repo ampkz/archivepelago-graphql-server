@@ -69,7 +69,7 @@ describe(`Label Query Tests`, () => {
 
 		const { body } = await request(app).post('/graphql').send({ query }).set('Accept', 'application/json');
 
-		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.SERVER_ERROR);
+		expect(body.errors[0].message).toEqual(GraphQLErrors.SERVER_ERROR);
 	});
 
 	it(`should return a list of associated persons of label`, async () => {
@@ -139,6 +139,6 @@ describe(`Label Query Tests`, () => {
 
 		const { body } = await request(app).post('/graphql').send({ query }).set('Accept', 'application/json');
 
-		expect(body.errors[0].extensions.code).toEqual(GraphQLErrors.SERVER_ERROR);
+		expect(body.errors[0].message).toEqual(GraphQLErrors.SERVER_ERROR);
 	});
 });

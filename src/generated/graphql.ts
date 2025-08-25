@@ -36,8 +36,8 @@ export type Correspondence = {
   correspondenceEndDate?: Maybe<ArchiveDate>;
   correspondenceID: Scalars['ID']['output'];
   correspondenceType?: Maybe<CorrespondenceType>;
-  from?: Maybe<Array<Maybe<Person>>>;
-  to?: Maybe<Array<Maybe<Person>>>;
+  from?: Maybe<Array<Person>>;
+  to?: Maybe<Array<Person>>;
 };
 
 export enum CorrespondenceType {
@@ -192,13 +192,13 @@ export type Person = {
 export type Query = {
   __typename?: 'Query';
   correspondence?: Maybe<Correspondence>;
-  correspondences?: Maybe<Array<Maybe<Correspondence>>>;
-  from?: Maybe<Array<Maybe<Person>>>;
+  correspondences: Array<Correspondence>;
+  from?: Maybe<Array<Person>>;
   label?: Maybe<Label>;
-  labels?: Maybe<Array<Maybe<Label>>>;
+  labels: Array<Label>;
   person?: Maybe<Person>;
-  persons?: Maybe<Array<Person>>;
-  to?: Maybe<Array<Maybe<Person>>>;
+  persons: Array<Person>;
+  to?: Maybe<Array<Person>>;
 };
 
 
@@ -361,8 +361,8 @@ export type CorrespondenceResolvers<ContextType = MyContext, ParentType extends 
   correspondenceEndDate?: Resolver<Maybe<ResolversTypes['ArchiveDate']>, ParentType, ContextType>;
   correspondenceID?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   correspondenceType?: Resolver<Maybe<ResolversTypes['CorrespondenceType']>, ParentType, ContextType>;
-  from?: Resolver<Maybe<Array<Maybe<ResolversTypes['Person']>>>, ParentType, ContextType>;
-  to?: Resolver<Maybe<Array<Maybe<ResolversTypes['Person']>>>, ParentType, ContextType>;
+  from?: Resolver<Maybe<Array<ResolversTypes['Person']>>, ParentType, ContextType>;
+  to?: Resolver<Maybe<Array<ResolversTypes['Person']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -406,13 +406,13 @@ export type PersonResolvers<ContextType = MyContext, ParentType extends Resolver
 
 export type QueryResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   correspondence?: Resolver<Maybe<ResolversTypes['Correspondence']>, ParentType, ContextType, RequireFields<QueryCorrespondenceArgs, 'correspondenceID'>>;
-  correspondences?: Resolver<Maybe<Array<Maybe<ResolversTypes['Correspondence']>>>, ParentType, ContextType>;
-  from?: Resolver<Maybe<Array<Maybe<ResolversTypes['Person']>>>, ParentType, ContextType>;
+  correspondences?: Resolver<Array<ResolversTypes['Correspondence']>, ParentType, ContextType>;
+  from?: Resolver<Maybe<Array<ResolversTypes['Person']>>, ParentType, ContextType>;
   label?: Resolver<Maybe<ResolversTypes['Label']>, ParentType, ContextType, RequireFields<QueryLabelArgs, 'name'>>;
-  labels?: Resolver<Maybe<Array<Maybe<ResolversTypes['Label']>>>, ParentType, ContextType>;
+  labels?: Resolver<Array<ResolversTypes['Label']>, ParentType, ContextType>;
   person?: Resolver<Maybe<ResolversTypes['Person']>, ParentType, ContextType, RequireFields<QueryPersonArgs, 'id'>>;
-  persons?: Resolver<Maybe<Array<ResolversTypes['Person']>>, ParentType, ContextType>;
-  to?: Resolver<Maybe<Array<Maybe<ResolversTypes['Person']>>>, ParentType, ContextType>;
+  persons?: Resolver<Array<ResolversTypes['Person']>, ParentType, ContextType>;
+  to?: Resolver<Maybe<Array<ResolversTypes['Person']>>, ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = MyContext> = {

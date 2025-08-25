@@ -1,6 +1,5 @@
 import { isPermitted } from '../../_helpers/auth-helper';
 import { Correspondence } from '../../archive/correspondence';
-import { convertArchiveDateToDateString, convertDateStringToArchiveDate } from '../../archive/date';
 import { RelationshipType } from '../../archive/relationship/relationship';
 import { Auth } from '@ampkz/auth-neo4j/auth';
 import {
@@ -15,34 +14,13 @@ import {
 	deletePersonRelationship,
 	getPersonsByCorrespondence,
 } from '../../db/archive/relationship/person-correspondence-relationship';
-import { mutationFailed, serverFailed, unauthorizedError } from '../errors/errors';
+import { mutationFailed, unauthorizedError } from '../errors/errors';
 import { Resolvers, Correspondence as GqlCorrespondence } from '../../generated/graphql';
 
 export const resolvers: Resolvers = {
 	Query: {
-		correspondence: async (_root, { correspondenceID }) => {
-			let correspondence: Correspondence | null = null;
-
-			try {
-				correspondence = await getCorrespondence(correspondenceID);
-			} catch (error: any) {
-				throw serverFailed(error.message);
-			}
-
-			return correspondence;
-		},
-
-		correspondences: async () => {
-			let correspondences: Correspondence[] = [];
-
-			try {
-				correspondences = await getCorrespondences();
-			} catch (error: any) {
-				throw serverFailed(error.message);
-			}
-
-			return correspondences;
-		},
+		correspondence: (_root, { correspondenceID }) => getCorrespondence(correspondenceID),
+		correspondences: () => getCorrespondences(),
 	},
 
 	Mutation: {

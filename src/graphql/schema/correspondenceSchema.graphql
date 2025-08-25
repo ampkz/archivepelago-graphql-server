@@ -3,15 +3,15 @@ type Correspondence {
 	correspondenceDate: ArchiveDate
 	correspondenceEndDate: ArchiveDate
 	correspondenceType: CorrespondenceType
-	from: [Person]
-	to: [Person]
+	from: [Person!]
+	to: [Person!]
 }
 
 extend type Query {
 	correspondence(correspondenceID: ID!): Correspondence
-	correspondences: [Correspondence]
-	from: [Person]
-	to: [Person]
+	correspondences: [Correspondence!]!
+	from: [Person!]
+	to: [Person!]
 }
 
 extend type Mutation {

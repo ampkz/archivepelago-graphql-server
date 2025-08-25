@@ -1,35 +1,28 @@
 import { isPermitted } from '../../_helpers/auth-helper';
-import { convertDateStringToArchiveDate } from '../../archive/date';
 import { Person } from '../../archive/person';
 import { PersonLabel, RelationshipType } from '../../archive/relationship/relationship';
 import { Auth } from '@ampkz/auth-neo4j/auth';
 import { createPerson, deletePerson, getPerson, getPersons, updatePerson } from '../../db/archive/crud-person';
 import { getCorrespondencesByPerson } from '../../db/archive/relationship/person-correspondence-relationship';
 import { createPersonLabel, deletePersonLabel, getLabelsByPerson } from '../../db/archive/relationship/person-label-relationship';
-import { mutationFailed, serverFailed, unauthorizedError } from '../errors/errors';
-import { Label, Resolvers, Person as IPerson } from '../../generated/graphql';
+import { mutationFailed, unauthorizedError } from '../errors/errors';
+import { Resolvers, Person as IPerson } from '../../generated/graphql';
 
 export const resolvers: Resolvers = {
 	Query: {
-		person: async (_root, { id }) => {
-			let person: Person | null = null;
-			try {
-				person = await getPerson(id);
-			} catch (error: any) {
-				throw serverFailed(error.message);
-			}
-			return person;
-		},
+		person: (_root, { id }) => getPerson(id),
 
-		persons: async () => {
-			let persons: Person[] = [];
-			try {
-				persons = await getPersons();
-			} catch (error: any) {
-				throw serverFailed(error.message);
-			}
-			return persons;
-		},
+		// person: async (_root, { id }) => {
+		// 	let person: Person | null = null;
+		// 	try {
+		// 		person = await getPerson(id);
+		// 	} catch (error: any) {
+		// 		throw serverFailed(error.message);
+		// 	}
+		// 	return person;
+		// },
+
+		persons: () => getPersons(),
 	},
 
 	Mutation: {
@@ -126,7 +119,7 @@ export const resolvers: Resolvers = {
 	},
 
 	Person: {
-		labels: person => getLabelsByPerson(person as Person) as unknown as Promise<Label[]>,
+		labels: person => getLabelsByPerson(person as Person),
 		sentCorrespondences: person => getCorrespondencesByPerson(person.id, RelationshipType.SENT),
 		receivedCorrespondences: person => getCorrespondencesByPerson(person.id, RelationshipType.RECEIVED),
 	},

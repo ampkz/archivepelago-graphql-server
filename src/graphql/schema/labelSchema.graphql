@@ -6,7 +6,7 @@ type Label {
 
 extend type Query {
 	label(name: ID!): Label
-	labels: [Label]
+	labels: [Label!]!
 }
 
 extend type Mutation {
