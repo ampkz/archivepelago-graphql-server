@@ -1,8 +1,8 @@
 import { Node, NodeType } from '../../../_helpers/nodes';
 import { createRelationship, deleteRelationship, getRelationshipsToNode } from '../../utils/relationship/crud-relationship';
 import { Relationship, RelationshipDirection, RelationshipType } from '../../../archive/relationship/relationship';
-import { Correspondence } from '../../../archive/correspondence';
-import { Person } from '../../../archive/person';
+import { Correspondence, matchedNodeToCorrespondence } from '../../../archive/correspondence';
+import { matchedNodeToPerson, Person } from '../../../archive/person';
 
 export async function createPersonRelationship(
 	correspondenceID: string,
@@ -21,7 +21,7 @@ export async function deletePersonRelationship(
 ): Promise<Correspondence | null> {
 	const correspondence = await deleteRelationship(prepRelationship(correspondenceID, personID, relationshipType));
 
-	return correspondence[1];
+	return matchedNodeToCorrespondence(correspondence[1]);
 }
 
 export async function getPersonsByCorrespondence(correspondenceID: string, relationshipType: RelationshipType): Promise<Person[]> {
@@ -35,7 +35,7 @@ export async function getPersonsByCorrespondence(correspondenceID: string, relat
 	);
 
 	match.map((rawPerson: any) => {
-		persons.push(new Person(rawPerson));
+		persons.push(matchedNodeToPerson(rawPerson)!);
 	});
 
 	return persons;
@@ -47,7 +47,7 @@ export async function getCorrespondencesByPerson(personID: string, relationshipT
 	const match = await getRelationshipsToNode(new Node(NodeType.PERSON, 'id', personID), NodeType.CORRESPONDENCE, relationshipType);
 
 	match.map((rawCorrespondence: any) => {
-		correspondences.push(new Correspondence(rawCorrespondence));
+		correspondences.push(matchedNodeToCorrespondence(rawCorrespondence)!);
 	});
 
 	return correspondences;

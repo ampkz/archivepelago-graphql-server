@@ -1,5 +1,5 @@
 import { Label } from '../../../archive/label';
-import { Person } from '../../../archive/person';
+import { matchedNodeToPerson, Person } from '../../../archive/person';
 import { PersonLabel, RelationshipDirection, RelationshipType } from '../../../archive/relationship/relationship';
 import { Node, NodeType } from '../../../_helpers/nodes';
 import { createRelationship, deleteRelationship, getRelationshipsToNode } from '../../utils/relationship/crud-relationship';
@@ -7,13 +7,13 @@ import { createRelationship, deleteRelationship, getRelationshipsToNode } from '
 export async function createPersonLabel(personLabel: PersonLabel): Promise<Person | null> {
 	const [f] = await createRelationship(personLabel.getRelationship());
 
-	return f as Person;
+	return matchedNodeToPerson(f);
 }
 
 export async function deletePersonLabel(personLabel: PersonLabel): Promise<Person | null> {
 	const [f] = await deleteRelationship(personLabel.getRelationship());
 
-	return f as Person;
+	return matchedNodeToPerson(f);
 }
 
 export async function getLabelsByPerson(person: Person): Promise<Label[]> {
@@ -39,7 +39,7 @@ export async function getPersonsByLabel(label: Label): Promise<Person[]> {
 	);
 
 	match.map((rawPerson: any) => {
-		persons.push(new Person(rawPerson));
+		persons.push(matchedNodeToPerson(rawPerson)!);
 	});
 
 	return persons;
