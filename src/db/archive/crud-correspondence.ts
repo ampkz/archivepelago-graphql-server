@@ -1,5 +1,5 @@
 import { NodeType } from '../../_helpers/nodes';
-import { Correspondence } from '../../archive/correspondence';
+import { Correspondence, matchedNodeToCorrespondence } from '../../archive/correspondence';
 import { convertArchiveDateToDateString, convertDateStringToArchiveDate } from '../../archive/date';
 import { Correspondence as GqlCorrespondence, UpdateCorrespondenceInput, CreateCorrespondenceInput } from '../../generated/graphql';
 import { createNode, deleteNode, getNode, getNodes, removeProperties, updateNode } from '../utils/crud';
@@ -7,13 +7,7 @@ import { createNode, deleteNode, getNode, getNodes, removeProperties, updateNode
 export async function getCorrespondence(correspondenceID: string): Promise<Correspondence | null> {
 	const matchedNode = await getNode(NodeType.CORRESPONDENCE, ['correspondenceID: $correspondenceID'], { correspondenceID });
 
-	if (!!matchedNode) {
-		if (!!matchedNode.correspondenceDate) matchedNode.correspondenceDate = convertDateStringToArchiveDate(matchedNode.correspondenceDate);
-		if (!!matchedNode.correspondenceEndDate)
-			matchedNode.correspondenceEndDate = convertDateStringToArchiveDate(matchedNode.correspondenceEndDate);
-	}
-
-	return matchedNode;
+	return matchedNodeToCorrespondence(matchedNode);
 }
 
 export async function createCorrespondence(correspondence: CreateCorrespondenceInput): Promise<Correspondence | null> {
@@ -23,27 +17,13 @@ export async function createCorrespondence(correspondence: CreateCorrespondenceI
 		correspondenceEndDate: convertArchiveDateToDateString(correspondence.correspondenceEndDate),
 	});
 
-	if (!!createdCorrespondence) {
-		if (!!createdCorrespondence.correspondenceDate)
-			createdCorrespondence.correspondenceDate = convertDateStringToArchiveDate(createdCorrespondence.correspondenceDate);
-		if (!!createdCorrespondence.correspondenceEndDate)
-			createdCorrespondence.correspondenceEndDate = convertDateStringToArchiveDate(createdCorrespondence.correspondenceEndDate);
-	}
-
-	return createdCorrespondence;
+	return matchedNodeToCorrespondence(createdCorrespondence);
 }
 
 export async function deleteCorrespondence(correspondenceID: string): Promise<Correspondence | null> {
 	const deletedCorrespondence = await deleteNode(NodeType.CORRESPONDENCE, ['correspondenceID: $correspondenceID'], { correspondenceID });
 
-	if (!!deletedCorrespondence) {
-		if (!!deletedCorrespondence.correspondenceDate)
-			deletedCorrespondence.correspondenceDate = convertDateStringToArchiveDate(deletedCorrespondence.correspondenceDate);
-		if (!!deletedCorrespondence.correspondenceEndDate)
-			deletedCorrespondence.correspondenceEndDate = convertDateStringToArchiveDate(deletedCorrespondence.correspondenceEndDate);
-	}
-
-	return deletedCorrespondence;
+	return matchedNodeToCorrespondence(deletedCorrespondence);
 }
 
 export async function updateCorrespondence(updatedCorrespondence: UpdateCorrespondenceInput): Promise<Correspondence | null> {
@@ -65,14 +45,7 @@ export async function updateCorrespondence(updatedCorrespondence: UpdateCorrespo
 		});
 	}
 
-	if (!!matchedCorrespondence) {
-		if (!!matchedCorrespondence.correspondenceDate)
-			matchedCorrespondence.correspondenceDate = convertDateStringToArchiveDate(matchedCorrespondence?.correspondenceDate);
-		if (!!matchedCorrespondence.correspondenceEndDate)
-			matchedCorrespondence.correspondenceEndDate = convertDateStringToArchiveDate(matchedCorrespondence?.correspondenceEndDate);
-	}
-
-	return matchedCorrespondence;
+	return matchedNodeToCorrespondence(matchedCorrespondence);
 }
 
 export async function getCorrespondences(): Promise<Correspondence[]> {
@@ -80,13 +53,8 @@ export async function getCorrespondences(): Promise<Correspondence[]> {
 
 	const matchedCorrespondences = await getNodes(NodeType.CORRESPONDENCE);
 
-	matchedCorrespondences.map((rawCorrespondence: any) => {
-		if (!!rawCorrespondence.correspondenceDate)
-			rawCorrespondence.correspondenceDate = convertDateStringToArchiveDate(rawCorrespondence.correspondenceDate);
-		if (!!rawCorrespondence.correspondenceEndDate)
-			rawCorrespondence.correspondenceEndDate = convertDateStringToArchiveDate(rawCorrespondence.correspondenceEndDate);
-
-		correspondences.push(new Correspondence(rawCorrespondence));
+	matchedCorrespondences.map(rawCorrespondence => {
+		correspondences.push(matchedNodeToCorrespondence(rawCorrespondence)!);
 	});
 
 	return correspondences;

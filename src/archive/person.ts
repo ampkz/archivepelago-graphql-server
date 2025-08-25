@@ -20,7 +20,7 @@ export class Person implements GqlPerson {
 }
 
 export function matchedNodeToPerson(matchedNode: any | null): Person | null {
-	if (matchedNode === null) return null;
+	if (!matchedNode) return null;
 	if (!!matchedNode.birthDate) matchedNode.birthDate = convertDateStringToArchiveDate(matchedNode.birthDate);
 	if (!!matchedNode.deathDate) matchedNode.deathDate = convertDateStringToArchiveDate(matchedNode.deathDate);
 	return new Person(matchedNode);
