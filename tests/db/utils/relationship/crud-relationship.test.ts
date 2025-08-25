@@ -73,7 +73,7 @@ describe(`Relationship CRUD Tests`, () => {
 	it(`should delete a relationship`, async () => {
 		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
 		const createdLabel: Label = (await createLabel({
-			name: `${(global as any).UniqueAdjIterator.next().value}`,
+			name: `del_rel_${(global as any).UniqueAdjIterator.next().value}`,
 			type: LabelType.Profession,
 		})) as Label;
 
@@ -91,7 +91,7 @@ describe(`Relationship CRUD Tests`, () => {
 	it(`should delete a COMING relationship`, async () => {
 		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
 		const createdLabel: Label = (await createLabel({
-			name: `${(global as any).UniqueAdjIterator.next().value}`,
+			name: `del_rel_${(global as any).UniqueAdjIterator.next().value}`,
 			type: LabelType.Profession,
 		})) as Label;
 
@@ -109,7 +109,7 @@ describe(`Relationship CRUD Tests`, () => {
 	it(`should throw an error if a relationship was not deleted`, async () => {
 		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
 		const createdLabel: Label = (await createLabel({
-			name: `${(global as any).UniqueAdjIterator.next().value}`,
+			name: `del_rel_${(global as any).UniqueAdjIterator.next().value}`,
 			type: LabelType.Profession,
 		})) as Label;
 
@@ -137,7 +137,7 @@ describe(`Relationship CRUD Tests`, () => {
 	it(`should delete a node with a relationship`, async () => {
 		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
 		const createdLabel: Label = (await createLabel({
-			name: `${(global as any).UniqueAdjIterator.next().value}`,
+			name: `del_rel_${(global as any).UniqueAdjIterator.next().value}`,
 			type: LabelType.Profession,
 		})) as Label;
 
@@ -155,7 +155,7 @@ describe(`Relationship CRUD Tests`, () => {
 	it(`should retrieve a relationship`, async () => {
 		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
 		const createdLabel: Label = (await createLabel({
-			name: `${(global as any).UniqueAdjIterator.next().value}`,
+			name: `del_rel_${(global as any).UniqueAdjIterator.next().value}`,
 			type: LabelType.Profession,
 		})) as Label;
 
@@ -177,7 +177,7 @@ describe(`Relationship CRUD Tests`, () => {
 	it(`should retrieve a COMING relationship`, async () => {
 		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
 		const createdLabel: Label = (await createLabel({
-			name: `${(global as any).UniqueAdjIterator.next().value}`,
+			name: `del_rel_${(global as any).UniqueAdjIterator.next().value}`,
 			type: LabelType.Profession,
 		})) as Label;
 

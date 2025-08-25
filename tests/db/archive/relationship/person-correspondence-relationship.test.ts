@@ -21,7 +21,11 @@ describe(`CRUD Correspondence Tests`, () => {
 				deathDate: { year: '2020', month: '01', day: '01' },
 			})
 		)) as Person;
-		const createdCorrespondence = await createCorrespondence({ correspondenceType: CorrespondenceType.Letter });
+		const createdCorrespondence = await createCorrespondence({
+			correspondenceType: CorrespondenceType.Letter,
+			correspondenceDate: { year: '2020', month: '01', day: '01' },
+			correspondenceEndDate: { year: '2020', month: '01', day: '31' },
+		});
 		const returnedCorrespondence = await createPersonRelationship(
 			createdCorrespondence?.correspondenceID as string,
 			createdPerson!.id,
@@ -40,7 +44,11 @@ describe(`CRUD Correspondence Tests`, () => {
 				deathDate: { year: '2020', month: '01', day: '01' },
 			})
 		)) as Person;
-		const createdCorrespondence = await createCorrespondence({ correspondenceType: CorrespondenceType.Letter });
+		const createdCorrespondence = await createCorrespondence({
+			correspondenceType: CorrespondenceType.Letter,
+			correspondenceDate: { year: '2020', month: '01', day: '01' },
+			correspondenceEndDate: { year: '2020', month: '01', day: '31' },
+		});
 		await createPersonRelationship(createdCorrespondence?.correspondenceID as string, createdPerson!.id, RelationshipType.SENT);
 		const returnedCorrespondence = await deletePersonRelationship(
 			createdCorrespondence?.correspondenceID as string,
@@ -60,7 +68,11 @@ describe(`CRUD Correspondence Tests`, () => {
 				deathDate: { year: '2020', month: '01', day: '01' },
 			})
 		)) as Person;
-		const createdCorrespondence = await createCorrespondence({ correspondenceType: CorrespondenceType.Letter });
+		const createdCorrespondence = await createCorrespondence({
+			correspondenceType: CorrespondenceType.Letter,
+			correspondenceDate: { year: '2020', month: '01', day: '01' },
+			correspondenceEndDate: { year: '2020', month: '01', day: '31' },
+		});
 		await createPersonRelationship(createdCorrespondence?.correspondenceID as string, createdPerson!.id, RelationshipType.SENT);
 
 		const persons = await getPersonsByCorrespondence(createdCorrespondence?.correspondenceID as string, RelationshipType.SENT);
@@ -77,7 +89,11 @@ describe(`CRUD Correspondence Tests`, () => {
 				deathDate: { year: '2020', month: '01', day: '01' },
 			})
 		)) as Person;
-		const createdCorrespondence = await createCorrespondence({ correspondenceType: CorrespondenceType.Letter });
+		const createdCorrespondence = await createCorrespondence({
+			correspondenceType: CorrespondenceType.Letter,
+			correspondenceDate: { year: '2020', month: '01', day: '01' },
+			correspondenceEndDate: { year: '2020', month: '01', day: '31' },
+		});
 		await createPersonRelationship(createdCorrespondence?.correspondenceID as string, createdPerson!.id, RelationshipType.RECEIVED);
 
 		const persons = await getPersonsByCorrespondence(createdCorrespondence?.correspondenceID as string, RelationshipType.RECEIVED);
@@ -94,7 +110,11 @@ describe(`CRUD Correspondence Tests`, () => {
 				deathDate: { year: '2020', month: '01', day: '01' },
 			})
 		)) as Person;
-		const createdCorrespondence = await createCorrespondence({ correspondenceType: CorrespondenceType.Letter });
+		const createdCorrespondence = await createCorrespondence({
+			correspondenceType: CorrespondenceType.Letter,
+			correspondenceDate: { year: '2020', month: '01', day: '01' },
+			correspondenceEndDate: { year: '2020', month: '01', day: '31' },
+		});
 		await createPersonRelationship(createdCorrespondence?.correspondenceID as string, createdPerson!.id, RelationshipType.SENT);
 
 		const correspondences = await getCorrespondencesByPerson(createdPerson!.id, RelationshipType.SENT);
@@ -111,7 +131,11 @@ describe(`CRUD Correspondence Tests`, () => {
 				deathDate: { year: '2020', month: '01', day: '01' },
 			})
 		)) as Person;
-		const createdCorrespondence = await createCorrespondence({ correspondenceType: CorrespondenceType.Letter });
+		const createdCorrespondence = await createCorrespondence({
+			correspondenceType: CorrespondenceType.Letter,
+			correspondenceDate: { year: '2020', month: '01', day: '01' },
+			correspondenceEndDate: { year: '2020', month: '01', day: '31' },
+		});
 		await createPersonRelationship(createdCorrespondence?.correspondenceID as string, createdPerson!.id, RelationshipType.RECEIVED);
 
 		const correspondences = await getCorrespondencesByPerson(createdPerson!.id, RelationshipType.RECEIVED);

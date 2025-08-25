@@ -11,7 +11,7 @@ export async function createPersonRelationship(
 ): Promise<Correspondence | null> {
 	const correspondence = await createRelationship(prepRelationship(correspondenceID, personID, relationshipType));
 
-	return correspondence[1];
+	return matchedNodeToCorrespondence(correspondence[1]);
 }
 
 export async function deletePersonRelationship(
