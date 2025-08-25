@@ -12,7 +12,7 @@ type Person {
 
 extend type Query {
 	person(id: ID!): Person
-	persons: [Person]
+	persons: [Person!]
 }
 
 extend type Mutation {

@@ -197,7 +197,7 @@ export type Query = {
   label?: Maybe<Label>;
   labels?: Maybe<Array<Maybe<Label>>>;
   person?: Maybe<Person>;
-  persons?: Maybe<Array<Maybe<Person>>>;
+  persons?: Maybe<Array<Person>>;
   to?: Maybe<Array<Maybe<Person>>>;
 };
 
@@ -411,7 +411,7 @@ export type QueryResolvers<ContextType = MyContext, ParentType extends Resolvers
   label?: Resolver<Maybe<ResolversTypes['Label']>, ParentType, ContextType, RequireFields<QueryLabelArgs, 'name'>>;
   labels?: Resolver<Maybe<Array<Maybe<ResolversTypes['Label']>>>, ParentType, ContextType>;
   person?: Resolver<Maybe<ResolversTypes['Person']>, ParentType, ContextType, RequireFields<QueryPersonArgs, 'id'>>;
-  persons?: Resolver<Maybe<Array<Maybe<ResolversTypes['Person']>>>, ParentType, ContextType>;
+  persons?: Resolver<Maybe<Array<ResolversTypes['Person']>>, ParentType, ContextType>;
   to?: Resolver<Maybe<Array<Maybe<ResolversTypes['Person']>>>, ParentType, ContextType>;
 };
 
