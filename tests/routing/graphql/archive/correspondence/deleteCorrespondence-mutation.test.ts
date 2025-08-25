@@ -31,7 +31,7 @@ describe(`Correspondence Mutation Tests`, () => {
         `;
 
 		const variables = {
-			correspondenceID: faker.database.mongodbObjectId(),
+			correspondenceID: faker.string.uuid(),
 		};
 
 		const { body } = await request(app).post('/graphql').send({ query, variables }).set('Accept', 'application/json');
@@ -40,7 +40,7 @@ describe(`Correspondence Mutation Tests`, () => {
 	});
 
 	it(`should delete a correspondence as admin`, async () => {
-		const correspondenceID: string = faker.database.mongodbObjectId();
+		const correspondenceID: string = faker.string.uuid();
 
 		const deleteCorrespondenceSpy = jest.spyOn(crudCorrespondence, 'deleteCorrespondence');
 		deleteCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.Letter }));
@@ -75,7 +75,7 @@ describe(`Correspondence Mutation Tests`, () => {
 	});
 
 	it(`should delete a correspondence as contributor`, async () => {
-		const correspondenceID: string = faker.database.mongodbObjectId();
+		const correspondenceID: string = faker.string.uuid();
 
 		const deleteCorrespondenceSpy = jest.spyOn(crudCorrespondence, 'deleteCorrespondence');
 		deleteCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.Letter }));
@@ -110,7 +110,7 @@ describe(`Correspondence Mutation Tests`, () => {
 	});
 
 	it(`should throw an error if there was an issue with the server`, async () => {
-		const correspondenceID: string = faker.database.mongodbObjectId();
+		const correspondenceID: string = faker.string.uuid();
 
 		const deleteCorrespondenceSpy = jest.spyOn(crudCorrespondence, 'deleteCorrespondence');
 		deleteCorrespondenceSpy.mockRejectedValue(new InternalError(GraphQLErrors.MUTATION_FAILED));
@@ -145,7 +145,7 @@ describe(`Correspondence Mutation Tests`, () => {
 	});
 
 	it(`should return null if no correspondence was deleted`, async () => {
-		const correspondenceID: string = faker.database.mongodbObjectId();
+		const correspondenceID: string = faker.string.uuid();
 
 		const deleteCorrespondenceSpy = jest.spyOn(crudCorrespondence, 'deleteCorrespondence');
 		deleteCorrespondenceSpy.mockResolvedValue(null);

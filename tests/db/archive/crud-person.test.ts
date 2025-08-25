@@ -67,7 +67,7 @@ describe(`CRUD Person Tests`, () => {
 	});
 
 	test(`deletePerson should return null if no person exists`, async () => {
-		const deletedPerson: Person | null = await deletePerson(faker.database.mongodbObjectId());
+		const deletedPerson: Person | null = await deletePerson(faker.string.uuid());
 
 		expect(deletedPerson).toBeNull();
 	});
@@ -137,7 +137,7 @@ describe(`CRUD Person Tests`, () => {
 
 	test(`updatePerson should return null if no person exists`, async () => {
 		const updatedPerson: Person | null = await updatePerson({
-			id: faker.database.mongodbObjectId(),
+			id: faker.string.uuid(),
 			updatedFirstName: faker.person.firstName(),
 		});
 
@@ -145,15 +145,15 @@ describe(`CRUD Person Tests`, () => {
 	});
 
 	test(`getPerson should return null if no person exists`, async () => {
-		const person: Person | null = await getPerson(faker.database.mongodbObjectId());
+		const person: Person | null = await getPerson(faker.string.uuid());
 
 		expect(person).toBeNull();
 	});
 
 	test(`getPersons should return a list of persons`, async () => {
-		const person: Person = new Person({ id: faker.database.mongodbObjectId(), firstName: faker.person.firstName() });
-		const person2: Person = new Person({ id: faker.database.mongodbObjectId(), firstName: faker.person.firstName() });
-		const person3: Person = new Person({ id: faker.database.mongodbObjectId(), firstName: faker.person.firstName() });
+		const person: Person = new Person({ id: faker.string.uuid(), firstName: faker.person.firstName() });
+		const person2: Person = new Person({ id: faker.string.uuid(), firstName: faker.person.firstName() });
+		const person3: Person = new Person({ id: faker.string.uuid(), firstName: faker.person.firstName() });
 
 		const createdPerson = await createPerson(person);
 		const createdPerson2 = await createPerson(person2);

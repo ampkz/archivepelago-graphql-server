@@ -64,18 +64,18 @@ describe(`CRUD Correspondence Tests`, () => {
 	});
 
 	test(`getCorrespondence should return null if no Correspondence exists`, async () => {
-		const matchedCorrespondence = await getCorrespondence(faker.database.mongodbObjectId());
+		const matchedCorrespondence = await getCorrespondence(faker.string.uuid());
 		expect(matchedCorrespondence).toBeNull();
 	});
 
 	test(`deleteCorrespondence should return null if no Correspondence exists`, async () => {
-		const deletedCorrespondence = await deleteCorrespondence(faker.database.mongodbObjectId());
+		const deletedCorrespondence = await deleteCorrespondence(faker.string.uuid());
 		expect(deletedCorrespondence).toBeNull();
 	});
 
 	test(`updateCorrespondence should return null if no Label exists`, async () => {
 		const updatedCorrespondence = await updateCorrespondence({
-			correspondenceID: faker.database.mongodbObjectId(),
+			correspondenceID: faker.string.uuid(),
 			updatedCorrespondenceDate: convertDateStringToArchiveDate(faker.date.anytime().toDateString()),
 		});
 

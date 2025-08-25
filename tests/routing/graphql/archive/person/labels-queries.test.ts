@@ -15,7 +15,7 @@ describe(`Person Labels Query Tests`, () => {
 	});
 
 	it(`should return a list of labels on person query`, async () => {
-		const id: string = faker.database.mongodbObjectId();
+		const id: string = faker.string.uuid();
 
 		const getPersonSpy = jest.spyOn(crudPerson, 'getPerson');
 		getPersonSpy.mockResolvedValue(new Person({ id }));

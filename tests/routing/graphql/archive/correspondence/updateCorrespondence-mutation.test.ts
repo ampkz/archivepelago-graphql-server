@@ -32,7 +32,7 @@ describe(`updateCorrespondence Mutation Tests`, () => {
 
 		const variables = {
 			input: {
-				correspondenceID: faker.database.mongodbObjectId(),
+				correspondenceID: faker.string.uuid(),
 			},
 		};
 
@@ -42,7 +42,7 @@ describe(`updateCorrespondence Mutation Tests`, () => {
 	});
 
 	it(`should update a correspondence as admin`, async () => {
-		const correspondenceID: string = faker.database.mongodbObjectId();
+		const correspondenceID: string = faker.string.uuid();
 
 		const updateCorrespondenceSpy = jest.spyOn(crudCorrespondence, 'updateCorrespondence');
 		updateCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.Letter }));
@@ -57,7 +57,7 @@ describe(`updateCorrespondence Mutation Tests`, () => {
 
 		const variables = {
 			input: {
-				correspondenceID: faker.database.mongodbObjectId(),
+				correspondenceID: faker.string.uuid(),
 			},
 		};
 
@@ -79,7 +79,7 @@ describe(`updateCorrespondence Mutation Tests`, () => {
 	});
 
 	it(`should update a correspondence as contributor`, async () => {
-		const correspondenceID: string = faker.database.mongodbObjectId();
+		const correspondenceID: string = faker.string.uuid();
 
 		const updateCorrespondenceSpy = jest.spyOn(crudCorrespondence, 'updateCorrespondence');
 		updateCorrespondenceSpy.mockResolvedValue(new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.Letter }));
@@ -94,7 +94,7 @@ describe(`updateCorrespondence Mutation Tests`, () => {
 
 		const variables = {
 			input: {
-				correspondenceID: faker.database.mongodbObjectId(),
+				correspondenceID: faker.string.uuid(),
 				updatedCorrespondenceDate: {
 					year: faker.date.anytime().getFullYear().toString(),
 				},
@@ -132,7 +132,7 @@ describe(`updateCorrespondence Mutation Tests`, () => {
 
 		const variables = {
 			input: {
-				correspondenceID: faker.database.mongodbObjectId(),
+				correspondenceID: faker.string.uuid(),
 			},
 		};
 
@@ -167,7 +167,7 @@ describe(`updateCorrespondence Mutation Tests`, () => {
 
 		const variables = {
 			input: {
-				correspondenceID: faker.database.mongodbObjectId(),
+				correspondenceID: faker.string.uuid(),
 			},
 		};
 

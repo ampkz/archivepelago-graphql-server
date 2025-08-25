@@ -20,7 +20,7 @@ describe(`Person Query Tests`, () => {
 	});
 
 	it(`should return a created person`, async () => {
-		const id: string = faker.database.mongodbObjectId();
+		const id: string = faker.string.uuid();
 
 		const getPersonSpy = jest.spyOn(crudPerson, 'getPerson');
 		getPersonSpy.mockResolvedValue(new Person({ id }));
@@ -39,7 +39,7 @@ describe(`Person Query Tests`, () => {
 	});
 
 	it(`should return null if no person exists`, async () => {
-		const id: string = faker.database.mongodbObjectId();
+		const id: string = faker.string.uuid();
 
 		const createUserSpy = jest.spyOn(crudPerson, 'getPerson');
 		createUserSpy.mockResolvedValue(null);
@@ -58,7 +58,7 @@ describe(`Person Query Tests`, () => {
 	});
 
 	it(`should throw an error if there was an issue with the server`, async () => {
-		const id: string = faker.database.mongodbObjectId();
+		const id: string = faker.string.uuid();
 
 		const createUserSpy = jest.spyOn(crudPerson, 'getPerson');
 		createUserSpy.mockRejectedValue(new InternalError(GraphQLErrors.SERVER_ERROR));
@@ -77,7 +77,7 @@ describe(`Person Query Tests`, () => {
 	});
 
 	it(`should return a list of associated labels of a person`, async () => {
-		const id: string = faker.database.mongodbObjectId();
+		const id: string = faker.string.uuid();
 
 		const label: Label = new Label({ name: `${(global as any).UniqueAdjIterator.next().value}`, type: LabelType.Profession });
 		const label2: Label = new Label({ name: `${(global as any).UniqueAdjIterator.next().value}`, type: LabelType.Profession });
@@ -107,10 +107,10 @@ describe(`Person Query Tests`, () => {
 	});
 
 	it(`should return a list of associated sent correspondences of a person`, async () => {
-		const id: string = faker.database.mongodbObjectId();
+		const id: string = faker.string.uuid();
 
 		const correspondence: Correspondence = new Correspondence({
-			correspondenceID: faker.database.mongodbObjectId(),
+			correspondenceID: faker.string.uuid(),
 			correspondenceType: CorrespondenceType.Letter,
 		});
 
@@ -138,10 +138,10 @@ describe(`Person Query Tests`, () => {
 	});
 
 	it(`should return a list of associated received correspondences of a person`, async () => {
-		const id: string = faker.database.mongodbObjectId();
+		const id: string = faker.string.uuid();
 
 		const correspondence: Correspondence = new Correspondence({
-			correspondenceID: faker.database.mongodbObjectId(),
+			correspondenceID: faker.string.uuid(),
 			correspondenceType: CorrespondenceType.Letter,
 		});
 
@@ -169,9 +169,9 @@ describe(`Person Query Tests`, () => {
 	});
 
 	it(`should return a list of created persons`, async () => {
-		const person: Person = new Person({ id: faker.database.mongodbObjectId() });
-		const person2: Person = new Person({ id: faker.database.mongodbObjectId() });
-		const person3: Person = new Person({ id: faker.database.mongodbObjectId() });
+		const person: Person = new Person({ id: faker.string.uuid() });
+		const person2: Person = new Person({ id: faker.string.uuid() });
+		const person3: Person = new Person({ id: faker.string.uuid() });
 
 		const getPersonSpy = jest.spyOn(crudPerson, 'getPersons');
 		getPersonSpy.mockResolvedValue([person, person2, person3]);

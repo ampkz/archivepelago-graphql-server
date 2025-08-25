@@ -21,7 +21,7 @@ describe(`Update Person Mutation Tests`, () => {
 	});
 
 	it(`should throw unauthorized error if trying to update person without authorized user`, async () => {
-		const id: string = faker.database.mongodbObjectId();
+		const id: string = faker.string.uuid();
 
 		const query = `
             mutation UpdatePerson($input: UpdatePersonInput!) {
@@ -44,7 +44,7 @@ describe(`Update Person Mutation Tests`, () => {
 	});
 
 	it(`should update a person as an admin`, async () => {
-		const id: string = faker.database.mongodbObjectId(),
+		const id: string = faker.string.uuid(),
 			updatedFirstName: string = faker.person.firstName();
 
 		const updatePersonSpy = jest.spyOn(crudPerson, 'updatePerson');
@@ -85,7 +85,7 @@ describe(`Update Person Mutation Tests`, () => {
 	});
 
 	it(`should return null if no person exists`, async () => {
-		const id: string = faker.database.mongodbObjectId(),
+		const id: string = faker.string.uuid(),
 			updatedFirstName: string = faker.person.firstName();
 
 		const updatePersonSpy = jest.spyOn(crudPerson, 'updatePerson');
@@ -125,7 +125,7 @@ describe(`Update Person Mutation Tests`, () => {
 	});
 
 	it(`should update a person as a contributor`, async () => {
-		const id: string = faker.database.mongodbObjectId(),
+		const id: string = faker.string.uuid(),
 			updatedFirstName: string = faker.person.firstName();
 
 		const updatePersonSpy = jest.spyOn(crudPerson, 'updatePerson');
@@ -166,7 +166,7 @@ describe(`Update Person Mutation Tests`, () => {
 	});
 
 	it(`should throw an error if there was an issue with the server`, async () => {
-		const id: string = faker.database.mongodbObjectId(),
+		const id: string = faker.string.uuid(),
 			updatedFirstName: string = faker.person.firstName();
 
 		const updatePersonSpy = jest.spyOn(crudPerson, 'updatePerson');

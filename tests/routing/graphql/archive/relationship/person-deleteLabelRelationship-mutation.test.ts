@@ -30,7 +30,7 @@ describe(`deleteLabelRelationship Mutation Tests`, () => {
         `;
 
 		const variables = {
-			personID: faker.database.mongodbObjectId(),
+			personID: faker.string.uuid(),
 			labelName: `${(global as any).UniqueAdjIterator.next().value}`,
 		};
 
@@ -40,7 +40,7 @@ describe(`deleteLabelRelationship Mutation Tests`, () => {
 	});
 
 	it(`should delete a label relationship with admin`, async () => {
-		const personID = faker.database.mongodbObjectId(),
+		const personID = faker.string.uuid(),
 			labelName = `${(global as any).UniqueAdjIterator.next().value}`;
 
 		const person: Person = new Person({ id: personID, firstName: faker.person.firstName() });
@@ -80,7 +80,7 @@ describe(`deleteLabelRelationship Mutation Tests`, () => {
 	});
 
 	it(`should delete a label relationship with contributor`, async () => {
-		const personID = faker.database.mongodbObjectId(),
+		const personID = faker.string.uuid(),
 			labelName = `${(global as any).UniqueAdjIterator.next().value}`;
 
 		const person: Person = new Person({ id: personID, firstName: faker.person.firstName() });
@@ -120,7 +120,7 @@ describe(`deleteLabelRelationship Mutation Tests`, () => {
 	});
 
 	it(`should throw an error if there was an issue with the server`, async () => {
-		const personID = faker.database.mongodbObjectId(),
+		const personID = faker.string.uuid(),
 			labelName = `${(global as any).UniqueAdjIterator.next().value}`;
 
 		const deletePersonRelationshipSpy = jest.spyOn(personLabelRelationship, 'deletePersonLabel');

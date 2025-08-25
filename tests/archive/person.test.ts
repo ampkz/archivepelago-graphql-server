@@ -5,7 +5,7 @@ import { convertDateStringToArchiveDate } from '../../src/archive/date';
 
 describe(`Person Tests`, () => {
 	it(`should create a person`, () => {
-		const id: string = faker.database.mongodbObjectId(),
+		const id: string = faker.string.uuid(),
 			firstName: string = faker.person.firstName(),
 			lastName: string = faker.person.lastName(),
 			secondName: string = faker.person.middleName(),
@@ -18,7 +18,7 @@ describe(`Person Tests`, () => {
 	});
 
 	it(`should create a person with undefined values`, () => {
-		const id: string = faker.database.mongodbObjectId();
+		const id: string = faker.string.uuid();
 
 		const person: Person = new Person({ id });
 

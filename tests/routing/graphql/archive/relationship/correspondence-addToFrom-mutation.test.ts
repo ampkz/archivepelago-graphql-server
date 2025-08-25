@@ -31,8 +31,8 @@ describe(`addSent and addReceived Mutation Tests`, () => {
         `;
 
 		const variables = {
-			correspondenceID: faker.database.mongodbObjectId(),
-			receivedID: faker.database.mongodbObjectId(),
+			correspondenceID: faker.string.uuid(),
+			receivedID: faker.string.uuid(),
 		};
 
 		const { body } = await request(app).post('/graphql').send({ query, variables }).set('Accept', 'application/json');
@@ -50,8 +50,8 @@ describe(`addSent and addReceived Mutation Tests`, () => {
         `;
 
 		const variables = {
-			correspondenceID: faker.database.mongodbObjectId(),
-			sentID: faker.database.mongodbObjectId(),
+			correspondenceID: faker.string.uuid(),
+			sentID: faker.string.uuid(),
 		};
 
 		const { body } = await request(app).post('/graphql').send({ query, variables }).set('Accept', 'application/json');
@@ -60,8 +60,8 @@ describe(`addSent and addReceived Mutation Tests`, () => {
 	});
 
 	test(`addReceived should create a received relationship with admin`, async () => {
-		const correspondenceID = faker.database.mongodbObjectId(),
-			receivedID = faker.database.mongodbObjectId();
+		const correspondenceID = faker.string.uuid(),
+			receivedID = faker.string.uuid();
 
 		const correspondence = new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.Letter });
 
@@ -100,8 +100,8 @@ describe(`addSent and addReceived Mutation Tests`, () => {
 	});
 
 	test(`addSent should create a received relationship with contributor`, async () => {
-		const correspondenceID = faker.database.mongodbObjectId(),
-			sentID = faker.database.mongodbObjectId();
+		const correspondenceID = faker.string.uuid(),
+			sentID = faker.string.uuid();
 
 		const correspondence = new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.Letter });
 
@@ -140,8 +140,8 @@ describe(`addSent and addReceived Mutation Tests`, () => {
 	});
 
 	test(`addReceived should create a received relationship with admin`, async () => {
-		const correspondenceID = faker.database.mongodbObjectId(),
-			receivedID = faker.database.mongodbObjectId();
+		const correspondenceID = faker.string.uuid(),
+			receivedID = faker.string.uuid();
 
 		const correspondence = new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.Letter });
 
@@ -180,8 +180,8 @@ describe(`addSent and addReceived Mutation Tests`, () => {
 	});
 
 	test(`addSent should create a received relationship with contributor`, async () => {
-		const correspondenceID = faker.database.mongodbObjectId(),
-			sentID = faker.database.mongodbObjectId();
+		const correspondenceID = faker.string.uuid(),
+			sentID = faker.string.uuid();
 
 		const correspondence = new Correspondence({ correspondenceID, correspondenceType: CorrespondenceType.Letter });
 
@@ -220,8 +220,8 @@ describe(`addSent and addReceived Mutation Tests`, () => {
 	});
 
 	test(`addSent should throw an error if there was an issue with the server`, async () => {
-		const correspondenceID = faker.database.mongodbObjectId(),
-			sentID = faker.database.mongodbObjectId();
+		const correspondenceID = faker.string.uuid(),
+			sentID = faker.string.uuid();
 
 		const createPersonRelationshipSpy = jest.spyOn(personCorrespondence, 'createPersonRelationship');
 		createPersonRelationshipSpy.mockRejectedValue(new InternalError(''));
@@ -258,8 +258,8 @@ describe(`addSent and addReceived Mutation Tests`, () => {
 	});
 
 	test(`addSent should return null if no correspondence relationship was created`, async () => {
-		const correspondenceID = faker.database.mongodbObjectId(),
-			sentID = faker.database.mongodbObjectId();
+		const correspondenceID = faker.string.uuid(),
+			sentID = faker.string.uuid();
 
 		const createPersonRelationshipSpy = jest.spyOn(personCorrespondence, 'createPersonRelationship');
 		createPersonRelationshipSpy.mockResolvedValue(null);
@@ -296,8 +296,8 @@ describe(`addSent and addReceived Mutation Tests`, () => {
 	});
 
 	test(`addReceived should throw an error if there was an issue with the server`, async () => {
-		const correspondenceID = faker.database.mongodbObjectId(),
-			receivedID = faker.database.mongodbObjectId();
+		const correspondenceID = faker.string.uuid(),
+			receivedID = faker.string.uuid();
 
 		const createPersonRelationshipSpy = jest.spyOn(personCorrespondence, 'createPersonRelationship');
 		createPersonRelationshipSpy.mockRejectedValue(new InternalError(''));
@@ -334,8 +334,8 @@ describe(`addSent and addReceived Mutation Tests`, () => {
 	});
 
 	test(`addReceived should return null if no relationship was created`, async () => {
-		const correspondenceID = faker.database.mongodbObjectId(),
-			receivedID = faker.database.mongodbObjectId();
+		const correspondenceID = faker.string.uuid(),
+			receivedID = faker.string.uuid();
 
 		const createPersonRelationshipSpy = jest.spyOn(personCorrespondence, 'createPersonRelationship');
 		createPersonRelationshipSpy.mockResolvedValue(null);

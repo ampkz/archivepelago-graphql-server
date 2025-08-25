@@ -22,7 +22,7 @@ describe(`Correspondence Query Tests`, () => {
 	});
 
 	it(`should return a created correspondence`, async () => {
-		const correspondenceID: string = faker.database.mongodbObjectId();
+		const correspondenceID: string = faker.string.uuid();
 
 		const getCorrespondenceSpy = jest.spyOn(crudCorrespondence, 'getCorrespondence');
 		getCorrespondenceSpy.mockResolvedValue(
@@ -46,7 +46,7 @@ describe(`Correspondence Query Tests`, () => {
 	});
 
 	it(`should throw and error if there was an issue getting a correspondence`, async () => {
-		const correspondenceID: string = faker.database.mongodbObjectId();
+		const correspondenceID: string = faker.string.uuid();
 
 		const getCorrespondenceSpy = jest.spyOn(crudCorrespondence, 'getCorrespondence');
 		getCorrespondenceSpy.mockRejectedValue(new InternalError(GraphQLErrors.SERVER_ERROR));
@@ -64,7 +64,7 @@ describe(`Correspondence Query Tests`, () => {
 	});
 
 	it(`should return null if no correspondence was found`, async () => {
-		const correspondenceID: string = faker.database.mongodbObjectId();
+		const correspondenceID: string = faker.string.uuid();
 
 		const getCorrespondenceSpy = jest.spyOn(crudCorrespondence, 'getCorrespondence');
 		getCorrespondenceSpy.mockResolvedValue(null);
@@ -82,10 +82,10 @@ describe(`Correspondence Query Tests`, () => {
 	});
 
 	it(`should retrieve a list of to persons`, async () => {
-		const correspondenceID: string = faker.database.mongodbObjectId(),
+		const correspondenceID: string = faker.string.uuid(),
 			firstName = faker.person.firstName();
 
-		const person = new Person({ id: faker.database.mongodbObjectId(), firstName });
+		const person = new Person({ id: faker.string.uuid(), firstName });
 
 		const getCorrespondenceSpy = jest.spyOn(crudCorrespondence, 'getCorrespondence');
 		getCorrespondenceSpy.mockResolvedValue(
@@ -115,10 +115,10 @@ describe(`Correspondence Query Tests`, () => {
 	});
 
 	it(`should retrieve a list of from persons`, async () => {
-		const correspondenceID: string = faker.database.mongodbObjectId(),
+		const correspondenceID: string = faker.string.uuid(),
 			firstName = faker.person.firstName();
 
-		const person = new Person({ id: faker.database.mongodbObjectId(), firstName });
+		const person = new Person({ id: faker.string.uuid(), firstName });
 
 		const getCorrespondenceSpy = jest.spyOn(crudCorrespondence, 'getCorrespondence');
 		getCorrespondenceSpy.mockResolvedValue(
@@ -149,11 +149,11 @@ describe(`Correspondence Query Tests`, () => {
 
 	it(`should retrieve a list of correspondences`, async () => {
 		const correspondence1 = new Correspondence({
-			correspondenceID: faker.database.mongodbObjectId(),
+			correspondenceID: faker.string.uuid(),
 			correspondenceType: CorrespondenceType.Letter,
 		});
 		const correspondence2 = new Correspondence({
-			correspondenceID: faker.database.mongodbObjectId(),
+			correspondenceID: faker.string.uuid(),
 			correspondenceType: CorrespondenceType.Letter,
 		});
 

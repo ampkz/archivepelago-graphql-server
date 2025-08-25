@@ -75,8 +75,8 @@ describe(`Label Query Tests`, () => {
 	it(`should return a list of associated persons of label`, async () => {
 		const name: string = `${(global as any).UniqueAdjIterator.next().value}`;
 
-		const person: Person = new Person({ id: faker.database.mongodbObjectId(), firstName: faker.person.firstName() });
-		const person2: Person = new Person({ id: faker.database.mongodbObjectId(), firstName: faker.person.firstName() });
+		const person: Person = new Person({ id: faker.string.uuid(), firstName: faker.person.firstName() });
+		const person2: Person = new Person({ id: faker.string.uuid(), firstName: faker.person.firstName() });
 
 		const getLabelSpy = jest.spyOn(crudLabel, 'getLabel');
 		getLabelSpy.mockResolvedValue({ name, type: LabelType.Profession });

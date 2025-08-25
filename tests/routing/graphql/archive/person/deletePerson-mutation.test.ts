@@ -21,7 +21,7 @@ describe(`deletePerson Mutation Tests`, () => {
 	});
 
 	it(`should throw unauthorized error if trying to delete person without authorized user`, async () => {
-		const id: string = faker.database.mongodbObjectId();
+		const id: string = faker.string.uuid();
 
 		const query = `
             mutation DeletePerson($id: ID!) {
@@ -41,7 +41,7 @@ describe(`deletePerson Mutation Tests`, () => {
 	});
 
 	it(`should delete a person as an admin`, async () => {
-		const id: string = faker.database.mongodbObjectId();
+		const id: string = faker.string.uuid();
 
 		const deletePersonSpy = jest.spyOn(crudPerson, 'deletePerson');
 		deletePersonSpy.mockResolvedValue(new Person({ id }));
@@ -76,7 +76,7 @@ describe(`deletePerson Mutation Tests`, () => {
 	});
 
 	it(`should delete a person as a contributor`, async () => {
-		const id: string = faker.database.mongodbObjectId();
+		const id: string = faker.string.uuid();
 
 		const deletePersonSpy = jest.spyOn(crudPerson, 'deletePerson');
 		deletePersonSpy.mockResolvedValue(new Person({ id }));
@@ -111,7 +111,7 @@ describe(`deletePerson Mutation Tests`, () => {
 	});
 
 	it(`should throw an error if there was an issue with the server`, async () => {
-		const id: string = faker.database.mongodbObjectId();
+		const id: string = faker.string.uuid();
 
 		const deletePersonSpy = jest.spyOn(crudPerson, 'deletePerson');
 		deletePersonSpy.mockRejectedValue(new InternalError(''));

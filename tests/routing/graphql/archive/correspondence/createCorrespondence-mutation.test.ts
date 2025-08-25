@@ -42,7 +42,7 @@ describe(`createCorrespondence Mutation Tests`, () => {
 	});
 
 	it(`should create a correspondence as admin`, async () => {
-		const correspondenceID: string = faker.database.mongodbObjectId(),
+		const correspondenceID: string = faker.string.uuid(),
 			correspondenceType: CorrespondenceType = CorrespondenceType.Letter;
 
 		const createCorrespondenceSpy = jest.spyOn(crudCorrespondence, 'createCorrespondence');
@@ -86,7 +86,7 @@ describe(`createCorrespondence Mutation Tests`, () => {
 	});
 
 	it(`should create a correspondence as contributor`, async () => {
-		const correspondenceID: string = faker.database.mongodbObjectId(),
+		const correspondenceID: string = faker.string.uuid(),
 			correspondenceType: CorrespondenceType = CorrespondenceType.Letter;
 
 		const createCorrespondenceSpy = jest.spyOn(crudCorrespondence, 'createCorrespondence');

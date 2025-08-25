@@ -41,7 +41,7 @@ describe(`createPerson Mutation Tests`, () => {
 	});
 
 	it(`should create a person as an admin`, async () => {
-		const id: string = faker.database.mongodbObjectId();
+		const id: string = faker.string.uuid();
 
 		const createPersonSpy = jest.spyOn(crudPerson, 'createPerson');
 		createPersonSpy.mockResolvedValue(new Person({ id }));
@@ -78,7 +78,7 @@ describe(`createPerson Mutation Tests`, () => {
 	});
 
 	it(`should create a person as a contributor`, async () => {
-		const id: string = faker.database.mongodbObjectId();
+		const id: string = faker.string.uuid();
 
 		const createPersonSpy = jest.spyOn(crudPerson, 'createPerson');
 		createPersonSpy.mockResolvedValue(new Person({ id, birthDate: { year: '2000' } }));
