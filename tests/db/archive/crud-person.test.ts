@@ -111,7 +111,7 @@ describe(`CRUD Person Tests`, () => {
 		);
 	});
 
-	it(`should update a created person and delete a property set to null`, async () => {
+	it(`should update a created person and delete a property set to undefined`, async () => {
 		const firstName: string = faker.person.firstName(),
 			lastName: string = faker.person.lastName(),
 			secondName: string = faker.person.middleName(),

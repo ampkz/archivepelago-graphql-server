@@ -15,7 +15,14 @@ import {
 
 describe(`Person-[:IS]->Label Tests`, () => {
 	it(`should create a relationship between a person and label`, async () => {
-		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
+		const createdPerson: Person = (await createPerson(
+			new Person({
+				id: '',
+				firstName: faker.person.firstName(),
+				birthDate: { year: '2000', month: '01', day: '01' },
+				deathDate: { year: '2020', month: '01', day: '01' },
+			})
+		)) as Person;
 		const createdLabel: Label = (await createLabel({
 			name: `label_person_${(global as any).UniqueAdjIterator.next().value}`,
 			type: LabelType.Profession,
@@ -29,7 +36,14 @@ describe(`Person-[:IS]->Label Tests`, () => {
 	});
 
 	it(`should delete a relationship between a person and label`, async () => {
-		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
+		const createdPerson: Person = (await createPerson(
+			new Person({
+				id: '',
+				firstName: faker.person.firstName(),
+				birthDate: { year: '2000', month: '01', day: '01' },
+				deathDate: { year: '2020', month: '01', day: '01' },
+			})
+		)) as Person;
 		const createdLabel: Label = (await createLabel({
 			name: `delete_label_${(global as any).UniqueAdjIterator.next().value}`,
 			type: LabelType.Nationality,
@@ -45,7 +59,14 @@ describe(`Person-[:IS]->Label Tests`, () => {
 	});
 
 	test(`getLabelsByPerson should get a label`, async () => {
-		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
+		const createdPerson: Person = (await createPerson(
+			new Person({
+				id: '',
+				firstName: faker.person.firstName(),
+				birthDate: { year: '2000', month: '01', day: '01' },
+				deathDate: { year: '2020', month: '01', day: '01' },
+			})
+		)) as Person;
 		const createdLabel: Label = (await createLabel({
 			name: `${(global as any).UniqueAdjIterator.next().value}`,
 			type: LabelType.Sexuality,
@@ -61,7 +82,14 @@ describe(`Person-[:IS]->Label Tests`, () => {
 	});
 
 	test(`getLabelsByPerson should get a list of labels`, async () => {
-		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
+		const createdPerson: Person = (await createPerson(
+			new Person({
+				id: '',
+				firstName: faker.person.firstName(),
+				birthDate: { year: '2000', month: '01', day: '01' },
+				deathDate: { year: '2020', month: '01', day: '01' },
+			})
+		)) as Person;
 		const createdLabel: Label = (await createLabel({
 			name: `label_person_${(global as any).UniqueAdjIterator.next().value}`,
 			type: LabelType.Profession,
@@ -91,9 +119,30 @@ describe(`Person-[:IS]->Label Tests`, () => {
 	});
 
 	test(`getPersonsByLabel should get a list of persons`, async () => {
-		const createdPerson: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
-		const createdPerson2: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
-		const createdPerson3: Person = (await createPerson(new Person({ id: '', firstName: faker.person.firstName() }))) as Person;
+		const createdPerson: Person = (await createPerson(
+			new Person({
+				id: '',
+				firstName: faker.person.firstName(),
+				birthDate: { year: '2000', month: '01', day: '01' },
+				deathDate: { year: '2020', month: '01', day: '01' },
+			})
+		)) as Person;
+		const createdPerson2: Person = (await createPerson(
+			new Person({
+				id: '',
+				firstName: faker.person.firstName(),
+				birthDate: { year: '2000', month: '01', day: '01' },
+				deathDate: { year: '2020', month: '01', day: '01' },
+			})
+		)) as Person;
+		const createdPerson3: Person = (await createPerson(
+			new Person({
+				id: '',
+				firstName: faker.person.firstName(),
+				birthDate: { year: '2000', month: '01', day: '01' },
+				deathDate: { year: '2020', month: '01', day: '01' },
+			})
+		)) as Person;
 		const createdLabel: Label = (await createLabel({
 			name: `person_label_${(global as any).UniqueAdjIterator.next().value}`,
 			type: LabelType.Profession,
