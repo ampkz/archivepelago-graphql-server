@@ -1,44 +1,29 @@
 import { NodeType } from '../../_helpers/nodes';
 import { convertArchiveDateToDateString, convertDateStringToArchiveDate } from '../../archive/date';
-import { Person } from '../../archive/person';
+import { matchedNodeToPerson, Person } from '../../archive/person';
 import { CreatePersonInput, UpdatePersonInput } from '../../generated/graphql';
 import { createNode, deleteNode, getNode, getNodes, removeProperties, updateNode } from '../utils/crud';
 
 export async function getPerson(id: string): Promise<Person | null> {
 	const matchedNode = await getNode(NodeType.PERSON, ['id: $id'], { id });
 
-	if (!!matchedNode) {
-		if (!!matchedNode.birthDate) matchedNode.birthDate = convertDateStringToArchiveDate(matchedNode.birthDate);
-		if (!!matchedNode.deathDate) matchedNode.deathDate = convertDateStringToArchiveDate(matchedNode.deathDate);
-	}
-
-	return matchedNode;
+	return matchedNodeToPerson(matchedNode);
 }
 
-export async function createPerson(person: CreatePersonInput): Promise<Person> {
+export async function createPerson(person: CreatePersonInput): Promise<Person | null> {
 	const createdPerson = await createNode(NodeType.PERSON, prepPersonProps(person), {
 		...person,
 		birthDate: convertArchiveDateToDateString(person.birthDate),
 		deathDate: convertArchiveDateToDateString(person.deathDate),
 	});
 
-	if (!!createdPerson) {
-		if (!!createdPerson.birthDate) createdPerson.birthDate = convertDateStringToArchiveDate(createdPerson.birthDate);
-		if (!!createdPerson.deathDate) createdPerson.deathDate = convertDateStringToArchiveDate(createdPerson.deathDate);
-	}
-
-	return new Person(createdPerson);
+	return matchedNodeToPerson(createdPerson);
 }
 
 export async function deletePerson(id: string): Promise<Person | null> {
 	const deletedPerson = await deleteNode(NodeType.PERSON, ['id: $id'], { id });
 
-	if (!!deletedPerson) {
-		if (!!deletedPerson.birthDate) deletedPerson.birthDate = convertDateStringToArchiveDate(deletedPerson.birthDate);
-		if (!!deletedPerson.deathDate) deletedPerson.deathDate = convertDateStringToArchiveDate(deletedPerson.deathDate);
-	}
-
-	return deletedPerson;
+	return matchedNodeToPerson(deletedPerson);
 }
 
 export async function updatePerson(updatedPerson: UpdatePersonInput): Promise<Person | null> {
@@ -54,16 +39,12 @@ export async function updatePerson(updatedPerson: UpdatePersonInput): Promise<Pe
 	}
 
 	const removedProps = updatedPersonRemovedProps(updatedPerson);
+
 	if (removedProps.length > 0) {
 		matchedPerson = await removeProperties(NodeType.PERSON, 'p', ['id: $id'], removedProps, { id: updatedPerson.id });
 	}
 
-	if (!!matchedPerson) {
-		if (!!matchedPerson.birthDate) matchedPerson.birthDate = convertDateStringToArchiveDate(matchedPerson.birthDate);
-		if (!!matchedPerson.deathDate) matchedPerson.deathDate = convertDateStringToArchiveDate(matchedPerson.deathDate);
-	}
-
-	return matchedPerson;
+	return matchedNodeToPerson(matchedPerson);
 }
 
 export async function getPersons(): Promise<Person[]> {
@@ -72,9 +53,7 @@ export async function getPersons(): Promise<Person[]> {
 	const matchedPersons = await getNodes(NodeType.PERSON);
 
 	matchedPersons.map(person => {
-		if (!!person.birthDate) person.birthDate = convertDateStringToArchiveDate(person.birthDate);
-		if (!!person.deathDate) person.deathDate = convertDateStringToArchiveDate(person.deathDate);
-		persons.push(new Person(person));
+		persons.push(matchedNodeToPerson(person)!);
 	});
 
 	return persons;

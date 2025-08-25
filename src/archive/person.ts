@@ -1,4 +1,5 @@
-import type { Person as GqlPerson, ArchiveDate } from '../generated/graphql.js';
+import type { Person as GqlPerson, ArchiveDate } from '../generated/graphql';
+import { convertDateStringToArchiveDate } from './date';
 
 export class Person implements GqlPerson {
 	public id: string;
@@ -18,20 +19,9 @@ export class Person implements GqlPerson {
 	}
 }
 
-// export interface IPerson {
-// 	id: string;
-// 	firstName?: string;
-// 	lastName?: string;
-// 	secondName?: string;
-// 	birthDate?: string;
-// 	deathDate?: string;
-// }
-
-// export interface IUpdatedPerson {
-// 	id: string;
-// 	updatedFirstName?: string | null;
-// 	updatedLastName?: string | null;
-// 	updatedSecondName?: string | null;
-// 	updatedBirthDate?: string | null;
-// 	updatedDeathDate?: string | null;
-// }
+export function matchedNodeToPerson(matchedNode: any | null): Person | null {
+	if (matchedNode === null) return null;
+	if (!!matchedNode.birthDate) matchedNode.birthDate = convertDateStringToArchiveDate(matchedNode.birthDate);
+	if (!!matchedNode.deathDate) matchedNode.deathDate = convertDateStringToArchiveDate(matchedNode.deathDate);
+	return new Person(matchedNode);
+}

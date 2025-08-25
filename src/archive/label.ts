@@ -1,4 +1,4 @@
-import { LabelType, Label as GqlLabel } from '../generated/graphql.js';
+import { LabelType, Label as GqlLabel } from '../generated/graphql';
 
 // export enum LabelType {
 // 	SEXUALITY = 'SEXUALITY',

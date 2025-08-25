@@ -16,7 +16,7 @@ describe(`CRUD Correspondence Tests`, () => {
 		const createdCorrespondence = await createCorrespondence({ correspondenceType: CorrespondenceType.Letter });
 		const returnedCorrespondence = await createPersonRelationship(
 			createdCorrespondence?.correspondenceID as string,
-			createdPerson.id,
+			createdPerson!.id,
 			RelationshipType.SENT
 		);
 
@@ -26,10 +26,10 @@ describe(`CRUD Correspondence Tests`, () => {
 	it(`should delete a created relationship between a created person and a created correspondence`, async () => {
 		const createdPerson = await createPerson({ firstName: faker.person.firstName() });
 		const createdCorrespondence = await createCorrespondence({ correspondenceType: CorrespondenceType.Letter });
-		await createPersonRelationship(createdCorrespondence?.correspondenceID as string, createdPerson.id, RelationshipType.SENT);
+		await createPersonRelationship(createdCorrespondence?.correspondenceID as string, createdPerson!.id, RelationshipType.SENT);
 		const returnedCorrespondence = await deletePersonRelationship(
 			createdCorrespondence?.correspondenceID as string,
-			createdPerson.id,
+			createdPerson!.id,
 			RelationshipType.SENT
 		);
 
@@ -39,7 +39,7 @@ describe(`CRUD Correspondence Tests`, () => {
 	it(`should get persons who sent correspondence`, async () => {
 		const createdPerson = await createPerson({ firstName: faker.person.firstName() });
 		const createdCorrespondence = await createCorrespondence({ correspondenceType: CorrespondenceType.Letter });
-		await createPersonRelationship(createdCorrespondence?.correspondenceID as string, createdPerson.id, RelationshipType.SENT);
+		await createPersonRelationship(createdCorrespondence?.correspondenceID as string, createdPerson!.id, RelationshipType.SENT);
 
 		const persons = await getPersonsByCorrespondence(createdCorrespondence?.correspondenceID as string, RelationshipType.SENT);
 
@@ -49,7 +49,7 @@ describe(`CRUD Correspondence Tests`, () => {
 	it(`should get persons who received correspondence`, async () => {
 		const createdPerson = await createPerson({ firstName: faker.person.firstName() });
 		const createdCorrespondence = await createCorrespondence({ correspondenceType: CorrespondenceType.Letter });
-		await createPersonRelationship(createdCorrespondence?.correspondenceID as string, createdPerson.id, RelationshipType.RECEIVED);
+		await createPersonRelationship(createdCorrespondence?.correspondenceID as string, createdPerson!.id, RelationshipType.RECEIVED);
 
 		const persons = await getPersonsByCorrespondence(createdCorrespondence?.correspondenceID as string, RelationshipType.RECEIVED);
 
@@ -59,9 +59,9 @@ describe(`CRUD Correspondence Tests`, () => {
 	it(`should get correspondences sent by person`, async () => {
 		const createdPerson = await createPerson({ firstName: faker.person.firstName() });
 		const createdCorrespondence = await createCorrespondence({ correspondenceType: CorrespondenceType.Letter });
-		await createPersonRelationship(createdCorrespondence?.correspondenceID as string, createdPerson.id, RelationshipType.SENT);
+		await createPersonRelationship(createdCorrespondence?.correspondenceID as string, createdPerson!.id, RelationshipType.SENT);
 
-		const correspondences = await getCorrespondencesByPerson(createdPerson.id, RelationshipType.SENT);
+		const correspondences = await getCorrespondencesByPerson(createdPerson!.id, RelationshipType.SENT);
 
 		expect(correspondences).toContainEqual(createdCorrespondence);
 	});
@@ -69,9 +69,9 @@ describe(`CRUD Correspondence Tests`, () => {
 	it(`should get correspondences received by person`, async () => {
 		const createdPerson = await createPerson({ firstName: faker.person.firstName() });
 		const createdCorrespondence = await createCorrespondence({ correspondenceType: CorrespondenceType.Letter });
-		await createPersonRelationship(createdCorrespondence?.correspondenceID as string, createdPerson.id, RelationshipType.RECEIVED);
+		await createPersonRelationship(createdCorrespondence?.correspondenceID as string, createdPerson!.id, RelationshipType.RECEIVED);
 
-		const correspondences = await getCorrespondencesByPerson(createdPerson.id, RelationshipType.RECEIVED);
+		const correspondences = await getCorrespondencesByPerson(createdPerson!.id, RelationshipType.RECEIVED);
 
 		expect(correspondences).toContainEqual(createdCorrespondence);
 	});

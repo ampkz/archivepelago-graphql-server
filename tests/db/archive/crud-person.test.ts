@@ -14,9 +14,9 @@ describe(`CRUD Person Tests`, () => {
 
 		const person: Person = new Person({ id: '', firstName, lastName, secondName, birthDate, deathDate });
 
-		const createdPerson: Person = await createPerson(person);
+		const createdPerson = await createPerson(person);
 
-		person.id = createdPerson.id;
+		person.id = createdPerson!.id;
 
 		expect(createdPerson).toEqual(person);
 	});
@@ -24,16 +24,16 @@ describe(`CRUD Person Tests`, () => {
 	it(`should create a Person with null values`, async () => {
 		const person: Person = new Person({ id: '' });
 
-		const createdPerson: Person = await createPerson(person);
+		const createdPerson = await createPerson(person);
 
-		person.id = createdPerson.id;
+		person.id = createdPerson!.id;
 
 		expect(createdPerson).toEqual(person);
-		expect(createdPerson.firstName).toBeUndefined();
-		expect(createdPerson.lastName).toBeUndefined();
-		expect(createdPerson.secondName).toBeUndefined();
-		expect(createdPerson.birthDate).toBeUndefined();
-		expect(createdPerson.deathDate).toBeUndefined();
+		expect(createdPerson!.firstName).toBeUndefined();
+		expect(createdPerson!.lastName).toBeUndefined();
+		expect(createdPerson!.secondName).toBeUndefined();
+		expect(createdPerson!.birthDate).toBeUndefined();
+		expect(createdPerson!.deathDate).toBeUndefined();
 	});
 
 	it(`should get a created person`, async () => {
@@ -43,9 +43,9 @@ describe(`CRUD Person Tests`, () => {
 			birthDate: ArchiveDate | null = convertDateStringToArchiveDate('1901-01-01'),
 			deathDate: ArchiveDate | null = convertDateStringToArchiveDate('1901-01-31');
 
-		const createdPerson: Person = await createPerson({ firstName, lastName, secondName, birthDate, deathDate });
+		const createdPerson = await createPerson({ firstName, lastName, secondName, birthDate, deathDate });
 
-		const matchedPerson: Person | null = await getPerson(createdPerson.id);
+		const matchedPerson: Person | null = await getPerson(createdPerson!.id);
 
 		expect(matchedPerson).toEqual(createdPerson);
 	});
@@ -59,9 +59,9 @@ describe(`CRUD Person Tests`, () => {
 
 		const person: Person = new Person({ id: '', firstName, lastName, secondName, birthDate, deathDate });
 
-		const createdPerson: Person = await createPerson(person);
+		const createdPerson = await createPerson(person);
 
-		const deletedPerson: Person | null = await deletePerson(createdPerson.id);
+		const deletedPerson: Person | null = await deletePerson(createdPerson!.id);
 
 		expect(deletedPerson).toEqual(createdPerson);
 	});
@@ -87,9 +87,9 @@ describe(`CRUD Person Tests`, () => {
 
 		const person: Person = new Person({ id: '', firstName, lastName, secondName, birthDate, deathDate });
 
-		const createdPerson: Person = await createPerson(person);
+		const createdPerson = await createPerson(person);
 		const updatedPerson: IUpdatedPerson = {
-			id: createdPerson.id,
+			id: createdPerson!.id,
 			updatedFirstName,
 			updatedBirthDate,
 			updatedDeathDate,
@@ -101,7 +101,7 @@ describe(`CRUD Person Tests`, () => {
 
 		expect(matchedPerson).toEqual(
 			new Person({
-				id: createdPerson.id,
+				id: createdPerson!.id,
 				firstName: updatedFirstName,
 				lastName: updatedLastName,
 				secondName: updatedSecondName,
@@ -120,9 +120,9 @@ describe(`CRUD Person Tests`, () => {
 
 		const person: Person = new Person({ id: '', firstName, lastName, secondName, birthDate, deathDate });
 
-		const createdPerson: Person = await createPerson(person);
+		const createdPerson = await createPerson(person);
 		const updatedPerson: IUpdatedPerson = {
-			id: createdPerson.id,
+			id: createdPerson!.id,
 			updatedFirstName: undefined,
 			updatedBirthDate: undefined,
 			updatedDeathDate: undefined,
@@ -132,7 +132,7 @@ describe(`CRUD Person Tests`, () => {
 
 		const matchedPerson: Person | null = await updatePerson(updatedPerson);
 
-		expect(matchedPerson).toEqual(new Person({ id: createdPerson.id }));
+		expect(matchedPerson).toEqual(new Person({ id: createdPerson!.id }));
 	});
 
 	test(`updatePerson should return null if no person exists`, async () => {
@@ -155,9 +155,9 @@ describe(`CRUD Person Tests`, () => {
 		const person2: Person = new Person({ id: faker.database.mongodbObjectId(), firstName: faker.person.firstName() });
 		const person3: Person = new Person({ id: faker.database.mongodbObjectId(), firstName: faker.person.firstName() });
 
-		const createdPerson: Person = await createPerson(person);
-		const createdPerson2: Person = await createPerson(person2);
-		const createdPerson3: Person = await createPerson(person3);
+		const createdPerson = await createPerson(person);
+		const createdPerson2 = await createPerson(person2);
+		const createdPerson3 = await createPerson(person3);
 
 		const matchedPersons: Person[] = await getPersons();
 

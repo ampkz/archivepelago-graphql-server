@@ -38,7 +38,7 @@ export const resolvers: Resolvers = {
 				throw unauthorizedError(`You are not authorized to make this mutation.`);
 			}
 
-			let person: Person;
+			let person: Person | null = null;
 
 			try {
 				person = await createPerson({ firstName, lastName, secondName, birthDate, deathDate } as IPerson);
