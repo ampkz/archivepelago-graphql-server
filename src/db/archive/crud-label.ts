@@ -1,6 +1,6 @@
 import { NodeType } from '../../_helpers/nodes';
 import { Label } from '../../archive/label';
-import { Label as GglLabel, UpdateLabelInput as IUpdatedLabel, LabelType } from '../../generated/graphql';
+import { Label as GglLabel, UpdateLabelInput as IUpdatedLabel } from '../../generated/graphql';
 import { createNode, deleteNode, getNode, getNodes, updateNode } from '../utils/crud';
 
 export async function getLabel(name: string): Promise<Label | null> {

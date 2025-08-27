@@ -1,5 +1,5 @@
 import { Driver, Record, RecordShape, Session } from 'neo4j-driver';
-import { Relationship, RelationshipDirection, RelationshipType } from '../../../archive/relationship/relationship';
+import { Relationship, RelationshipType } from '../../../archive/relationship/relationship';
 import { connect } from '../connection';
 import { getSessionOptions } from '../../../_helpers/db-helper';
 import { InternalError } from '@ampkz/auth-neo4j/errors';
@@ -20,7 +20,7 @@ export async function createRelationship(
 	const preppedReturn: string = prepShouldReturnFromQuery(relationship);
 
 	const match: RecordShape = await session.run(
-		`MATCH (f:${relationship.node1.nodeType} {${relationship.node1.getIdString()}}), (s:${relationship.node2.nodeType} {${relationship.node2.getIdString()}}) CREATE (f)${relationship.direction === RelationshipDirection.COMING ? `<` : ``}-[:${relationship.name}]-${relationship.direction === RelationshipDirection.GOING ? `>` : ``}(s) ${preppedReturn.length > 0 ? `RETURN ${preppedReturn}` : ``}`,
+		`MATCH (f:${relationship.node1.nodeType} {${relationship.node1.getIdString()}}), (s:${relationship.node2.nodeType} {${relationship.node2.getIdString()}}) CREATE (f)-[:${relationship.name}]->(s) ${preppedReturn.length > 0 ? `RETURN ${preppedReturn}` : ``}`,
 		relationship.getRelationshipParams()
 	);
 
@@ -47,7 +47,7 @@ export async function deleteRelationship(
 	const preppedReturn: string = prepShouldReturnFromQuery(relationship);
 
 	const match: RecordShape = await session.run(
-		`MATCH (f:${relationship.node1.nodeType} {${relationship.node1.getIdString()}})${relationship.direction === RelationshipDirection.COMING ? `<` : ``}-[r:${relationship.name}]-${relationship.direction === RelationshipDirection.GOING ? `>` : ``}(s:${relationship.node2.nodeType} {${relationship.node2.getIdString()}}) DELETE r ${preppedReturn.length > 0 ? `RETURN ${preppedReturn}` : ``}`,
+		`MATCH (f:${relationship.node1.nodeType} {${relationship.node1.getIdString()}})-[r:${relationship.name}]->(s:${relationship.node2.nodeType} {${relationship.node2.getIdString()}}) DELETE r ${preppedReturn.length > 0 ? `RETURN ${preppedReturn}` : ``}`,
 		relationship.getRelationshipParams()
 	);
 
@@ -68,7 +68,7 @@ export async function getRelationshipsToNode(
 	node: Node,
 	secondNodeType: NodeType,
 	relationshipType: RelationshipType,
-	relationshipDirection: RelationshipDirection = RelationshipDirection.GOING,
+	undirectedMatch: boolean = false,
 	dbName: string = process.env.ARCHIVE_DB as string
 ): Promise<any[]> {
 	const relationships: any[] = [];
@@ -77,7 +77,7 @@ export async function getRelationshipsToNode(
 	const session: Session = driver.session(getSessionOptions(dbName));
 
 	const match: RecordShape = await session.run(
-		`MATCH (n:${node.nodeType} {${node.getIdString()}})${relationshipDirection === RelationshipDirection.COMING ? `<` : ``}-[:${relationshipType}]-${relationshipDirection === RelationshipDirection.GOING ? `>` : ``}(m:${secondNodeType}) RETURN m`,
+		`MATCH (n:${node.nodeType} {${node.getIdString()}})-[:${relationshipType}]-${undirectedMatch ? '' : '>'}(m:${secondNodeType}) RETURN m`,
 		node.getIdParams()
 	);
 

@@ -1,6 +1,6 @@
 import { Node, NodeType } from '../../../_helpers/nodes';
 import { createRelationship, deleteRelationship, getRelationshipsToNode } from '../../utils/relationship/crud-relationship';
-import { Relationship, RelationshipDirection, RelationshipType } from '../../../archive/relationship/relationship';
+import { Relationship, RelationshipType } from '../../../archive/relationship/relationship';
 import { Correspondence, matchedNodeToCorrespondence } from '../../../archive/correspondence';
 import { matchedNodeToPerson, Person } from '../../../archive/person';
 
@@ -31,7 +31,7 @@ export async function getPersonsByCorrespondence(correspondenceID: string, relat
 		new Node(NodeType.CORRESPONDENCE, 'correspondenceID', correspondenceID),
 		NodeType.PERSON,
 		relationshipType,
-		RelationshipDirection.COMING
+		true
 	);
 
 	match.map((rawPerson: any) => {
