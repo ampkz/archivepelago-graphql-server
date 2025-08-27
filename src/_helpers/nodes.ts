@@ -17,14 +17,14 @@ export class Node {
 		this.shouldReturnFromQuery = shouldReturnFromQuery;
 	}
 
-	getIdString(): string {
-		return `${this.idProp}:$${this.idProp}`;
+	getIdString(prefix: string = ''): string {
+		return `${this.idProp}:$${prefix}${this.idProp}`;
 	}
 
-	getIdParams() {
+	getIdParams(prefix: string = '') {
 		const params: any = {};
 
-		params[this.idProp] = this.idValue;
+		params[`${prefix}${this.idProp}`] = this.idValue;
 
 		return params;
 	}

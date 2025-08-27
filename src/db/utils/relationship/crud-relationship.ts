@@ -20,8 +20,8 @@ export async function createRelationship(
 	const preppedReturn: string = prepShouldReturnFromQuery(relationship);
 
 	const match: RecordShape = await session.run(
-		`MATCH (f:${relationship.node1.nodeType} {${relationship.node1.getIdString()}}), (s:${relationship.node2.nodeType} {${relationship.node2.getIdString()}}) CREATE (f)-[:${relationship.name}]->(s) ${preppedReturn.length > 0 ? `RETURN ${preppedReturn}` : ``}`,
-		relationship.getRelationshipParams()
+		`MATCH (f:${relationship.node1.nodeType} {${relationship.node1.getIdString('f_')}}), (s:${relationship.node2.nodeType} {${relationship.node2.getIdString('s_')}}) CREATE (f)-[:${relationship.name}]->(s) ${preppedReturn.length > 0 ? `RETURN ${preppedReturn}` : ``}`,
+		relationship.getRelationshipParams('f_', 's_')
 	);
 
 	if (match.summary.counters._stats.relationshipsCreated !== 1) {

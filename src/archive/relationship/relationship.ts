@@ -17,10 +17,10 @@ export class Relationship {
 		this.name = name;
 	}
 
-	getRelationshipParams() {
+	getRelationshipParams(n1Prefix: string = '', n2Prefix: string = '') {
 		return {
-			...this.node1.getIdParams(),
-			...this.node2.getIdParams(),
+			...this.node1.getIdParams(n1Prefix),
+			...this.node2.getIdParams(n2Prefix),
 		};
 	}
 }
